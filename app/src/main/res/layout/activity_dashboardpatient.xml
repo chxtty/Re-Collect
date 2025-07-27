@@ -5,11 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FDF5EF"
+    android:background="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_1_"
     tools:context=".DashboardPatient">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/txtWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="132dp"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/btnMyself"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="44dp"
@@ -29,86 +29,92 @@
         android:layout_marginEnd="17dp"
         android:layout_marginBottom="15dp"
         android:foreground="@drawable/screenshot_2025_07_23_205608"
-        app:layout_constraintBottom_toTopOf="@+id/cardView5"
-        app:layout_constraintEnd_toStartOf="@+id/cardView3"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnComm"
+        app:layout_constraintEnd_toStartOf="@+id/btnDiary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+        android:id="@+id/btnActivities"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="45dp"
         android:layout_marginBottom="28dp"
         android:foreground="@drawable/screenshot_2025_07_23_210649"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView4"
-        app:layout_constraintTop_toBottomOf="@+id/cardView6">
+        app:layout_constraintStart_toEndOf="@+id/btnCaregiver"
+        app:layout_constraintTop_toBottomOf="@+id/btnEvents">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/btnDiary"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="149dp"
         android:layout_marginEnd="45dp"
         android:layout_marginBottom="14dp"
         android:foreground="@drawable/screenshot_2025_07_23_205833"
-        app:layout_constraintBottom_toTopOf="@+id/cardView6"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnEvents"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView"
+        app:layout_constraintStart_toEndOf="@+id/btnMyself"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView4"
+        android:id="@+id/btnCaregiver"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="22dp"
         android:layout_marginBottom="104dp"
         android:foreground="@drawable/screenshot_2025_07_23_210541"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cardView2"
+        app:layout_constraintEnd_toStartOf="@+id/btnActivities"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView5">
+        app:layout_constraintTop_toBottomOf="@+id/btnComm">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView5"
+        android:id="@+id/btnComm"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="43dp"
         android:layout_marginEnd="19dp"
         android:layout_marginBottom="10dp"
         android:foreground="@drawable/screenshot_2025_07_23_210230"
-        app:layout_constraintBottom_toTopOf="@+id/cardView4"
-        app:layout_constraintEnd_toStartOf="@+id/cardView6"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnCaregiver"
+        app:layout_constraintEnd_toStartOf="@+id/btnEvents"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
+        app:layout_constraintTop_toBottomOf="@+id/btnMyself">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView6"
+        android:id="@+id/btnEvents"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="47dp"
         android:layout_marginBottom="10dp"
         android:foreground="@drawable/screenshot_2025_07_23_210452"
-        app:layout_constraintBottom_toTopOf="@+id/cardView2"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivities"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView5"
-        app:layout_constraintTop_toBottomOf="@+id/cardView3">
+        app:layout_constraintStart_toEndOf="@+id/btnComm"
+        app:layout_constraintTop_toBottomOf="@+id/btnDiary">
 
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="63dp"
@@ -119,7 +125,7 @@
         android:textColor="#FFFBFB"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView4"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+        app:layout_constraintStart_toEndOf="@+id/btnCaregiver"
+        app:layout_constraintTop_toBottomOf="@+id/btnActivities" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReCollectUI">
         <activity
+            android:name=".EventsView"
+            android:exported="false" />
+        <activity
             android:name=".DashboardPatient"
             android:exported="false" />
         <activity
