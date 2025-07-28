@@ -22,8 +22,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnMyself"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginStart="44dp"
         android:layout_marginTop="149dp"
         android:layout_marginEnd="17dp"
@@ -39,23 +39,24 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnActivities"
-        android:layout_width="0dp"
+        android:layout_width="180dp"
         android:layout_height="0dp"
+        android:layout_marginTop="587dp"
         android:layout_marginEnd="45dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="47dp"
         android:foreground="@drawable/screenshot_2025_07_23_210649"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toTopOf="@+id/btnLogout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnCaregiver"
-        app:layout_constraintTop_toBottomOf="@+id/btnEvents">
+        app:layout_constraintTop_toTopOf="parent">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnDiary"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginTop="149dp"
         android:layout_marginEnd="45dp"
         android:layout_marginBottom="14dp"
@@ -68,8 +69,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnCaregiver"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="22dp"
         android:layout_marginBottom="104dp"
@@ -84,8 +85,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnComm"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginStart="43dp"
         android:layout_marginEnd="19dp"
         android:layout_marginBottom="10dp"
@@ -100,8 +101,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnEvents"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginEnd="47dp"
         android:layout_marginBottom="10dp"
         android:foreground="@drawable/screenshot_2025_07_23_210452"
@@ -115,17 +116,17 @@
 
     <Button
         android:id="@+id/btnLogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="63dp"
-        android:layout_marginEnd="66dp"
-        android:layout_marginBottom="28dp"
+        android:layout_width="154dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginEnd="37dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="#46494C"
         android:text="Log out"
         android:textColor="#FFFBFB"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnCaregiver"
+        app:layout_constraintStart_toStartOf="@+id/btnActivities"
         app:layout_constraintTop_toBottomOf="@+id/btnActivities" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

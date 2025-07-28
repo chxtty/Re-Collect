@@ -8,4 +8,19 @@
     android:background="@drawable/view_events_1_"
     tools:context=".EventsView">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="61dp"
+        android:layout_height="64dp"
+        android:src="@drawable/upcoming"
+        tools:layout_editor_absoluteX="175dp"
+        tools:layout_editor_absoluteY="6dp" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="376dp"
+        android:layout_height="101dp"
+        android:foreground="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_2__1_"
+        app:contentPadding="20dp"
+        tools:layout_editor_absoluteX="19dp"
+        tools:layout_editor_absoluteY="774dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

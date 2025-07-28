@@ -23,8 +23,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
+        android:layout_width="123dp"
+        android:layout_height="222dp"
         android:layout_marginBottom="47dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
 
         <Button
             android:id="@+id/btnSignIn"
-            android:layout_width="98dp"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="#9E8AB7"
             android:text="@string/sign_in"
@@ -42,7 +42,7 @@
 
         <Button
             android:id="@+id/btnSignUp"
-            android:layout_width="98dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#46494C"
             android:text="@string/sign_up"
@@ -66,8 +66,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="313dp"
+        android:layout_height="201dp"
         android:layout_marginBottom="61dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
@@ -81,13 +81,13 @@
             android:layout_height="wrap_content"
             android:text="EMAIL" />
 
-        <EditText
-            android:id="@+id/editEmail"
-            android:layout_width="280dp"
-            android:layout_height="50dp"
-            android:background="#CADCBD"
-            android:ems="10"
-            android:inputType="text" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#2B2D30"
+            android:backgroundTint="#ABCD9F"
+            android:hint="Enter Email" />
 
         <TextView
             android:id="@+id/textView2"
@@ -95,14 +95,20 @@
             android:layout_height="wrap_content"
             android:text="PASSWORD" />
 
-        <EditText
-            android:id="@+id/editPassword"
-            android:layout_width="280dp"
-            android:layout_height="50dp"
-            android:background="#E4E9D6"
-            android:backgroundTint="#CADCBD"
-            android:ems="10"
-            android:inputType="textPassword" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="#F8F8F8"
+                android:backgroundTint="#AACC9E"
+                android:hint="Enter Password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
