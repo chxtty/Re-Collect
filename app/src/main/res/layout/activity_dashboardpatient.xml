@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnMyself"
+        android:id="@+id/crdMyself"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_marginStart="44dp"
@@ -30,15 +30,15 @@
         android:layout_marginBottom="15dp"
         android:foreground="@drawable/screenshot_2025_07_23_205608"
         app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnComm"
-        app:layout_constraintEnd_toStartOf="@+id/btnDiary"
+        app:layout_constraintBottom_toTopOf="@+id/crdComm"
+        app:layout_constraintEnd_toStartOf="@+id/crdDiary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnActivities"
+        android:id="@+id/crdActivities"
         android:layout_width="180dp"
         android:layout_height="0dp"
         android:layout_marginTop="587dp"
@@ -48,13 +48,13 @@
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toTopOf="@+id/btnLogout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnCaregiver"
+        app:layout_constraintStart_toEndOf="@+id/crdCaregiver"
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnDiary"
+        android:id="@+id/crdDiary"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_marginTop="149dp"
@@ -62,13 +62,13 @@
         android:layout_marginBottom="14dp"
         android:foreground="@drawable/screenshot_2025_07_23_205833"
         app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnEvents"
+        app:layout_constraintBottom_toTopOf="@+id/crdEvents"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnMyself"
+        app:layout_constraintStart_toEndOf="@+id/crdMyself"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnCaregiver"
+        android:id="@+id/crdCaregiver"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_marginStart="44dp"
@@ -77,14 +77,14 @@
         android:foreground="@drawable/screenshot_2025_07_23_210541"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnActivities"
+        app:layout_constraintEnd_toStartOf="@+id/crdActivities"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnComm">
+        app:layout_constraintTop_toBottomOf="@+id/crdComm">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnComm"
+        android:id="@+id/crdComm"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_marginStart="43dp"
@@ -92,25 +92,25 @@
         android:layout_marginBottom="10dp"
         android:foreground="@drawable/screenshot_2025_07_23_210230"
         app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCaregiver"
-        app:layout_constraintEnd_toStartOf="@+id/btnEvents"
+        app:layout_constraintBottom_toTopOf="@+id/crdCaregiver"
+        app:layout_constraintEnd_toStartOf="@+id/crdEvents"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnMyself">
+        app:layout_constraintTop_toBottomOf="@+id/crdMyself">
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnEvents"
+        android:id="@+id/crdEvents"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_marginEnd="47dp"
         android:layout_marginBottom="10dp"
         android:foreground="@drawable/screenshot_2025_07_23_210452"
         app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivities"
+        app:layout_constraintBottom_toTopOf="@+id/crdActivities"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnComm"
-        app:layout_constraintTop_toBottomOf="@+id/btnDiary">
+        app:layout_constraintStart_toEndOf="@+id/crdComm"
+        app:layout_constraintTop_toBottomOf="@+id/crdDiary">
 
     </androidx.cardview.widget.CardView>
 
@@ -126,7 +126,7 @@
         android:textColor="#FFFBFB"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/btnActivities"
-        app:layout_constraintTop_toBottomOf="@+id/btnActivities" />
+        app:layout_constraintStart_toStartOf="@+id/crdActivities"
+        app:layout_constraintTop_toBottomOf="@+id/crdActivities" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

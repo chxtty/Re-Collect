@@ -1,18 +1,21 @@
 package com.example.re_collectui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class DashboardPatient extends AppCompatActivity {
 
-    Button btnLogout, btnEvents;
+    Button btnLogout;
+    CardView crdEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +28,23 @@ public class DashboardPatient extends AppCompatActivity {
             return insets;
         });
 
+        SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
+        int patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+
+
+
         btnLogout = findViewById(R.id.btnLogout);
-        btnEvents = findViewById(R.id.btnEvents);
+        crdEvents = findViewById(R.id.crdEvents);
 
         btnLogout.setOnClickListener(v ->{
             Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
+            sharedPref.edit().clear().apply();
             startActivity(intent);
             finish();
         });
 
-        btnEvents.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
+        crdEvents.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardPatient.this, EventsView.class);
             startActivity(intent);
             finish();
         });

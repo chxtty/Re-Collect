@@ -1,6 +1,7 @@
 package com.example.re_collectui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,12 +13,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,51 +57,56 @@ public class LoginActivity extends AppCompatActivity {
         btnSignIn.setOnClickListener(v -> {
             String email = editEmail.getText().toString().trim();
             String password = editPassword.getText().toString().trim();
+            login(email,password);
+        });
+    }
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
-                return;
-            }
+    private void login(String email, String password) {
+        String url = "http://10.0.2.2/recollect/api.php?action=login";
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(() -> {
-                try {
-                    URL url = new URL("http://10.0.2.2/login.php");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setDoOutput(true);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        String status = jsonResponse.getString("status");
 
-                    String postData = "email=" + URLEncoder.encode(email, "UTF-8") +
-                            "&password=" + URLEncoder.encode(password, "UTF-8");
+                        if (status.equals("success")) {
+                            JSONObject user = jsonResponse.getJSONObject("user");
+                            String name = user.getString("firstName");
+                            int patientID = user.getInt("patientID");
+                            Toast.makeText(this, "Welcome " + name, Toast.LENGTH_LONG).show();
 
-                    OutputStream os = conn.getOutputStream();
-                    os.write(postData.getBytes());
-                    os.flush();
-                    os.close();
+                            SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putInt("patientID", patientID);
+                            editor.putString("name", name);
+                            editor.apply();
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    String result = reader.readLine();
-
-                    runOnUiThread(() -> {
-                        if ("success".equals(result)) {
                             Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                            String message = jsonResponse.getString("message");
+                            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                         }
-                    });
+                    } catch (JSONException e) {
+                        Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Network error: " + error.toString(), Toast.LENGTH_LONG).show()
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("email", email);
+                params.put("password", password);
+                return params;
+            }
+        };
 
-                    reader.close();
-                    conn.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() ->
-                            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                    );
-                }
-            });
-        });
+        queue.add(stringRequest);
+    }
     }
 
  /*   public void fetchDataFromAPI() {
@@ -123,4 +139,3 @@ public class LoginActivity extends AppCompatActivity {
             }
         }).start();
     } */
-}
