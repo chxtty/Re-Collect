@@ -9,34 +9,18 @@
     tools:context=".EventsView">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/crdSearchEvent"
-        android:layout_width="43dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="293dp"
-        android:layout_marginTop="123dp"
-        android:layout_marginBottom="610dp"
-        android:foreground="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_4_"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/crdCreateEvent"
-        app:layout_constraintEnd_toStartOf="@+id/crdFilterEvents"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.cardview.widget.CardView
         android:id="@+id/crdFilterEvents"
-        android:layout_width="40dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="118dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="610dp"
+        android:layout_width="41dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="122dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="615dp"
         android:foreground="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_3_"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toTopOf="@+id/crdCreateEvent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/crdSearchEvent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toEndOf="@+id/edtSearchEvents"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imgEventLogo"
@@ -52,7 +36,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/crdCreateEvent"
-        android:layout_width="379dp"
+        android:layout_width="386dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -62,33 +46,36 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/crdSearchEvent" />
+        app:layout_constraintTop_toBottomOf="@+id/crdFilterEvents" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/parentRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="538dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="135dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="377dp"
+        android:layout_height="541dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/crdCreateEvent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtSearchEvents"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <EditText
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/edtSearchEvents"
-        android:layout_width="274dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="19dp"
         android:layout_marginBottom="724dp"
         android:background="#F8F8F8"
         android:backgroundTint="#ABCD9F"
         android:ems="10"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/crdSearchEvent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toStartOf="@+id/crdFilterEvents"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgEventLogo" />
 
