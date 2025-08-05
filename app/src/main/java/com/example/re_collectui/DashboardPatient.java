@@ -8,6 +8,7 @@ import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -15,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class DashboardPatient extends AppCompatActivity {
 
     Button btnLogout;
-    CardView crdEvents;
+    ConstraintLayout eventsOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class DashboardPatient extends AppCompatActivity {
 
 
         btnLogout = findViewById(R.id.btnLogout);
-        crdEvents = findViewById(R.id.crdEvents);
+        eventsOption = findViewById(R.id.eventsOption);
 
         btnLogout.setOnClickListener(v ->{
             Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
@@ -43,7 +44,7 @@ public class DashboardPatient extends AppCompatActivity {
             finish();
         });
 
-        crdEvents.setOnClickListener(v -> {
+        eventsOption.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardPatient.this, EventsView.class);
             startActivity(intent);
             finish();

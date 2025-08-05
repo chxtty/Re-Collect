@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(String email, String password) {
-        String url = "http://10.0.2.2/recollect/api.php?action=login";
+        String url = "http://100.79.152.109/android/api.php?action=login";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
