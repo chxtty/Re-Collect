@@ -67,6 +67,7 @@
             android:foreground="@drawable/screenshot_2025_07_23_205608"
             app:cardCornerRadius="20dp" /> -->
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/dairyOption"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:background="@drawable/dashboard_icon"
@@ -304,6 +305,7 @@
         android:text="Welcome Back, NAME"
         android:textSize="26sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/menuGrid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
