@@ -1,7 +1,10 @@
 package com.example.re_collectui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -24,6 +27,8 @@ public class ViewEntry extends AppCompatActivity {
     int entryId;
 
 
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,59 +40,88 @@ public class ViewEntry extends AppCompatActivity {
             return insets;
         });
 
-        title = getIntent().getStringExtra("title");
-        date = getIntent().getStringExtra("date");
-        content = getIntent().getStringExtra("content");
-        author = getIntent().getIntExtra("author", -1);
-        entryId = getIntent().getIntExtra("entryId", -1);
-        setUp();
+        Intent intent = getIntent();
+        entryId = intent.getIntExtra("entryId",-1);
+
+        fetchInfo();
+        Listeners();
+        ImageView imgBack;
+
+        imgBack = findViewById(R.id.backButton);
+        imgBack.setOnClickListener( e -> {
+            onBackPressed();
+        });
+
     }
 
-    protected void setUp() {
-        TextView tvDate = findViewById(R.id.tvDate);
-        TextView tvTitle = findViewById(R.id.tvTitle);
-        TextView tvContent = findViewById(R.id.tvContent);
 
-        if(this.date == null || this.date.isEmpty()){
+
+    public void Listeners(){
+        ImageView imgEdit = findViewById(R.id.imgEdit);
+        imgEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewEntry.this, EditEntry.class);
+            intent.putExtra("author", author);
+            intent.putExtra("entryId", entryId);
+            startActivityForResult(intent,200);
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchInfo();
+    }
+
+    public void fetchInfo(){
+        DiaryFetcher apiHelper = new DiaryFetcher(this);
+        apiHelper.getDiaryEntry(entryId, new DiaryFetcher.DiaryEntryCallback() {
+            @Override
+            public void onSuccess(DiaryFetcher.DiaryEntry entry) {
+                ((TextView) findViewById(R.id.tvTitle)).setText(entry.diaryTitle);
+                ((TextView) findViewById(R.id.tvContent)).setText(entry.content);
+                date = entry.diaryDate;
+                dateFormatter(date);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                // Show error (optional)
+                ((TextView) findViewById(R.id.tvTitle)).setText("Error loading entry: " + errorMessage);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 200 && resultCode == RESULT_OK){
+           boolean updated = data.getBooleanExtra("entryUpdated", false);
+           if(updated){
+               fetchInfo();
+           }
+        }
+    }
+
+    public void dateFormatter(String date){
+        TextView tvDate = findViewById(R.id.tvDate);
+        this.date = date;
+        if(date == null || date.isEmpty()){
             tvDate.setText("Date not available");
             return;
         }
 
         try{
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            Date parsedDate = inputFormat.parse(this.date);
+            Date parsedDate = inputFormat.parse(date);
             if(parsedDate != null) {
                 SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
-                this.date = outputFormat.format(parsedDate);
+                date = outputFormat.format(parsedDate);
             }
 
         } catch (ParseException e) {
             e.printStackTrace();
-            this.date = this.date;
         }
-
-        try{
-            if(tvTitle != null){
-                tvTitle.setText(this.title);
-            }
-        } catch (NullPointerException e){
-            e.printStackTrace();
-            if(tvTitle != null){
-                tvTitle.setText("Title not available");
-            }
-        }
-        try{
-            if(tvContent != null){
-                tvContent.setText(this.content);
-            }
-        } catch (NullPointerException e){
-            e.printStackTrace();
-            if(tvContent != null){
-                tvContent.setText("Content not available");
-            }
-        }
-
-        tvDate.setText(this.date);
+        tvDate.setText(date);
     }
 
 

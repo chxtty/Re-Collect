@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-    }
+}
 
  /*   public void fetchDataFromAPI() {
         new Thread(() -> {

@@ -49,14 +49,17 @@ public class ViewDiaryEntries extends AppCompatActivity {
         if (patientID == -1) {
             Toast.makeText(this, "Patient ID not found in session", Toast.LENGTH_SHORT).show();
         }
-        SetUpEntries();
+
         recyclerView = findViewById(R.id.rvEntries);
         adapter = new EntryAdapter(this, entryList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        SetUpEntries();
     }
 
     private void SetUpEntries(){
+        entryList.clear();
         String url = "http://100.79.152.109/android/api.php?action=view_diary_entries_p&patientId=" + patientID;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -77,7 +80,7 @@ public class ViewDiaryEntries extends AppCompatActivity {
                                 entryList.add(new Entry(title, date, entryId, author, content));
                             }
 
-                            adapter.notifyDataSetChanged(); // Just refresh the adapter
+                            adapter.notifyDataSetChanged(); //refresh adapter
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -90,5 +93,11 @@ public class ViewDiaryEntries extends AppCompatActivity {
                 });
 
         Volley.newRequestQueue(this).add(request);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SetUpEntries();
     }
 }
