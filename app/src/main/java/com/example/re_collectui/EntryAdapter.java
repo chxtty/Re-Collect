@@ -5,21 +5,36 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.MyViewHolder>{
+public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.MyViewHolder> implements Filterable {
     Context  context;
     ArrayList<Entry> entryList;
+    ArrayList<Entry> entryListFull;
 
     public EntryAdapter(Context context, ArrayList<Entry> entryList){
         this.context = context;
         this.entryList = entryList;
+        entryListFull = new ArrayList<>(entryList);
+        setHasStableIds(false);
     }
+
+    public void replaceData(List<Entry> newData) {
+        entryList.clear();
+        entryList.addAll(newData);
+        entryListFull.clear();
+        entryListFull.addAll(newData);
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public EntryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -70,4 +85,46 @@ public class EntryAdapter extends RecyclerView.Adapter<EntryAdapter.MyViewHolder
 
         }
     }
+
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    private final Filter filter = new Filter(){
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Entry> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0){
+                filteredList.addAll(entryListFull);
+            }
+            else {
+                String query = constraint.toString().toLowerCase().trim();
+                for (Entry entry : entryListFull) {
+                    String title = entry.getTitle() != null ? entry.getTitle().toLowerCase() : "";
+                    String content = entry.getContent() != null ? entry.getContent().toLowerCase() : "";
+                    String date = entry.getDate() != null ? entry.getDate().toLowerCase() : "";
+                    if (title.contains(query) || content.contains(query) || date.contains(query)) {
+                        filteredList.add(entry);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            entryList.clear();
+            entryList.addAll((List<Entry>) results.values);
+            notifyDataSetChanged();
+        }
+
+
+    };
+
+
 }

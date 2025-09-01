@@ -42,19 +42,16 @@ public class DashboardPatient extends AppCompatActivity {
             Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
             sharedPref.edit().clear().apply();
             startActivity(intent);
-            finish();
         });
 
         eventsOption.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardPatient.this, EventsView.class);
             startActivity(intent);
-            finish();
         });
 
         diaryOption.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardPatient.this, ViewDiaryEntries.class);
             startActivity(intent);
-            finish();
         });
 
     }

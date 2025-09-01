@@ -87,7 +87,7 @@ public class EditEntry extends AppCompatActivity {
             @Override
             public void onError(String errorMessage) {
                 // Show error (optional)
-                ((TextView) findViewById(R.id.tvTitle)).setText("Error loading entry: " + errorMessage);
+                ((TextView) findViewById(R.id.etTitle)).setText("Error loading entry: " + errorMessage);
             }
         });
     }

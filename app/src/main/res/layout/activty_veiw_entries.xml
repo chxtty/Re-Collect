@@ -22,24 +22,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/book_icon" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="294dp"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/svEntries"
+        android:layout_width="0dp"
         android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/search_btn_background_diary"
         android:fontFamily="@font/dm_sans"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:text="Search"
+        android:queryHint="Search entries…"
+        android:focusable="true"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textColor="@color/dark_gray"
         android:textSize="18sp"
         android:textStyle="bold"
 
+        app:iconifiedByDefault="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.136"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.092" />
@@ -54,25 +58,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/top_flora1" />
 
-    <ImageButton
-
-        android:id="@+id/imageButton"
-        style="@style/filter_button_style"
-        android:layout_width="96dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="6dp"
-
-        android:backgroundTint="@null"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.087"
-        app:srcCompat="@drawable/search_btn"
-        app:tint="@null" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -83,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/svEntries"
         app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -146,7 +131,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/imgBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="-6dp"

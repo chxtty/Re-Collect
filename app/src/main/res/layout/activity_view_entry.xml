@@ -55,7 +55,7 @@
                 app:srcCompat="@drawable/edit_btn" />
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/imgDelete"
                 android:layout_width="61dp"
                 android:layout_height="52dp"
                 android:layout_gravity="start|bottom"
