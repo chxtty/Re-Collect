@@ -12,4 +12,11 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="myself">Myself</string>
+    <string name="todo">TODO</string>
+    <string name="my_patients">My Patients</string>
+    <string name="community">Community</string>
+    <string name="requests">Requests</string>
+    <string name="log_out">Log out</string>
+    <string name="welcome_back_name">Welcome Back, NAME</string>
 </resources>
