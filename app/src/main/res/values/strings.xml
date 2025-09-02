@@ -12,6 +12,13 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="myself">Myself</string>
+    <string name="todo">TODO</string>
+    <string name="my_patients">My Patients</string>
+    <string name="community">Community</string>
+    <string name="requests">Requests</string>
+    <string name="log_out">Log out</string>
+    <string name="welcome_back_name">Welcome Back, NAME</string>
     <string name="foggy_morning" >I woke up this morning to the sound of birds. I think they were robins. Or maybe finches. Either way, they were cheerful, and I liked that.
 I made tea. At least I think I did. The cup was warm in my hands, and it smelled like jasmine. Or maybe it was earl grey. I used to drink earl grey with someone. A woman. She had soft hands and laughed like wind chimes. I can’t remember her name. Isn’t that something?
 A young man came by. He called me Grandpa and kissed my forehead. I wish I knew his name. He has kind eyes, though. Maybe he’s mine. Maybe he’s just being sweet.
