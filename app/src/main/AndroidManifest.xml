@@ -44,6 +44,9 @@
             android:name=".EditEntry"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ViewActivities"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

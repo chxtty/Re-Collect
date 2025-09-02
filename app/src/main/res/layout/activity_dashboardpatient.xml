@@ -235,6 +235,7 @@
             app:cardCornerRadius="20dp" /> -->
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/activityOption"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:background="@drawable/dashboard_icon"

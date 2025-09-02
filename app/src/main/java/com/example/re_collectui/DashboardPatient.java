@@ -18,6 +18,7 @@ public class DashboardPatient extends AppCompatActivity {
     Button btnLogout;
     ConstraintLayout eventsOption;
     ConstraintLayout diaryOption;
+    ConstraintLayout activityOption;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +38,7 @@ public class DashboardPatient extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         eventsOption = findViewById(R.id.eventsOption);
         diaryOption = findViewById(R.id.dairyOption);
+        activityOption = findViewById(R.id.activityOption);
 
         btnLogout.setOnClickListener(v ->{
             Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
@@ -51,6 +53,11 @@ public class DashboardPatient extends AppCompatActivity {
 
         diaryOption.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardPatient.this, ViewDiaryEntries.class);
+            startActivity(intent);
+        });
+
+        activityOption.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardPatient.this, ViewActivities.class);
             startActivity(intent);
         });
 
