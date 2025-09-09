@@ -38,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText editEmail, editPassword;
     Button btnSignIn;
 
+    private CustomToast toast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
         //fetchDataFromAPI();
-
+        toast = new CustomToast(this);
         editEmail = findViewById(R.id.edtEmail);
         editPassword = findViewById(R.id.edtPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
@@ -75,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                             JSONObject user = jsonResponse.getJSONObject("user");
                             String name = user.getString("firstName");
                             int patientID = user.getInt("patientID");
-                            Toast.makeText(this, "Welcome " + name, Toast.LENGTH_LONG).show();
+                            toast.GetGreatingToast("Welcome " + name).show();
 
                             SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();

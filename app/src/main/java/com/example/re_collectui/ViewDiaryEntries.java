@@ -41,6 +41,7 @@ public class ViewDiaryEntries extends AppCompatActivity {
     private RecyclerView recyclerView;
     private EntryAdapter adapter;
     private ArrayList<Entry> entryList = new ArrayList<>();
+    private CustomToast toast;
 
     private int patientID = -1;
 
@@ -62,11 +63,12 @@ public class ViewDiaryEntries extends AppCompatActivity {
         imgBack.setOnClickListener(e -> {
             onBackPressed();
         });
+        toast = new CustomToast(this);
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         patientID = sharedPref.getInt("patientID", -1);
         if (patientID == -1) {
-            Toast.makeText(this, "Patient ID not found in session", Toast.LENGTH_SHORT).show();
+            toast.GetErrorToast("Patient ID not found").show();
         }
 
         recyclerView = findViewById(R.id.rvEntries);
@@ -135,12 +137,12 @@ public class ViewDiaryEntries extends AppCompatActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "JSON error", Toast.LENGTH_SHORT).show();
+                        toast.GetErrorToast("JSON parse error").show();
                     }
                 },
                 error -> {
                     Log.e("Volley", "Error: " + error.getMessage());
-                    Toast.makeText(this, "Volley error", Toast.LENGTH_SHORT).show();
+                    toast.GetErrorToast("Volley error: " + error.getMessage()).show();
                 });
 
         Volley.newRequestQueue(this).add(request);
@@ -173,23 +175,23 @@ public class ViewDiaryEntries extends AppCompatActivity {
                         if (jsonResponse.getString("status").equals("success")) {
                             int entryId = jsonResponse.getInt("entry_id");
 
-                            Toast.makeText(this, "Entry created!", Toast.LENGTH_SHORT).show();
+                            toast.GetInfoToast("Entry created!").show();
 
                             Intent intent = new Intent(this, ViewEntry.class);
                             intent.putExtra("entryId", entryId);
                             startActivity(intent);
                            // finish();
                         } else {
-                            Toast.makeText(this, "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                            toast.GetErrorToast("Error: " + jsonResponse.getString("message")).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "Response parsing error", Toast.LENGTH_SHORT).show();
+                        toast.GetErrorToast("JSON parse error").show();
                     }
                 },
                 error -> {
                     error.printStackTrace();
-                    Toast.makeText(this, "Volley error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    toast.GetErrorToast("Volley error").show();
                 }) {
             @Override
             protected Map<String, String> getParams() {

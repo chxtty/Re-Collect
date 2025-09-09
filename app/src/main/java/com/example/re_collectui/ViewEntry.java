@@ -32,6 +32,7 @@ public class ViewEntry extends AppCompatActivity {
     String content;
     int author;
     int entryId;
+    private CustomToast toast;
 
 
 
@@ -46,6 +47,7 @@ public class ViewEntry extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        toast = new CustomToast(this);
 
         Intent intent = getIntent();
         entryId = intent.getIntExtra("entryId",-1);
@@ -65,11 +67,11 @@ public class ViewEntry extends AppCompatActivity {
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
-                    Toast.makeText(ViewEntry.this, "Entry deleted!", Toast.LENGTH_SHORT).show();
+                    toast.GetDeleteToast("Entry deleted successfully").show();
                     finish(); // close this activity and go back to list
                 },
                 error -> {
-                    Toast.makeText(ViewEntry.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    toast.GetErrorToast("Error: " + error.getMessage()).show();
                 }) {
             @Override
             protected Map<String, String> getParams() {

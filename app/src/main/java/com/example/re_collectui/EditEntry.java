@@ -34,6 +34,8 @@ public class EditEntry extends AppCompatActivity {
     int author;
     int entryId;
 
+    private CustomToast toast;
+
     TextView tvDate, etTitle, etEdit;
 
     ImageView imgBack;
@@ -51,6 +53,8 @@ public class EditEntry extends AppCompatActivity {
             return insets;
         });
         WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+        toast = new CustomToast(this);
+
         Intent intent = getIntent();
         entryId = intent.getIntExtra("entryId", -1);
 
@@ -111,7 +115,6 @@ public class EditEntry extends AppCompatActivity {
             e.printStackTrace();
         }
         tvDate.setText(date);
-        Toast.makeText(this,"Date: " + date, Toast.LENGTH_SHORT).show();
     }
 
     private void saveDiaryEntry(String title, String content) {
@@ -139,7 +142,7 @@ public class EditEntry extends AppCompatActivity {
             in.close();
 
             runOnUiThread(() -> {
-                Toast.makeText(EditEntry.this, "Server Response: " + response.toString(), Toast.LENGTH_LONG).show();
+                toast.GetErrorToast("Server Response: " + response.toString()).show();
             });
             Intent intent = new Intent();
             intent.putExtra("entryUpdated", true);
@@ -149,7 +152,7 @@ public class EditEntry extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             runOnUiThread(() ->
-                    Toast.makeText(EditEntry.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                    toast.GetErrorToast("Error: " + e.getMessage()).show()
             );
         }
     }
@@ -163,7 +166,7 @@ public class EditEntry extends AppCompatActivity {
                 String content = etEdit.getText().toString().trim();
 
                 if (title.isEmpty()) {
-                    Toast.makeText(EditEntry.this, "Please enter a Title", Toast.LENGTH_SHORT).show();
+                    toast.GetErrorToast("Please enter a title").show();
                     return;
                 }
 
