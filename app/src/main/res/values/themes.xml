@@ -6,4 +6,20 @@
     </style>
 
     <style name="Theme.ReCollectUI" parent="Base.Theme.ReCollectUI" />
+    <style name="record_activity_style" parent="Widget.MaterialComponents.Button">
+        <item name="shapeAppearanceOverlay">@style/MyShapeAppearanceOverlay</item>
+    </style>
+
+    <style name="MyShapeAppearanceOverlay">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">35dp</item>
+    </style>
+    <style name="filter_button_style" parent="Widget.MaterialComponents.Button">
+        <item name="shapeAppearanceOverlay">@style/MyShapeAppearanceOverlay</item>
+    </style>
+
+    <style name="FilterAppearanceOverlay">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">1000dp</item>
+    </style>
 </resources>

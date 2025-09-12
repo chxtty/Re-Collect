@@ -70,22 +70,38 @@ public class LoginActivity extends AppCompatActivity {
                 response -> {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
-                        String status = jsonResponse.getString("status");
+                        String status = jsonResponse.optString("status", "");
 
                         if (status.equals("success")) {
                             JSONObject user = jsonResponse.getJSONObject("user");
-                            String name = user.getString("firstName");
-                            int patientID = user.getInt("patientID");
+                            String role = user.optString("role");
+                            String name = user.optString("firstName");
                             Toast.makeText(this, "Welcome " + name, Toast.LENGTH_LONG).show();
 
                             SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putInt("patientID", patientID);
+                            editor.putString("role", role);
                             editor.putString("name", name);
-                            editor.apply();
 
-                            Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
-                            startActivity(intent);
+                            if (role.equals("patient")){
+                                int patientID = user.getInt("patientID");
+                                editor.putInt("patientID", patientID);
+                                editor.apply();
+
+                                Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
+                                startActivity(intent);
+                            } else if(role.equals("admin")){
+                                int adminID = user.getInt("caregiverID");
+                                editor.putInt("caregiverID", adminID);
+                                editor.apply();
+
+                                Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(LoginActivity.this, DashboardCaregiver.class);
+                                startActivity(intent);
+                            }
+
+
                             finish();
                         } else {
                             String message = jsonResponse.getString("message");
@@ -136,12 +152,12 @@ public class LoginActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
     }
-    }
+}
 
  /*   public void fetchDataFromAPI() {
         new Thread(() -> {
             try {
-                // For emulator use 10.0.2.2 instead of localhost
+
                 URL url = new URL("http://10.0.2.2/login.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
