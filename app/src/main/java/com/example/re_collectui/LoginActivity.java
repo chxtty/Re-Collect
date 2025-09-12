@@ -3,6 +3,7 @@ package com.example.re_collectui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -62,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(String email, String password) {
-        String url = "http://10.0.2.2/recollect/api.php?action=login";
+        String url = "http://100.104.224.68/recollect/api.php?action=login";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -94,7 +95,35 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 },
-                error -> Toast.makeText(this, "Network error: " + error.toString(), Toast.LENGTH_LONG).show()
+                error -> {
+                    if (error.networkResponse != null) {
+                        int statusCode = error.networkResponse.statusCode;
+
+                        // Safely decode server response body
+                        String responseBody = "";
+                        try {
+                            responseBody = new String(error.networkResponse.data, "UTF-8");
+                        } catch (Exception e) {
+                            responseBody = "Unable to parse error body";
+                        }
+
+                        // Log detailed error info
+                        Log.e("LOGIN_ACTIVITY",
+                                "HTTP " + statusCode + " | Response: " + responseBody);
+
+                        // Show a more user-friendly toast
+                        Toast.makeText(this,
+                                "Server error (" + statusCode + "): " + responseBody,
+                                Toast.LENGTH_LONG).show();
+
+                    } else {
+                        // No network response means the request failed before hitting server
+                        Log.e("LOGIN_ACTIVITY", "Network error: " + error.toString());
+                        Toast.makeText(this,
+                                "Network error: " + error.toString(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
         ) {
             @Override
             protected Map<String, String> getParams() {
