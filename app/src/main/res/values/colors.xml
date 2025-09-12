@@ -12,4 +12,15 @@
     <color name= "darker_light_orange">#ede6e0</color>
     <color name= "light_orange_shadow">#C1BCBA</color>
     <color name="gray_lavender">#9f8bb8</color>
+
+
+    <color name="form_bg">#F4F0E6</color>
+    <color name="field_bg">#BFD6B3</color>
+    <color name="title">#2B2B2B</color>
+    <color name="label">#313131</color>
+    <color name="label_dim">#7A7A7A</color>
+    <color name="arrow">#333333</color>
+    <color name="purple_arrow">#8267D2</color>
+    <color name="primary_btn">#222222</color>
+    <color name="add_photo_bg">#A9C995</color>
 </resources>
