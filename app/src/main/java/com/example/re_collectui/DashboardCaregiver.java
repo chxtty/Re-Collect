@@ -1,5 +1,6 @@
 package com.example.re_collectui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -30,11 +31,13 @@ public class DashboardCaregiver extends AppCompatActivity {
 
     public void on_Caregiver_profile_Click(View view) {
 
-        }
+    }
 
     public void on_Caregiver_patients_Click(View view) {
     }
 
     public void on_Caregiver_requests_Click(View view) {
+        Intent intent = new Intent(DashboardCaregiver.this, RequestsView.class);
+        startActivity(intent);
     }
 }

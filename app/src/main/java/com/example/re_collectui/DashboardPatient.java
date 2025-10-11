@@ -2,10 +2,19 @@ package com.example.re_collectui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -13,12 +22,29 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Arrays;
+
 public class DashboardPatient extends AppCompatActivity {
 
     Button btnLogout;
     ConstraintLayout eventsOption;
     ConstraintLayout diaryOption;
     ConstraintLayout activityOption;
+    int patientID, caregiverID;
+    private Uri selectedImageUri = null;
+    private static final int IMAGE_REQUEST = 101;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +57,12 @@ public class DashboardPatient extends AppCompatActivity {
         });
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-        int patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+        patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+        caregiverID = sharedPref.getInt("caregiverID", -1);
+        String name = sharedPref.getString("name", "");
 
+        TextView txtWelcome = findViewById(R.id.txtWelcome);
+        txtWelcome.setText("Welcome, " + name + " :)");
 
 
         btnLogout = findViewById(R.id.btnLogout);
@@ -60,6 +90,107 @@ public class DashboardPatient extends AppCompatActivity {
             Intent intent = new Intent(DashboardPatient.this, ViewActivities.class);
             startActivity(intent);
         });
+
+    }
+
+    public void showRequestDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View currView = getLayoutInflater().inflate(R.layout.request_community_dialog,null);
+
+        EditText edtFName = currView.findViewById(R.id.edtFNameCommReq);
+        EditText edtLName = currView.findViewById(R.id.edtLNameCommReq);
+        Spinner spnType = currView.findViewById(R.id.spnType);
+        EditText edtDesc = currView.findViewById(R.id.edtDescCommReq);
+        EditText edtCute = currView.findViewById(R.id.edtCuteMessageCommReq);
+        Button btnImage = currView.findViewById(R.id.btnAddImage);
+        Button btnSave = currView.findViewById(R.id.btnSendCommReq);
+        Button btnCancel = currView.findViewById(R.id.btnCancelCommReq);
+
+        builder.setView(currView);
+        AlertDialog dialog = builder.create();
+
+        btnImage.setOnClickListener(v ->{
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_REQUEST);
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSave.setOnClickListener(v -> {
+            String firstName = edtFName.getText().toString().trim();
+            String lastName = edtLName.getText().toString().trim();
+            String commType = spnType.getSelectedItem().toString();
+            String desc = edtDesc.getText().toString().trim();
+            String cuteMsg = edtCute.getText().toString().trim();
+            String imgPath = selectedImageUri != null ? selectedImageUri.toString() : "";
+
+            if (commType.equals("Select Type")) {
+                commType = "";
+            }
+
+            if (firstName.isEmpty()) {
+                Toast.makeText(this, "Please at least fill First Name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            submitCommRequest(patientID, caregiverID, commType, firstName, lastName, desc, cuteMsg, imgPath);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void submitCommRequest(int patientID, int careGiverID, String commType,
+                                   String firstName, String lastName, String desc, String cuteMsg, String commImage) {
+
+        String url = "http://10.0.2.2/recollect/api.php?action=create_community_request";
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject res = new JSONObject(response);
+                        String status = res.getString("status");
+
+                        if (status.equals("success")) {
+                            Toast.makeText(this, "Community Member request submitted!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, res.getString("message"), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show()
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+            Map<String, String> params = new HashMap<>();
+            params.put("patientID", String.valueOf(patientID));
+            params.put("careGiverID", String.valueOf(careGiverID));
+            params.put("commType", commType);
+            params.put("commFirstName", firstName);
+            params.put("commLastName", lastName);
+            params.put("commDescription", desc);
+            params.put("commCuteMessage", cuteMsg);
+            params.put("commImage", commImage != null ? commImage : "");
+                return params;
+            }
+        };
+        queue.add(request);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+            selectedImageUri = data.getData();
+            Toast.makeText(this, "Image added", Toast.LENGTH_SHORT).show();
+        }
 
     }
 }

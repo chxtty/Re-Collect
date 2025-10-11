@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/creme">
+
+        <LinearLayout
+            android:id="@+id/linearLayout6"
+            android:layout_width="319dp"
+            android:layout_height="54dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/btnCancelCommReq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/logout_btn"
+                android:text="Cancel"
+                android:textColor="@color/creme" />
+
+            <Button
+                android:id="@+id/btnSendCommReq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/dashboard_icon_caregiver"
+                android:text="Submit" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView18"
+            android:layout_width="179dp"
+            android:layout_height="64dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/community" />
+
+        <ScrollView
+            android:layout_width="380dp"
+            android:layout_height="607dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="15dp"
+            android:padding="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView18">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="373dp"
+                    android:layout_height="677dp"
+                    android:layout_marginTop="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout5"
+                        android:layout_width="283dp"
+                        android:layout_height="677dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/creme"
+                        android:elevation="4dp"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <EditText
+                            android:id="@+id/edtFNameCommReq"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="15dp"
+                            android:layout_weight="12.5"
+                            android:background="@color/Celadon"
+                            android:ems="10"
+                            android:hint="Enter First Name"
+                            android:inputType="text" />
+
+                        <EditText
+                            android:id="@+id/edtLNameCommReq"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="15dp"
+                            android:layout_weight="12.5"
+                            android:background="@color/Celadon"
+                            android:ems="10"
+                            android:hint="Enter Last Name"
+                            android:inputType="text" />
+
+                        <Spinner
+                            android:id="@+id/spnType"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="15dp"
+                            android:layout_weight="12.5"
+                            android:background="@color/Celadon"
+                            android:entries="@array/type_options"
+                            android:spinnerMode="dropdown" />
+
+                        <EditText
+                            android:id="@+id/edtDescCommReq"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="15dp"
+                            android:layout_weight="10"
+                            android:background="@color/Celadon"
+                            android:ems="10"
+                            android:gravity="start|top"
+                            android:hint="Enter Description"
+                            android:inputType="textMultiLine" />
+
+                        <EditText
+                            android:id="@+id/edtCuteMessageCommReq"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="15dp"
+                            android:layout_weight="10"
+                            android:background="@color/Celadon"
+                            android:ems="10"
+                            android:gravity="start|top"
+                            android:hint="Enter Cute Message"
+                            android:inputType="textMultiLine" />
+
+                        <Button
+                            android:id="@+id/btnAddImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/gray_lavender"
+                            android:text="Add Image " />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="71dp"
+                        android:layout_height="669dp"
+                        android:layout_marginEnd="4dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/linearLayout5"
+                        app:layout_constraintHorizontal_bias="0.733"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0">
+
+                        <ImageView
+                            android:id="@+id/imageView15"
+                            android:layout_width="66dp"
+                            android:layout_height="67dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="340dp"
+                            app:srcCompat="@drawable/add_group" />
+
+                        <ImageView
+                            android:id="@+id/imageView16"
+                            android:layout_width="67dp"
+                            android:layout_height="77dp"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="110dp"
+                            app:srcCompat="@drawable/chat" />
+
+                        <ImageView
+                            android:id="@+id/imageView17"
+                            android:layout_width="61dp"
+                            android:layout_height="68dp"
+                            android:layout_gravity="center"
+                            app:srcCompat="@drawable/photo_camera" />
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

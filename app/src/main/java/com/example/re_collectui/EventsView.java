@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import androidx.appcompat.widget.SearchView;
+
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -35,18 +37,21 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class EventsView extends AppCompatActivity {
 
-    // TODO filter and back button
-    // TODO location sync with google maps
     RecyclerView parentRecyclerView;
     private EventAdapter adapter;
     private ArrayList<Event> eventList = new ArrayList<>();
     private ArrayList<Event> searchList = new ArrayList<>();
     private String currentQuery = "";
+    boolean filterByTitle = true;
+    boolean filterByLocation ;
+    boolean sortAsc = true;
+    boolean completed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +89,14 @@ public class EventsView extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 currentQuery = newText;
-                adapter.getFilter().filter(newText);
+                applyEventFilterDialog(currentQuery, filterByTitle, filterByLocation, sortAsc, completed);
                 return false;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
                 currentQuery = query;
-                adapter.getFilter().filter(query);
+                applyEventFilterDialog(currentQuery, filterByTitle, filterByLocation, sortAsc, completed);
                 return false;
             }
         });
@@ -106,7 +111,7 @@ public class EventsView extends AppCompatActivity {
                     try {
                         if (response.getString("status").equals("success")) {
                             JSONArray events = response.getJSONArray("events");
-
+                            eventList.clear();;
                             for (int i = 0; i < events.length(); i++) {
                                 JSONObject event = events.getJSONObject(i);
                                 String title = event.getString("eventTitle");
@@ -119,8 +124,7 @@ public class EventsView extends AppCompatActivity {
 
                                 eventList.add(new Event(id, title, startDate, endDate, description, location, allDay));
                             }
-                            searchList.addAll(eventList);
-                            adapter.notifyDataSetChanged();
+                            applyEventFilterDialog(currentQuery,filterByTitle,filterByLocation,sortAsc,completed);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -159,6 +163,16 @@ public class EventsView extends AppCompatActivity {
         editEndDate.setClickable(true);
         editEndDate.setOnClickListener(v -> showDatePicker(editEndDate));
 
+        checkAllDay.setOnCheckedChangeListener((v,b) -> {
+            if (b){
+                editEndDate.setEnabled(false);
+                editEndDate.setAlpha(0.5f);
+            } else {
+                editEndDate.setEnabled(true);
+                editEndDate.setAlpha(1.0f);
+            }
+        });
+
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setCancelable(false)
@@ -178,10 +192,16 @@ public class EventsView extends AppCompatActivity {
         btnCreate.setOnClickListener(v -> {
             String title = editTitle.getText().toString().trim();
             String startDate = editStartDate.getText().toString().trim();
-            String endDate = editEndDate.getText().toString().trim();
+            String endDate = "";
             boolean allDay = checkAllDay.isChecked();
             String location = editLocation.getText().toString().trim();
             String description = editDescription.getText().toString().trim();
+
+            if (!allDay) {
+                endDate = editEndDate.getText().toString().trim();
+            } else {
+                endDate = startDate;
+            }
 
             if (title.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
                 Toast.makeText(this, "Please fill in required fields", Toast.LENGTH_SHORT).show();
@@ -193,7 +213,8 @@ public class EventsView extends AppCompatActivity {
                 return;
             }
 
-            createEvent(title, startDate, endDate, allDay, location, description);
+                createEvent(title, startDate, endDate, allDay, location, description);
+
 
             dialog.dismiss();
         });
@@ -224,7 +245,7 @@ public class EventsView extends AppCompatActivity {
                             int newId = res.getInt("event_id");
                             Event event = new Event(newId, title, startDate, endDate, description, location, allDay);
                             eventList.add(event);
-                            adapter.addEvent(event, currentQuery);
+                            applyEventFilterDialog(currentQuery,filterByTitle,filterByLocation,sortAsc,completed);
                         } else {
                             Toast.makeText(this, "Error: " + res.getString("message"), Toast.LENGTH_SHORT).show();
                         }
@@ -256,7 +277,7 @@ public class EventsView extends AppCompatActivity {
     }
 
     private void showDatePicker(EditText targetEditText) {
-        final Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -274,5 +295,82 @@ public class EventsView extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    private String getCurrDate(){
+        Calendar calendar = Calendar.getInstance();
+        return String.format(Locale.getDefault(), "%04d-%02d-%02d", calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+    }
 
+
+    public void showFilterDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view1 = getLayoutInflater().inflate(R.layout.event_filter_dialog,null);
+        builder.setView(view1);
+        AlertDialog dialog = builder.create();
+
+        RadioButton rgbTitle = view1.findViewById(R.id.rgbTitle);
+        RadioButton rgbLocation = view1.findViewById(R.id.rgbLocation);
+        RadioButton rgbAsc = view1.findViewById(R.id.rgbAsc);
+        RadioButton rgbDesc = view1.findViewById(R.id.rgbDesc);
+
+        Button btnCancel = view1.findViewById(R.id.btnCancelFilter);
+        Button btnSave = view1.findViewById(R.id.btnSaveFilter);
+        CheckBox checkCompleted = view1.findViewById(R.id.checkDeclined);
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        //default values
+        rgbTitle.setChecked(filterByTitle);
+        rgbLocation.setChecked(filterByLocation);
+        rgbAsc.setChecked(sortAsc);
+        rgbDesc.setChecked(!sortAsc);
+        checkCompleted.setChecked(completed);
+
+        btnSave.setOnClickListener(v -> {
+           filterByTitle = rgbTitle.isChecked();
+           filterByLocation = rgbLocation.isChecked();
+           sortAsc = rgbAsc.isChecked();
+           completed = checkCompleted.isChecked();
+            applyEventFilterDialog(currentQuery, filterByTitle, filterByLocation, sortAsc, completed);
+
+           dialog.dismiss();
+        });
+
+        dialog.show();
+
+    }
+
+    private void applyEventFilterDialog(String searchQuery, boolean filterByTitle, boolean filterByLocation,
+                                    boolean ascending, boolean showCompleted) {
+    List<Event> filtered = new ArrayList<>();
+    String query = searchQuery.toLowerCase(Locale.getDefault());
+
+    for (Event event : eventList) {
+        boolean matchesSearch = false;
+
+        if(!query.isEmpty()) {
+            if (filterByTitle && event.getTitle().toLowerCase().contains(query)) {
+                matchesSearch = true;
+            } else if (filterByLocation && event.getLocation().toLowerCase().contains(query)) {
+                matchesSearch = true;
+            }
+        } else {
+            matchesSearch = true;
+        }
+
+        boolean isCompleted = event.getEndDate().compareTo(getCurrDate()) < 0;
+
+        if (matchesSearch && (showCompleted || !isCompleted)) {
+            filtered.add(event);
+        }
+    }
+
+    filtered.sort((e1, e2) -> ascending ?
+            e1.getStartDate().compareTo(e2.getStartDate()) :
+            e2.getStartDate().compareTo(e1.getStartDate()));
+
+    searchList.clear();
+    searchList.addAll(filtered);
+    adapter.notifyDataSetChanged();
+}
 }

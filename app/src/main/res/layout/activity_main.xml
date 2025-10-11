@@ -36,7 +36,8 @@
             android:id="@+id/btnSignIn"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="#9E8AB7"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/dashboard_icon_caregiver"
             android:text="@string/sign_in"
             android:textColorLink="#EDEDED" />
 
@@ -44,7 +45,7 @@
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#46494C"
+            android:background="@drawable/logout_btn"
             android:text="@string/sign_up"
             android:textColor="#F4E3E3"
             android:textColorLink="#A94949" />

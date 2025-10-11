@@ -6,31 +6,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/view_events"
-    tools:context=".EventsView">
-
-    <ImageView
-        android:id="@+id/imgEventLogo"
-        android:layout_width="72dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/upcoming"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".RequestsView">
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="0dp"
+        android:layout_width="394dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
         android:orientation="horizontal"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgEventLogo">
+        app:layout_constraintTop_toBottomOf="@+id/imageView13">
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/edtSearchEvents"
+            android:id="@+id/edtSearchRequests"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -46,41 +37,35 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:foreground="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_3_"
-            android:onClick="showFilterDialog"
             app:cardCornerRadius="20dp" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="62dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/document" />
+
     <LinearLayout
-        android:id="@+id/linearLayout4"
         android:layout_width="414dp"
-        android:layout_height="700dp"
-        android:layout_marginTop="44dp"
+        android:layout_height="658dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="40dp"
         android:background="#18000000"
         android:orientation="vertical"
-        android:padding="15dp"
+        android:padding="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.986"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/parentRecyclerView"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp" />
-
+            android:layout_height="match_parent" />
     </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/crdCreateEvent"
-        android:layout_width="406dp"
-        android:layout_height="99dp"
-        android:layout_marginBottom="15dp"
-        android:foreground="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_2__1_"
-        app:cardCornerRadius="38dp"
-        app:contentPadding="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -61,7 +61,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Event event = searchList.get(position);
 
         holder.eventTitle.setText(event.getTitle());
-        holder.eventDates.setText(event.getStartDate() + " - " + event.getEndDate());
+        if (event.getAllDay()){
+            holder.eventDates.setText(event.getStartDate());
+        } else {
+            holder.eventDates.setText(event.getStartDate() + " - " + event.getEndDate());
+        }
         holder.eventLocation.setText(event.getLocation());
         holder.eventDescription.setText(event.getDescription());
 
@@ -127,6 +131,22 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         startDate.setOnClickListener(v -> showDatePicker(startDate));
         endDate.setOnClickListener(v -> showDatePicker(endDate));
 
+        if(event.getAllDay()){
+            endDate.setEnabled(false);
+            endDate.setAlpha(0.5f);
+            endDate.setText("");
+        }
+
+        allDay.setOnCheckedChangeListener((v,b) -> {
+            if (b){
+                endDate.setEnabled(false);
+                endDate.setAlpha(0.5f); //dims
+            } else {
+                endDate.setEnabled(true);
+                endDate.setAlpha(1.0f);
+            }
+        });
+
         btnCreate.setText("Update");
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -138,6 +158,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             boolean updatedAllDay = allDay.isChecked();
             String updatedLocation = location.getText().toString().trim();
             String updatedDesc = description.getText().toString().trim();
+
+            if (!updatedAllDay) {
+                updatedEnd = endDate.getText().toString().trim();
+
+            } else {
+                updatedEnd = updatedStart;
+            }
 
             updateEventOnServer(
                     event.getEventID(),
@@ -152,6 +179,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         });
 
         dialog.show();
+
+        dialog.getWindow().setLayout((int) (context.getResources().getDisplayMetrics().widthPixels *0.9),
+                RecyclerView.LayoutParams.WRAP_CONTENT);
     }
 
 
