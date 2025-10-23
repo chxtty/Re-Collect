@@ -72,19 +72,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         holder.expandableLayout.setVisibility(event.isExpanded() ? View.VISIBLE : View.GONE);
 
-
         holder.itemView.setOnClickListener(v -> {
             int pos = holder.getAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
                 Event clickedEvent = searchList.get(holder.getAdapterPosition());
                 boolean isExpanded = !clickedEvent.isExpanded();
 
-                // Collapse all
                 for (int i = 0; i < eventList.size(); i++) {
                     eventList.get(i).setExpanded(false);
                 }
 
-                // Expand the clicked one
                 clickedEvent.setExpanded(isExpanded);
 
                 notifyDataSetChanged();
@@ -140,7 +137,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         allDay.setOnCheckedChangeListener((v,b) -> {
             if (b){
                 endDate.setEnabled(false);
-                endDate.setAlpha(0.5f); //dims
+                endDate.setAlpha(0.5f);
             } else {
                 endDate.setEnabled(true);
                 endDate.setAlpha(1.0f);
@@ -349,18 +346,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void addEvent(Event event, String currentQuery) {
         eventList.add(event);
 
-        // Update the filtered list according to current search
         if (currentQuery.isEmpty() || event.getTitle().toLowerCase(Locale.getDefault()).contains(currentQuery.toLowerCase(Locale.getDefault()))) {
             searchList.add(event);
             notifyItemInserted(searchList.size() - 1);
         } else {
-            // If event does not match filter, just notify that data changed for filtering
             notifyDataSetChanged();
         }
     }
 
     public void deleteEvent(Event eventToDelete) {
-        // Remove from full list
         Iterator<Event> iterator = eventList.iterator();
         while (iterator.hasNext()) {
             Event e = iterator.next();
@@ -370,7 +364,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             }
         }
 
-        // Re-filter the search list to reflect removal
         filter(currentQuery);
     }
 

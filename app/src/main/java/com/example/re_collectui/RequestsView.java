@@ -2,6 +2,7 @@ package com.example.re_collectui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -67,14 +68,14 @@ public class RequestsView extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         searchView = findViewById(R.id.edtSearchRequests);
 
-        adapter = new RequestAdapter(filteredRequests, this::onRequestClick);
+        adapter = new RequestAdapter(filteredRequests, this::onRequestClick); // for going to request view
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(30));
 
-        fetchRequests();
+        fetchRequests(); // get requests from db
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { // allows user to search
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchQuery = query.trim();
@@ -104,7 +105,6 @@ private void fetchRequests() {
                             JSONObject obj = data.optJSONObject(i);
                             if (obj == null) continue;
 
-                            // Determine type safely
                             String typeStr = obj.optString("type", "ACTIVITY");
                             RequestItem.RequestType type = "ACTIVITY".equalsIgnoreCase(typeStr) ?
                                     RequestItem.RequestType.ACTIVITY :
@@ -120,13 +120,10 @@ private void fetchRequests() {
                             }
 
                             RequestItem item = new RequestItem(
-                                    obj.optInt("id", 0),
-                                    type,
+                                    obj.optInt("id", 0), type,
                                     obj.optInt("patientID", 0),
                                     obj.optInt("careGiverID", 0),
-                                    obj.optString("status", "pending"),
-                                    author,
-                                    name,
+                                    obj.optString("status", "pending"), author, name,
                                     obj.optString("actType", null),
                                     obj.optString("actDescription", null),
                                     obj.optString("commType", null),
@@ -136,7 +133,6 @@ private void fetchRequests() {
                                     obj.optString("commCuteMessage", null),
                                     obj.optString("commImage", null)
                             );
-
                             allRequests.add(item);
                         }
                     }
@@ -145,10 +141,9 @@ private void fetchRequests() {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             },
-            error -> Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show()
+            error -> Log.e( "Network error ",  error.getMessage())
     );
 
     queue.add(request);
@@ -252,6 +247,6 @@ private void applyFiltersAndSearch() {
     @Override
     protected void onResume() {
         super.onResume();
-        fetchRequests();
+        fetchRequests(); // refresh list
     }
 }

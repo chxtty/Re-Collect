@@ -183,8 +183,6 @@ public class RequestEditActivity extends AppCompatActivity {
     private void deleteRequest(View view){
             String url = "http://10.0.2.2/recollect/api.php?action=delete_Actrequest";
 
-
-
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     response -> {
                         try {

@@ -78,7 +78,6 @@ public class RequestEditCommunity extends AppCompatActivity {
             }
         }
 
-
         btnImage.setOnClickListener(v ->{
             Intent intentImage = new Intent(Intent.ACTION_PICK);
             intentImage.setType("image/*");

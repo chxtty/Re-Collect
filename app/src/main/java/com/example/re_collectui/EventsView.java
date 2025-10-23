@@ -145,31 +145,31 @@ public class EventsView extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.event_create_dialog, null);
 
 
-        EditText editTitle = dialogView.findViewById(R.id.editTitle);
-        EditText editStartDate = dialogView.findViewById(R.id.editStartDate);
-        EditText editEndDate = dialogView.findViewById(R.id.editEndDate);
+        EditText edtTitle = dialogView.findViewById(R.id.editTitle);
+        EditText edtStartDate = dialogView.findViewById(R.id.editStartDate);
+        EditText edtEndDate = dialogView.findViewById(R.id.editEndDate);
         CheckBox checkAllDay = dialogView.findViewById(R.id.checkBox);
-        EditText editLocation = dialogView.findViewById(R.id.editLocation);
-        EditText editDescription = dialogView.findViewById(R.id.editDescription);
+        EditText edtLocation = dialogView.findViewById(R.id.editLocation);
+        EditText edtDescription = dialogView.findViewById(R.id.editDescription);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnCreate = dialogView.findViewById(R.id.btnCreate);
 
 
-        editStartDate.setFocusable(false);
-        editStartDate.setClickable(true);
-        editStartDate.setOnClickListener(v -> showDatePicker(editStartDate));
+        edtStartDate.setFocusable(false);
+        edtStartDate.setClickable(true);
+        edtStartDate.setOnClickListener(v -> showDatePicker(edtStartDate));
 
-        editEndDate.setFocusable(false);
-        editEndDate.setClickable(true);
-        editEndDate.setOnClickListener(v -> showDatePicker(editEndDate));
+        edtEndDate.setFocusable(false);
+        edtEndDate.setClickable(true);
+        edtEndDate.setOnClickListener(v -> showDatePicker(edtEndDate));
 
         checkAllDay.setOnCheckedChangeListener((v,b) -> {
             if (b){
-                editEndDate.setEnabled(false);
-                editEndDate.setAlpha(0.5f);
+                edtEndDate.setEnabled(false);
+                edtEndDate.setAlpha(0.5f);
             } else {
-                editEndDate.setEnabled(true);
-                editEndDate.setAlpha(1.0f);
+                edtEndDate.setEnabled(true);
+                edtEndDate.setAlpha(1.0f);
             }
         });
 
@@ -180,25 +180,25 @@ public class EventsView extends AppCompatActivity {
 
 
         btnCancel.setOnClickListener(v ->
-                {   editTitle.setText("");
-                    editStartDate.setText("");
-                    editEndDate.setText("");
-                    editLocation.setText("");
-                    editDescription.setText("");
+                {   edtTitle.setText("");
+                    edtStartDate.setText("");
+                    edtEndDate.setText("");
+                    edtLocation.setText("");
+                    edtDescription.setText("");
                     checkAllDay.setChecked(false);
                     dialog.dismiss();
                 });
 
         btnCreate.setOnClickListener(v -> {
-            String title = editTitle.getText().toString().trim();
-            String startDate = editStartDate.getText().toString().trim();
+            String title = edtTitle.getText().toString().trim();
+            String startDate = edtStartDate.getText().toString().trim();
             String endDate = "";
             boolean allDay = checkAllDay.isChecked();
-            String location = editLocation.getText().toString().trim();
-            String description = editDescription.getText().toString().trim();
+            String location = edtLocation.getText().toString().trim();
+            String description = edtDescription.getText().toString().trim();
 
             if (!allDay) {
-                endDate = editEndDate.getText().toString().trim();
+                endDate = edtEndDate.getText().toString().trim();
             } else {
                 endDate = startDate;
             }
@@ -209,7 +209,7 @@ public class EventsView extends AppCompatActivity {
             }
 
             if (startDate.compareTo(endDate) > 0) {
-                Toast.makeText(this, "Start date must be before or equal to End date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Start date must be before the End date", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -372,5 +372,5 @@ public class EventsView extends AppCompatActivity {
     searchList.clear();
     searchList.addAll(filtered);
     adapter.notifyDataSetChanged();
-}
+    }
 }

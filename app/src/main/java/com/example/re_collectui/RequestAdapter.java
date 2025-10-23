@@ -16,9 +16,8 @@ import java.util.List;
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder> {
 
     public interface OnItemClickListener {
-        void onClick(RequestItem requestItem);
+        void onClick(RequestItem requestItem); // for going to request page
     }
-
     private final List<RequestItem> requests;
     private final OnItemClickListener listener;
 
@@ -30,8 +29,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     @NonNull
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.request_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.request_item, parent, false);
         return new RequestViewHolder(view);
     }
 
@@ -42,8 +40,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         holder.txtName.setText(item.getName());
         holder.txtAuthor.setText("Request by " + item.getAuthor());
 
-        // Adjust icons for proper spacing
-        if (item.getType() == RequestItem.RequestType.ACTIVITY) {
+        if (item.getType() == RequestItem.RequestType.ACTIVITY) { // correct icon
             holder.imgType.setImageResource(R.drawable.activity_icon);
         } else {
             holder.imgType.setImageResource(R.drawable.community);
@@ -67,10 +64,5 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             txtName = itemView.findViewById(R.id.txtName);
             txtAuthor = itemView.findViewById(R.id.txtAuthor);
         }
-    }
-
-    private int dpToPx(Context context, int dp) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return Math.round((float) dp * density);
     }
 }
