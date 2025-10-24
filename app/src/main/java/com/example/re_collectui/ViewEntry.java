@@ -2,6 +2,7 @@ package com.example.re_collectui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,12 +99,17 @@ public class ViewEntry extends AppCompatActivity {
 
         ImageView imgDelete = findViewById(R.id.imgDelete);
         imgDelete.setOnClickListener(v -> {
-            new AlertDialog.Builder(ViewEntry.this)
-                    .setTitle("Delete Entry")
-                    .setMessage("Are you sure you want to delete this diary entry?")
-                    .setPositiveButton("Yes", (dialog, which) -> deleteEntry(entryId))
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            CustomPopupDialogFragment dialog = CustomPopupDialogFragment.newInstance(
+                    "Are you sure you want to delete this entry?",
+                    "Yes",
+                    "Cancel"
+            );
+
+            dialog.setOnPositiveClickListener(() -> {
+                deleteEntry(entryId);
+            });
+
+            dialog.show(getSupportFragmentManager(), "DeleteConfirmationDialog");
         });
     }
 

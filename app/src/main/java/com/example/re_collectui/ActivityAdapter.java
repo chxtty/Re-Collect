@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,16 +60,45 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
             activity.setExpanded(!activity.isExpanded());
             notifyItemChanged(position);
         });
-        holder.tvDuration.setText(activity.getStartTime() +"    |    K V " + activity.getEndTime());
+        holder.tvDuration.setText(activity.getStartTime() +" | " + activity.getEndTime());
         holder.imgDelete.setOnClickListener(e -> {
-            new AlertDialog.Builder(e.getContext())
-                    .setTitle("Delete Activity")
-                    .setMessage("Are you sure you want to delete this activity?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                       deleteActivity(e.getContext(), detailId);
-                    })
-                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                    .show();
+            Context context = e.getContext();
+
+            if (context instanceof AppCompatActivity) {
+                AppCompatActivity activityContext = (AppCompatActivity) context;
+
+                CustomPopupDialogFragment dialog = CustomPopupDialogFragment.newInstance(
+                        "Are you sure you want to delete this activity?",
+                        "Yes",
+                        "No"
+                );
+
+                dialog.setOnPositiveClickListener(() -> {
+                    deleteActivity(context, detailId);
+                    activityList.remove(holder.getAdapterPosition());
+                    notifyItemRemoved(holder.getAdapterPosition());
+                });
+
+                dialog.show(activityContext.getSupportFragmentManager(), "DeleteActivityDialog");
+            }
+        });
+
+        holder.imgEdit.setOnClickListener(e -> {
+            Context context = e.getContext();
+            if (context instanceof AppCompatActivity) {
+                AppCompatActivity activityContext = (AppCompatActivity) context;
+
+                // Create a dialog instance using the new factory method for editing
+                ActivityDialog dialog = ActivityDialog.newInstance(
+                        activity.getDetailId(),
+                        activity.getActivityId(),
+                        activity.getActDate(),
+                        activity.getStartTime(),
+                        activity.getEndTime()
+                );
+
+                dialog.show(activityContext.getSupportFragmentManager(), "EditActivityDialog");
+            }
         });
 
         if (base64Icon != null && !base64Icon.isEmpty()) {

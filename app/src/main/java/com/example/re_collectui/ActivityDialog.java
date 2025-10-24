@@ -40,10 +40,17 @@ public class ActivityDialog extends DialogFragment {
     private List<Integer> activityIds = new ArrayList<>();
     private String message  = "nothing";
     private OnActivityDialogListener listener;
+    private int detailIdToUpdate = -1;
+    private int activityIdToSelect = -1;
+    private static final String ARG_DETAIL_ID = "detail_id";
+    private static final String ARG_ACTIVITY_ID = "activity_id";
+    private static final String ARG_DATE = "date";
+    private static final String ARG_START_TIME = "start_time";
+    private static final String ARG_END_TIME = "end_time";
 
     // Callback interface
     public interface OnActivityDialogListener {
-        void onSave(String activityType, String date, String startTime, String endTime, String message);
+        void onSave(int detailId, String activityId, String date, String startTime, String endTime); // Pass detailId back
         void onCancel();
     }
 
@@ -72,29 +79,37 @@ public class ActivityDialog extends DialogFragment {
         btnSave = view.findViewById(R.id.btnSave);
         btnCancel = view.findViewById(R.id.btnCancel);
 
+        // Check for arguments to see if we are in "edit mode"
+        if (getArguments() != null) {
+            detailIdToUpdate = getArguments().getInt(ARG_DETAIL_ID, -1);
+            activityIdToSelect = getArguments().getInt(ARG_ACTIVITY_ID, -1);
+            tvDate.setText(getArguments().getString(ARG_DATE));
+            etStartTime.setText(getArguments().getString(ARG_START_TIME));
+            etEndTime.setText(getArguments().getString(ARG_END_TIME));
+        }
+
         SharedPreferences sharedPref = requireContext().getSharedPreferences("userSession", Context.MODE_PRIVATE);
         String patientId = String.valueOf(sharedPref.getInt("patientID", -1));
         fetchActivityTypes();
 
-
-        // Save
+        // Save button listener is now updated
         btnSave.setOnClickListener(v -> {
             int position = spnActivity.getSelectedItemPosition();
-            String activityType = spnActivity.getSelectedItem().toString();
+            if (position < 0) return; // Avoid crash if spinner is not ready
+
+            String activityId = String.valueOf(activityIds.get(position));
             String date = tvDate.getText().toString().trim();
             String startTime = etStartTime.getText().toString().trim();
             String endTime = etEndTime.getText().toString().trim();
 
-
-          //  saveActivityToServer(String.valueOf(activityIds.get(position)), patientId, startTime, endTime, date);
-
             if (listener != null) {
-                listener.onSave(String.valueOf(activityIds.get(position)), date, startTime, endTime,message);
+                // Pass the detailId back. It will be -1 for new activities.
+                listener.onSave(detailIdToUpdate, activityId, date, startTime, endTime);
             }
             dismiss();
         });
 
-        // Cancel
+        // Cancel button listener remains the same
         btnCancel.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onCancel();
@@ -133,6 +148,15 @@ public class ActivityDialog extends DialogFragment {
                             );
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spnActivity.setAdapter(adapter);
+                            // If we are editing, find and select the correct activity
+                            if (activityIdToSelect != -1) {
+                                for (int i = 0; i < activityIds.size(); i++) {
+                                    if (activityIds.get(i) == activityIdToSelect) {
+                                        spnActivity.setSelection(i);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -169,7 +193,19 @@ public class ActivityDialog extends DialogFragment {
         ).show();
     }
 
-    private void saveActivityToServer(String activityId, String patientId, String startTime, String endTime, String actDate) {
+    public static ActivityDialog newInstance(int detailId, int activityId, String date, String startTime, String endTime) {
+        ActivityDialog dialog = new ActivityDialog();
+        Bundle args = new Bundle();
+        args.putInt(ARG_DETAIL_ID, detailId);
+        args.putInt(ARG_ACTIVITY_ID, activityId);
+        args.putString(ARG_DATE, date);
+        args.putString(ARG_START_TIME, startTime);
+        args.putString(ARG_END_TIME, endTime);
+        dialog.setArguments(args);
+        return dialog;
+    }
+
+    /*private void saveActivityToServer(String activityId, String patientId, String startTime, String endTime, String actDate) {
         String url = "http://100.79.152.109/android/api.php?action=create_activity";
 
         Map<String, String> params = new HashMap<>();
@@ -202,7 +238,7 @@ public class ActivityDialog extends DialogFragment {
                 });
 
         Volley.newRequestQueue(requireContext()).add(request);
-    }
+    }*/
 
     private void safeToast(String message) {
         if (isAdded() && getContext() != null) {
