@@ -25,6 +25,7 @@
                 android:id="@+id/btnCancelCommReq"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/logout_btn"
                 android:padding="10dp"
@@ -35,6 +36,7 @@
                 android:id="@+id/btnSendCommReq"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/dashboard_icon_caregiver"
                 android:padding="10dp"
@@ -92,7 +94,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="15dp"
                             android:layout_weight="12.5"
-                            android:background="@color/Celadon"
+                            android:background="@drawable/activity_dialog_et"
                             android:ems="10"
                             android:hint="Enter First Name"
                             android:inputType="text" />
@@ -103,7 +105,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="15dp"
                             android:layout_weight="12.5"
-                            android:background="@color/Celadon"
+                            android:background="@drawable/activity_dialog_et"
                             android:ems="10"
                             android:hint="Enter Last Name"
                             android:inputType="text" />
@@ -114,7 +116,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="15dp"
                             android:layout_weight="12.5"
-                            android:background="@color/Celadon"
+                            android:background="@drawable/activity_dialog_et"
                             android:entries="@array/type_options"
                             android:spinnerMode="dropdown" />
 
@@ -124,7 +126,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="15dp"
                             android:layout_weight="10"
-                            android:background="@color/Celadon"
+                            android:background="@drawable/activity_dialog_et"
                             android:ems="10"
                             android:gravity="start|top"
                             android:hint="Enter Description"
@@ -136,7 +138,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="15dp"
                             android:layout_weight="10"
-                            android:background="@color/Celadon"
+                            android:background="@drawable/activity_dialog_et"
                             android:ems="10"
                             android:gravity="start|top"
                             android:hint="Enter Cute Message"
@@ -146,7 +148,7 @@
                             android:id="@+id/btnAddImage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/gray_lavender"
+                            android:background="@drawable/activity_dialog_done_bg"
                             android:text="Add Image " />
 
                     </LinearLayout>
