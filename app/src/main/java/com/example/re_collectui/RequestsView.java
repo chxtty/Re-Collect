@@ -1,5 +1,6 @@
 package com.example.re_collectui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -191,6 +192,7 @@ private void applyFiltersAndSearch() {
     adapter.notifyDataSetChanged();
 }
 
+    @SuppressLint("SuspiciousIndentation")
     private void showFilterDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.request_filter_dialog, null);
