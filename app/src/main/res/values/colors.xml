@@ -7,9 +7,13 @@
     <color name="light_orange">#FFF7F0</color>
     <color name= "Pastel_gray_lavender">#Baa5D4</color>
     <color name= "Pastel_gray_green">#ACCEA0</color>
+    <color name= "Pastel_gray_green_darker">#8ca683</color>
     <color name= "dark_gray">#46494C</color>
     <color name= "gray">#6a6d70</color>
     <color name= "darker_light_orange">#ede6e0</color>
     <color name= "light_orange_shadow">#C1BCBA</color>
     <color name="gray_lavender">#9f8bb8</color>
+    <color name="pastel_red">#bd5751</color>
+    <color name="hookers_green">#70877F</color>
+
 </resources>

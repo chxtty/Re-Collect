@@ -38,6 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText editEmail, editPassword;
     Button btnSignIn;
 
+    private CustomToast toast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
         //fetchDataFromAPI();
-
+        toast = new CustomToast(this);
         editEmail = findViewById(R.id.edtEmail);
         editPassword = findViewById(R.id.edtPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
@@ -62,28 +64,29 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(String email, String password) {
-        String url = "http://10.0.2.2/recollect/api.php?action=login";
+        String url = "http://100.79.152.109/android/api.php?action=login";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
-                        String status = jsonResponse.optString("status", "");
+                        String status = jsonResponse.getString("status");
 
                         if (status.equals("success")) {
                             JSONObject user = jsonResponse.getJSONObject("user");
+                            String name = user.getString("firstName");
                             String role = user.optString("role");
-                            String name = user.optString("firstName");
-                            Toast.makeText(this, "Welcome " + name, Toast.LENGTH_LONG).show();
+                            int patientID = user.getInt("patientID");
+                            toast.GetGreatingToast("Welcome " + name).show();
 
                             SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putInt("patientID", patientID);
                             editor.putString("role", role);
                             editor.putString("name", name);
 
                             if (role.equals("patient")){
-                                int patientID = user.getInt("patientID");
                                 int caregiverID = user.getInt("careGiverID");
                                 editor.putInt("patientID", patientID);
                                 editor.putInt("caregiverID",caregiverID);
@@ -130,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
  /*   public void fetchDataFromAPI() {
         new Thread(() -> {
             try {
-
+                // For emulator use 10.0.2.2 instead of localhost
                 URL url = new URL("http://10.0.2.2/login.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
