@@ -12,10 +12,11 @@
 
         <LinearLayout
             android:id="@+id/linearLayout6"
-            android:layout_width="319dp"
-            android:layout_height="54dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal"
+            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -26,6 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/logout_btn"
+                android:padding="10dp"
                 android:text="Cancel"
                 android:textColor="@color/creme" />
 
@@ -35,12 +37,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/dashboard_icon_caregiver"
+                android:padding="10dp"
                 android:text="Submit" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/imageView18"
-            android:layout_width="179dp"
+            android:layout_width="wrap_content"
             android:layout_height="64dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,8 +51,8 @@
             app:srcCompat="@drawable/community" />
 
         <ScrollView
-            android:layout_width="380dp"
-            android:layout_height="607dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="5dp"
@@ -67,13 +70,13 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout"
-                    android:layout_width="373dp"
-                    android:layout_height="677dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp">
 
                     <LinearLayout
                         android:id="@+id/linearLayout5"
-                        android:layout_width="283dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="677dp"
                         android:layout_marginEnd="4dp"
                         android:background="@color/creme"
