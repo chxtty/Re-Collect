@@ -30,6 +30,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ public class DashboardPatient extends AppCompatActivity {
     ConstraintLayout activityOption;
     int patientID, caregiverID;
     private Uri selectedImageUri = null;
+    CustomToast toast;
     private static final int IMAGE_REQUEST = 101;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class DashboardPatient extends AppCompatActivity {
         patientID = sharedPref.getInt("patientID", -1); // for patientID for session
         caregiverID = sharedPref.getInt("caregiverID", -1);
         String name = sharedPref.getString("name", "");
+        toast = new CustomToast(this);
 
         TextView txtWelcome = findViewById(R.id.txtWelcome);
         txtWelcome.setText("Welcome, " + name + " :)");
@@ -124,18 +127,21 @@ public class DashboardPatient extends AppCompatActivity {
             String commType = spnType.getSelectedItem().toString();
             String desc = edtDesc.getText().toString().trim();
             String cuteMsg = edtCute.getText().toString().trim();
-            String imgPath = selectedImageUri != null ? selectedImageUri.toString() : "";
+            String imgBase64 = "";
+            if (selectedImageUri != null) {
+                imgBase64 = uriToBase64(selectedImageUri);
+            }
 
             if (commType.equals("Select Type")) {
                 commType = "";
             }
 
             if (firstName.isEmpty()) {
-                Toast.makeText(this, "Please at least fill First Name", Toast.LENGTH_SHORT).show();
+                toast.GetErrorToast("Please at least fill First Name");
                 return;
             }
 
-            submitCommRequest(patientID, caregiverID, commType, firstName, lastName, desc, cuteMsg, imgPath);
+            submitCommRequest(patientID, caregiverID, commType, firstName, lastName, desc, cuteMsg, imgBase64);
             dialog.dismiss();
         });
 
@@ -143,9 +149,9 @@ public class DashboardPatient extends AppCompatActivity {
     }
 
     private void submitCommRequest(int patientID, int careGiverID, String commType,
-                                   String firstName, String lastName, String desc, String cuteMsg, String commImage) {
+                                   String firstName, String lastName, String desc, String cuteMsg, String commImageBase64) {
 
-        String url = "http://10.0.2.2/recollect/api.php?action=create_community_request";
+        String url = GlobalVars.apiPath + "create_community_request";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
@@ -155,16 +161,16 @@ public class DashboardPatient extends AppCompatActivity {
                         String status = res.getString("status");
 
                         if (status.equals("success")) {
-                            Toast.makeText(this, "Community Member request submitted!", Toast.LENGTH_SHORT).show();
+                            toast.GetInfoToast( "Community Member request submitted!");
                         } else {
-                            Toast.makeText(this, res.getString("message"), Toast.LENGTH_LONG).show();
+                           // Toast.makeText(this, res.getString("message"), Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 },
-                error -> Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show()
+                error -> toast.GetErrorToast("Network error: " + error.getMessage())
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -176,12 +182,26 @@ public class DashboardPatient extends AppCompatActivity {
             params.put("commLastName", lastName);
             params.put("commDescription", desc);
             params.put("commCuteMessage", cuteMsg);
-            params.put("commImage", commImage != null ? commImage : "");
-                return params;
+            params.put("commImage", commImageBase64 != null ? commImageBase64 : "");
+            return params;
             }
         };
         queue.add(request);
 
+    }
+
+    private String uriToBase64(Uri imageUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            inputStream.close();
+            return android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Toast.makeText(this, "Failed to encode image", Toast.LENGTH_SHORT).show();
+            return "";
+        }
     }
 
     @Override
@@ -189,8 +209,7 @@ public class DashboardPatient extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
             selectedImageUri = data.getData();
-            Toast.makeText(this, "Image added", Toast.LENGTH_SHORT).show();
+            toast.GetInfoToast("Image added");
         }
-
     }
 }

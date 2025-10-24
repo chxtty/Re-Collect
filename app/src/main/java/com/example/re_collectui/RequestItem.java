@@ -1,5 +1,9 @@
 package com.example.re_collectui;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import java.io.Serializable;
 
 public class RequestItem implements Serializable {
@@ -61,4 +65,17 @@ public class RequestItem implements Serializable {
     public String getCommDescription() { return commDescription; }
     public String getCommCuteMessage() { return commCuteMessage; }
     public String getCommImage() { return commImage; }
+
+    public Bitmap getCommImageBitmap() {
+        if (commImage == null || commImage.isEmpty())
+            return null;
+
+        try {
+            byte[] decodedBytes = Base64.decode(commImage, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

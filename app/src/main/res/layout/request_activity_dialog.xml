@@ -37,7 +37,7 @@
             android:id="@+id/edtActName"
             android:layout_width="match_parent"
             android:layout_height="43dp"
-            android:background="@color/Celadon"
+            android:background="@drawable/activity_dialog_et"
             android:ems="10"
             android:inputType="text" />
 
@@ -52,7 +52,7 @@
             android:id="@+id/edtActDescr"
             android:layout_width="match_parent"
             android:layout_height="158dp"
-            android:background="@color/Celadon"
+            android:background="@drawable/activity_dialog_et"
             android:ems="10"
             android:gravity="start|top"
             android:inputType="textMultiLine" />
@@ -67,6 +67,7 @@
                 android:id="@+id/btnCancelActReq"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/logout_btn"
                 android:text="Cancel"
@@ -76,6 +77,7 @@
                 android:id="@+id/btnSubmitActReq"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/dashboard_icon_caregiver"
                 android:text="Submit" />

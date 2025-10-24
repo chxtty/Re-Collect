@@ -93,7 +93,7 @@ public class RequestsView extends AppCompatActivity {
 
 private void fetchRequests() {
     RequestQueue queue = Volley.newRequestQueue(this);
-    String url = "http://10.0.2.2/recollect/api.php?action=get_requests";
+    String url = GlobalVars.apiPath + "get_requests";
 
     JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
             response -> {

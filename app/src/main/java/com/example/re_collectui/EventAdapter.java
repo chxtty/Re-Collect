@@ -12,12 +12,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -83,25 +86,26 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 }
 
                 clickedEvent.setExpanded(isExpanded);
-
+                TransitionManager.beginDelayedTransition((ViewGroup) holder.itemView, new AutoTransition());
                 notifyDataSetChanged();
             }
         });
 
-        holder.deleteButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(context)
-                    .setTitle("Delete Event")
-                    .setMessage("Are you sure you want to delete this event?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        deleteEventFromServer(event);
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
-        });
+        holder.deleteButton.setOnClickListener(v -> showDeleteDialog(event));
 
         holder.editButton.setOnClickListener(v -> {
             showEditEventDialog(event);
         });
+    }
+
+    private void showDeleteDialog(Event event) {
+        CustomPopupDialogFragment dialog = CustomPopupDialogFragment.newInstance(
+                "Are you sure you want to delete this event?",
+                "Yes",
+                "Cancel"
+        );
+        dialog.setOnPositiveClickListener(() -> deleteEventFromServer(event));
+        dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "DeleteEventDialog");
     }
 
     private void showEditEventDialog(Event event) {
@@ -218,24 +222,24 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private void updateEventOnServer(int eventID, String title, String startDate, String endDate, boolean allDay, String location, String description) {
-        String url = "http://10.0.2.2/recollect/api.php?action=update_event";
-
+        String url = GlobalVars.apiPath + "update_event";
+        CustomToast toast = new CustomToast(context);
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            Toast.makeText(context, "Event updated", Toast.LENGTH_SHORT).show();
+                            toast.GetInfoToast("Event updated");
                             Event updatedEvent = new Event(eventID, title, startDate, endDate, description, location, allDay);
                             updateEventInList(updatedEvent);
                         } else {
-                            Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(context, "Error parsing update response", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(context, "Error parsing update response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(context, "Update failed", Toast.LENGTH_SHORT).show()
+                error -> toast.GetErrorToast("Update failed")
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -255,7 +259,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private void deleteEventFromServer(Event eventToDelete) {
-        String url = "http://10.0.2.2/recollect/api.php?action=delete_event";
+        String url = GlobalVars.apiPath + "delete_event";
+
+        CustomToast toast = new CustomToast(context);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -265,15 +271,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                             eventList.removeIf(e -> e.getEventID() == eventToDelete.getEventID());
                             searchList.removeIf(e -> e.getEventID() == eventToDelete.getEventID());
                             notifyDataSetChanged();
-                            Toast.makeText(context, "Event deleted", Toast.LENGTH_SHORT).show();
+                            toast.GetInfoToast("Event deleted");
                         } else {
-                            Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(context, "Delete failed", Toast.LENGTH_SHORT).show()
+                error -> toast.GetDeleteToast("Delete failed")
         ) {
             @Override
             protected Map<String, String> getParams() {

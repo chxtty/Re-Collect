@@ -3,9 +3,12 @@ package com.example.re_collectui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +26,10 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RequestEditActivity extends AppCompatActivity {
 
@@ -32,6 +37,7 @@ public class RequestEditActivity extends AppCompatActivity {
     TextView txtTitle, txtSubTitle;
     Button btnImage;
     RequestItem currentItem;
+    CustomToast toast;
 
     private static final int IMAGE_REQUEST = 101;
     private Uri selectedImageUri = null;
@@ -47,6 +53,7 @@ public class RequestEditActivity extends AppCompatActivity {
             return insets;
         });
 
+        toast = new CustomToast(this);
         edtType = findViewById(R.id.edtActType);
         edtDescription = findViewById(R.id.edtDescription);
         txtTitle = findViewById(R.id.txtTitleReq);
@@ -79,28 +86,29 @@ public class RequestEditActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-            Toast.makeText(this, "Image added", Toast.LENGTH_SHORT).show();
+            ImageView imgPreview = findViewById(R.id.imgPreview);
+            imgPreview.setVisibility(View.VISIBLE);
+            imgPreview.setImageURI(selectedImageUri);
+            toast.GetInfoToast( "Image added");
         }
 
     }
 
     public void onDeclineRequest(View view) {
-            new AlertDialog.Builder(this)
-        .setTitle("Decline Request")
-        .setMessage("Are you sure you want to decline this request?")
-        .setPositiveButton("Yes", (dialog, which) -> {
-            declineRequest(view);
-        })
-        .setNegativeButton("No", (dialog, which) -> {
-            dialog.dismiss();
-        })
-        .show();
+        CustomPopupDialogFragment dialog = CustomPopupDialogFragment.newInstance(
+                "Are you sure you want to decline this request?",
+                "Yes",
+                "Cancel"
+        );
+
+        dialog.setOnPositiveClickListener(() -> declineRequest(view));
+        dialog.show(getSupportFragmentManager(), "DeclineConfirmationDialog");
     }
 
     private void declineRequest(View view){
-        String url = "http://10.0.2.2/recollect/api.php?action=decline_Actrequest";
+        String url = GlobalVars.apiPath + "decline_Actrequest";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -110,13 +118,13 @@ public class RequestEditActivity extends AppCompatActivity {
                             Toast.makeText(view.getContext(), "Request declined", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(view.getContext(), "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(view.getContext(), "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 },
-                error -> Toast.makeText(view.getContext(), "Network error", Toast.LENGTH_SHORT).show()
+                error -> Log.e("Network error", Objects.requireNonNull(error.getMessage()))
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -130,27 +138,28 @@ public class RequestEditActivity extends AppCompatActivity {
     }
 
     public void onSaveRequest(View view) {
-            String url = "http://10.0.2.2/recollect/api.php?action=save_Actrequest";
+            String url = GlobalVars.apiPath +  "save_Actrequest";
 
             String actType = edtType.getText().toString();
             String actDescription = edtDescription.getText().toString();
-            String imagePath = selectedImageUri != null ? selectedImageUri.toString() : "";
+        String imagePath = selectedImageUri != null ? encodeImageToBase64(selectedImageUri) : "";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     response -> {
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getString("status").equals("success")) {
-                                Toast.makeText(this, "Request saved", Toast.LENGTH_SHORT).show();
+                               toast.GetInfoToast("Request saved");
+                                //Toast.makeText(this, "Request saved", Toast.LENGTH_SHORT).show();
                                 finish(); // Go back to list
                             } else {
-                                Toast.makeText(this, "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(this, "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     },
-                    error -> Toast.makeText(this, "Network error", Toast.LENGTH_SHORT).show()
+                    error -> Log.e("Network error", Objects.requireNonNull(error.getMessage()))
             ) {
                 @Override
                 protected Map<String, String> getParams() {
@@ -167,37 +176,37 @@ public class RequestEditActivity extends AppCompatActivity {
     }
 
     public void onDeleteRequest(View view) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Request")
-                .setMessage("Are you sure you want to delete this request?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    deleteRequest(view);
-                })
-                .setNegativeButton("No", (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .show();
+        CustomPopupDialogFragment dialog = CustomPopupDialogFragment.newInstance(
+                "Are you sure you want to delete this request?",
+                "Yes",
+                "Cancel"
+        );
 
+        dialog.setOnPositiveClickListener(() -> {
+            deleteRequest(view);
+        });
+
+        dialog.show(getSupportFragmentManager(), "DeleteConfirmationDialog");
     }
 
     private void deleteRequest(View view){
-            String url = "http://10.0.2.2/recollect/api.php?action=delete_Actrequest";
+            String url = GlobalVars.apiPath + "delete_Actrequest";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     response -> {
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getString("status").equals("success")) {
-                                Toast.makeText(this, "Request deleted", Toast.LENGTH_SHORT).show();
+                                toast.GetInfoToast( "Request deleted");
                                 finish();
                             } else {
-                                Toast.makeText(this, "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(this, "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     },
-                    error -> Toast.makeText(this, "Network error", Toast.LENGTH_SHORT).show()
+                    error -> Log.e("Network error", Objects.requireNonNull(error.getMessage()))
             ) {
                 @Override
                 protected Map<String, String> getParams() {
@@ -212,27 +221,25 @@ public class RequestEditActivity extends AppCompatActivity {
 
 
     public void onAcceptRequest(View view) {
-        new AlertDialog.Builder(this)
-                .setTitle("Accept Request")
-                .setMessage("Are you sure you want to accept this request?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    acceptRequest(view);
-                })
-                .setNegativeButton("No", (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .show();
+        CustomPopupDialogFragment dialog = CustomPopupDialogFragment.newInstance(
+                "Are you sure you want to accept this request?",
+                "Yes",
+                "Cancel"
+        );
+
+        dialog.setOnPositiveClickListener(() -> acceptRequest(view));
+        dialog.show(getSupportFragmentManager(), "AcceptConfirmationDialog");
     }
 
     private void acceptRequest(View view) {
-        String url = "http://10.0.2.2/recollect/api.php?action=delete_Actrequest";
+        String url = GlobalVars.apiPath +  "accept_Actrequest";
 
         String actType = edtType.getText().toString().trim();
         String actDescription = edtDescription.getText().toString().trim();
-        String imagePath = selectedImageUri != null ? selectedImageUri.toString() : ""; 
+        String imagePath = selectedImageUri != null ? encodeImageToBase64(selectedImageUri) : "";
 
         if (actType.isEmpty() || actDescription.isEmpty() || imagePath.isEmpty()){
-            Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show();
+            toast.GetErrorToast( "Please enter all fields");
             return;
         }
 
@@ -241,16 +248,15 @@ public class RequestEditActivity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            Toast.makeText(this, "Activity accepted", Toast.LENGTH_SHORT).show();
-                            finish();
+                            toast.GetInfoToast( "Activity accepted");
                         } else {
-                            Toast.makeText(this, "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(this, "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 },
-                error -> Toast.makeText(this, "Network error", Toast.LENGTH_SHORT).show()
+                error -> Log.e("Network error", Objects.requireNonNull(error.getMessage()))
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -266,4 +272,18 @@ public class RequestEditActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(stringRequest);
     }
+
+    private String encodeImageToBase64(Uri imageUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            inputStream.close();
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
 }

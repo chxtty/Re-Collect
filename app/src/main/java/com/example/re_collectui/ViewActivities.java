@@ -329,7 +329,7 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
 
     private void submitActivityRequest(int patientID, int caregiverID, String type, String description) {
 
-        String url = "http://10.0.2.2/recollect/api.php?action=create_activity_request";
+        String url = GlobalVars.apiPath + "create_activity_request";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,

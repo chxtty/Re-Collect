@@ -44,6 +44,8 @@ import java.util.Map;
 public class EventsView extends AppCompatActivity {
 
     RecyclerView parentRecyclerView;
+
+    CustomToast toast;
     private EventAdapter adapter;
     private ArrayList<Event> eventList = new ArrayList<>();
     private ArrayList<Event> searchList = new ArrayList<>();
@@ -70,7 +72,7 @@ public class EventsView extends AppCompatActivity {
         if (patientID != -1) {
             getEvents(patientID);
         } else {
-            Toast.makeText(this, "Patient ID not found in session", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "Patient ID not found in session", Toast.LENGTH_SHORT).show();
         }
 
         parentRecyclerView = findViewById(R.id.parentRecyclerView);
@@ -79,6 +81,7 @@ public class EventsView extends AppCompatActivity {
         adapter = new EventAdapter(this, eventList, searchList);
         parentRecyclerView.setAdapter(adapter);
         parentRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(30));
+        toast = new CustomToast(this);
 
         CardView crdCreate = findViewById(R.id.crdCreateEvent);
 
@@ -104,7 +107,7 @@ public class EventsView extends AppCompatActivity {
     }
 
     private void getEvents(int patientID) {
-        String url = "http://10.0.2.2/recollect/api.php?action=view_events&patientId=" + patientID;
+        String url = GlobalVars.apiPath + "view_events&patientId=" + patientID;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -128,12 +131,12 @@ public class EventsView extends AppCompatActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "JSON error", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(this, "JSON error", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
                     Log.e("Volley", "Error: " + error.getMessage());
-                    Toast.makeText(this, "Volley error", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(this, "Volley error", Toast.LENGTH_SHORT).show();
                 });
 
         Volley.newRequestQueue(this).add(request);
@@ -204,16 +207,16 @@ public class EventsView extends AppCompatActivity {
             }
 
             if (title.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
-                Toast.makeText(this, "Please fill in required fields", Toast.LENGTH_SHORT).show();
+                toast.GetErrorToast("Please fill in required fields");
                 return;
             }
 
             if (startDate.compareTo(endDate) > 0) {
-                Toast.makeText(this, "Start date must be before the End date", Toast.LENGTH_SHORT).show();
+                toast.GetErrorToast( "Start date must be before the End date");
                 return;
             }
 
-                createEvent(title, startDate, endDate, allDay, location, description);
+            createEvent(title, startDate, endDate, allDay, location, description);
 
 
             dialog.dismiss();
@@ -232,7 +235,7 @@ public class EventsView extends AppCompatActivity {
             return;
         }
 
-        String url = "http://10.0.2.2/recollect/api.php?action=create_event";
+        String url = GlobalVars.apiPath + "create_event";
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -247,16 +250,16 @@ public class EventsView extends AppCompatActivity {
                             eventList.add(event);
                             applyEventFilterDialog(currentQuery,filterByTitle,filterByLocation,sortAsc,completed);
                         } else {
-                            Toast.makeText(this, "Error: " + res.getString("message"), Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(this, "Error: " + res.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "Invalid response from server", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(this, "Invalid response from server", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
                     error.printStackTrace();
-                    Toast.makeText(this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Override

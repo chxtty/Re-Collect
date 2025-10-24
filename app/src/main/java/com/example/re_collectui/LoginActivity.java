@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login(String email, String password) {
-        String url = "http://100.79.152.109/android/api.php?action=login";
+        String url = GlobalVars.apiPath + "login";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -129,34 +129,3 @@ public class LoginActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 }
-
- /*   public void fetchDataFromAPI() {
-        new Thread(() -> {
-            try {
-                // For emulator use 10.0.2.2 instead of localhost
-                URL url = new URL("http://10.0.2.2/login.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream())
-                );
-
-                StringBuilder response = new StringBuilder();
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-
-                reader.close();
-
-                String jsonResponse = response.toString();
-
-                runOnUiThread(() -> Toast.makeText(this, jsonResponse, Toast.LENGTH_LONG).show());
-
-            } catch (Exception e) {
-                runOnUiThread(() -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
-            }
-        }).start();
-    } */
