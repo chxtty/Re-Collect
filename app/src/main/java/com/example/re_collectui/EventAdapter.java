@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     private List<Event> eventList;
     private List<Event> searchList;
     private Context context;
-    private int expandedPosition = -1;
+
+    private int expandedPosition = RecyclerView.NO_POSITION;
     private String currentQuery = "";
 
     public EventAdapter(Context context, List<Event> eventList, List<Event> searchList) {
@@ -73,22 +75,27 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.eventDescription.setText(event.getDescription());
 
 
-        holder.expandableLayout.setVisibility(event.isExpanded() ? View.VISIBLE : View.GONE);
+        holder.expandableLayout.setVisibility(position == expandedPosition ? View.VISIBLE : View.GONE);
 
         holder.itemView.setOnClickListener(v -> {
-            int pos = holder.getAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                Event clickedEvent = searchList.get(holder.getAdapterPosition());
-                boolean isExpanded = !clickedEvent.isExpanded();
-
-                for (int i = 0; i < eventList.size(); i++) {
-                    eventList.get(i).setExpanded(false);
-                }
-
-                clickedEvent.setExpanded(isExpanded);
-                TransitionManager.beginDelayedTransition((ViewGroup) holder.itemView, new AutoTransition());
-                notifyDataSetChanged();
+            int oldExpanded = expandedPosition;
+            if (oldExpanded == position) {
+                expandedPosition = RecyclerView.NO_POSITION;
+            } else {
+                expandedPosition = position;
             }
+
+            android.transition.TransitionSet transitionSet = new android.transition.TransitionSet()
+                    .addTransition(new AutoTransition())
+                    .addTransition(new Fade(Fade.IN))
+                    .addTransition(new Fade(Fade.OUT))
+                    .setDuration(300);
+
+            TransitionManager.beginDelayedTransition((ViewGroup) holder.itemView.getParent(), transitionSet);
+
+            if (oldExpanded != RecyclerView.NO_POSITION)
+                notifyItemChanged(oldExpanded);
+            notifyItemChanged(position);
         });
 
         holder.deleteButton.setOnClickListener(v -> showDeleteDialog(event));
@@ -111,6 +118,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     private void showEditEventDialog(Event event) {
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.event_create_dialog);
+        CustomToast toast1 = new CustomToast(context);
+
 
         EditText title = dialog.findViewById(R.id.editTitle);
         EditText startDate = dialog.findViewById(R.id.editStartDate);
@@ -142,6 +151,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             if (b){
                 endDate.setEnabled(false);
                 endDate.setAlpha(0.5f);
+                if (!startDate.getText().toString().isEmpty()) {
+                    endDate.setText(startDate.getText().toString());
+                }
             } else {
                 endDate.setEnabled(true);
                 endDate.setAlpha(1.0f);
@@ -165,6 +177,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
             } else {
                 updatedEnd = updatedStart;
+            }
+
+
+            if (updatedTitle.isEmpty() || updatedStart.isEmpty() || updatedEnd.isEmpty()) {
+                toast1.GetErrorToast("Please fill in required fields").show();
+                return;
+            }
+
+            if (updatedStart.compareTo(updatedEnd) > 0) {
+                toast1.GetErrorToast( "Start date must be before the End date").show();
+                return;
             }
 
             updateEventOnServer(
@@ -229,7 +252,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Event updated");
+                            toast.GetInfoToast("Event updated").show();
                             Event updatedEvent = new Event(eventID, title, startDate, endDate, description, location, allDay);
                             updateEventInList(updatedEvent);
                         } else {
@@ -239,7 +262,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                        // Toast.makeText(context, "Error parsing update response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> toast.GetErrorToast("Update failed")
+                error -> toast.GetErrorToast("Update failed").show()
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -271,7 +294,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                             eventList.removeIf(e -> e.getEventID() == eventToDelete.getEventID());
                             searchList.removeIf(e -> e.getEventID() == eventToDelete.getEventID());
                             notifyDataSetChanged();
-                            toast.GetInfoToast("Event deleted");
+                            toast.GetInfoToast("Event deleted").show();
                         } else {
                            // Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
                         }
@@ -279,7 +302,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                         // Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> toast.GetDeleteToast("Delete failed")
+                error -> toast.GetErrorToast("Delete failed").show()
         ) {
             @Override
             protected Map<String, String> getParams() {

@@ -39,7 +39,9 @@
             android:layout_height="43dp"
             android:background="@drawable/activity_dialog_et"
             android:ems="10"
-            android:inputType="text" />
+            android:hint="Enter Activity Name"
+            android:inputType="text"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView14"
@@ -55,7 +57,10 @@
             android:background="@drawable/activity_dialog_et"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
+            android:hint="Enter Description"
+            android:inputType="textMultiLine"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

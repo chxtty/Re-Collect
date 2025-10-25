@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -25,6 +26,13 @@ public class DashboardCaregiver extends AppCompatActivity {
             return insets;
         });
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                moveTaskToBack(true);
+            }
+        });
+
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         int patientID = sharedPref.getInt("patientID", -1); // for patientID for session
     }
@@ -40,4 +48,6 @@ public class DashboardCaregiver extends AppCompatActivity {
         Intent intent = new Intent(DashboardCaregiver.this, RequestsView.class);
         startActivity(intent);
     }
+
+
 }

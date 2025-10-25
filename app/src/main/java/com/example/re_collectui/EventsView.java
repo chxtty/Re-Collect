@@ -68,11 +68,10 @@ public class EventsView extends AppCompatActivity {
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         int patientID = sharedPref.getInt("patientID", -1);
+        Log.d("EventsView", "Patient ID: " + patientID);
 
-        if (patientID != -1) {
+        if (patientID != -1){
             getEvents(patientID);
-        } else {
-           // Toast.makeText(this, "Patient ID not found in session", Toast.LENGTH_SHORT).show();
         }
 
         parentRecyclerView = findViewById(R.id.parentRecyclerView);
@@ -111,32 +110,41 @@ public class EventsView extends AppCompatActivity {
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
+                    Log.d("EventsView", "API response: " + response.toString()); // ADD THIS
+
                     try {
                         if (response.getString("status").equals("success")) {
                             JSONArray events = response.getJSONArray("events");
-                            eventList.clear();;
+                            eventList.clear();
+
                             for (int i = 0; i < events.length(); i++) {
                                 JSONObject event = events.getJSONObject(i);
+
                                 String title = event.getString("eventTitle");
-                                String startDate = event.getString("eventStartDate");
-                                String endDate = event.getString("eventEndDate");
+                                String startDate = event.getString("eventStartDate").split(" ")[0]; // safe date
+                                String endDate = event.getString("eventEndDate").split(" ")[0];     // safe date
                                 String description = event.getString("eventDescription");
                                 String location = event.getString("eventLocation");
                                 int id = event.getInt("eventID");
-                                boolean allDay = event.getInt("allDay") ==1;
+                                boolean allDay = event.optInt("allDay", 0) == 1; // safer
 
                                 eventList.add(new Event(id, title, startDate, endDate, description, location, allDay));
                             }
-                            applyEventFilterDialog(currentQuery,filterByTitle,filterByLocation,sortAsc,completed);
+
+                            applyEventFilterDialog(currentQuery, filterByTitle, filterByLocation, sortAsc, completed);
+
+                        } else {
+                            Log.e("EventsView", "API returned error: " + response.getString("message"));
                         }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
-                       // Toast.makeText(this, "JSON error", Toast.LENGTH_SHORT).show();
+                        Log.e("EventsView", "JSON parsing error");
                     }
+
                 },
                 error -> {
-                    Log.e("Volley", "Error: " + error.getMessage());
-                   // Toast.makeText(this, "Volley error", Toast.LENGTH_SHORT).show();
+                    Log.e("Volley", "Error: " + error.toString());
                 });
 
         Volley.newRequestQueue(this).add(request);
@@ -146,6 +154,7 @@ public class EventsView extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.event_create_dialog, null);
+        CustomToast toast1 = new CustomToast(this);
 
 
         EditText edtTitle = dialogView.findViewById(R.id.editTitle);
@@ -170,6 +179,10 @@ public class EventsView extends AppCompatActivity {
             if (b){
                 edtEndDate.setEnabled(false);
                 edtEndDate.setAlpha(0.5f);
+                if (!edtStartDate.getText().toString().isEmpty())
+                {
+                    edtEndDate.setText(edtStartDate.getText().toString());
+                }
             } else {
                 edtEndDate.setEnabled(true);
                 edtEndDate.setAlpha(1.0f);
@@ -207,12 +220,12 @@ public class EventsView extends AppCompatActivity {
             }
 
             if (title.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
-                toast.GetErrorToast("Please fill in required fields");
+                toast1.GetErrorToast("Please fill in required fields").show();
                 return;
             }
 
             if (startDate.compareTo(endDate) > 0) {
-                toast.GetErrorToast( "Start date must be before the End date");
+                toast1.GetErrorToast( "Start date must be before the End date").show();
                 return;
             }
 
@@ -231,7 +244,7 @@ public class EventsView extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         int patientID = sharedPref.getInt("patientID", -1);
         if (patientID == -1) {
-            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_SHORT).show();
+            Log.e("Session Info", "Session expired. Please log in again.");
             return;
         }
 
@@ -244,22 +257,22 @@ public class EventsView extends AppCompatActivity {
                     try {
                         JSONObject res = new JSONObject(response);
                         if (res.getString("status").equals("success")) {
-                            Toast.makeText(this, "Event created!", Toast.LENGTH_SHORT).show();
+                            toast.GetInfoToast( "Event created!").show();
                             int newId = res.getInt("event_id");
                             Event event = new Event(newId, title, startDate, endDate, description, location, allDay);
                             eventList.add(event);
                             applyEventFilterDialog(currentQuery,filterByTitle,filterByLocation,sortAsc,completed);
                         } else {
-                           // Toast.makeText(this, "Error: " + res.getString("message"), Toast.LENGTH_SHORT).show();
+                           Log.e("Error: ", res.getString("message"));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                       // Toast.makeText(this, "Invalid response from server", Toast.LENGTH_SHORT).show();
+                       Log.e("JSON", "Invalid response from server");
                     }
                 },
                 error -> {
                     error.printStackTrace();
-                  //  Toast.makeText(this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                    Log.e("Server Connection:", "Failed to connect to server");
                 }
         ) {
             @Override
