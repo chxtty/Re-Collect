@@ -36,25 +36,16 @@
             android:id="@+id/btnSignIn"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="#9E8AB7"
-            android:text="sign in
-            patient"
-            android:textColorLink="#EDEDED" />
-
-        <Button
-            android:id="@+id/btnSignInCare"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#AACC9E"
-            android:text="sign in caregiver"
-            android:textColor="#EDEDED"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/dashboard_icon_caregiver"
+            android:text="@string/sign_in"
             android:textColorLink="#EDEDED" />
 
         <Button
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#46494C"
+            android:background="@drawable/logout_btn"
             android:text="@string/sign_up"
             android:textColor="#F4E3E3"
             android:textColorLink="#A94949" />
@@ -95,9 +86,10 @@
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="#2B2D30"
+            android:background="@drawable/activity_dialog_et"
             android:backgroundTint="#ABCD9F"
-            android:hint="Enter Email" />
+            android:hint="Enter Email"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -114,10 +106,11 @@
                 android:id="@+id/edtPassword"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="#F8F8F8"
+                android:background="@drawable/activity_dialog_et"
                 android:backgroundTint="#AACC9E"
                 android:hint="Enter Password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:paddingStart="5dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>

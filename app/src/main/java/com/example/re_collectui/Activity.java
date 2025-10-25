@@ -1,15 +1,20 @@
 package com.example.re_collectui;
 
 public class Activity {
-    private int activityId, patientId;
-    private String StartTime, EndTime, actDate;
 
-    public Activity(int activityId, int patientId, String startTime, String endTime, String actDate) {
+
+    private int detailId, activityId, patientId;
+    private String StartTime, EndTime, actDate, actIconBase64;
+    private boolean isExpanded = false;
+
+    public Activity(int detailId, int activityId, int patientId, String startTime, String endTime, String actDate, String actIconBase64) {
+        this.detailId = detailId;
         this.activityId = activityId;
         this.patientId = patientId;
-        StartTime = startTime;
-        EndTime = endTime;
+        this.StartTime = startTime;
+        this.EndTime = endTime;
         this.actDate = actDate;
+        this.actIconBase64 = actIconBase64;
     }
 
     public Activity(String actDate, int activityId){
@@ -36,6 +41,10 @@ public class Activity {
     public String getActDate() {
         return actDate;
     }
+    public int getDetailId() {return detailId;}
+    public String getActIconBase64() {return  actIconBase64;}
+
+    public boolean isExpanded() {return isExpanded;}
 
     public void setActivityId(int activityId) {
         this.activityId = activityId;
@@ -56,4 +65,13 @@ public class Activity {
     public void setActDate(String actDate) {
         this.actDate = actDate;
     }
+
+    public void setDetailId(int detailId) {
+        this.detailId = detailId;
+    }
+
+    public void setActIconBase64(String actIconBase64) {
+        this.actIconBase64 = actIconBase64;
+    }
+    public void setExpanded(boolean expanded) {isExpanded = expanded;}
 }

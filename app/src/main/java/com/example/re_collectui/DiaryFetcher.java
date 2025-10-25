@@ -12,8 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DiaryFetcher {
-
-    private static final String API_URL = "http://100.104.224.68/android/api.php?action=get_diary_entry";
+    private static final String API_URL = GlobalVars.apiPath + "get_diary_entry";
     private final RequestQueue requestQueue;
 
     public DiaryFetcher(Context context) {

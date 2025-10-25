@@ -8,7 +8,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="#fff7f0"
+        android:orientation="vertical"
+        android:padding="25dp">
 
         <ImageView
             android:id="@+id/imageView"
@@ -26,10 +28,12 @@
         <EditText
             android:id="@+id/editTitle"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="@color/Celadon"
+            android:layout_height="48dp"
+            android:background="@drawable/activity_dialog_et"
             android:ems="10"
-            android:inputType="text" />
+            android:hint="Enter Title"
+            android:inputType="text"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView4"
@@ -41,11 +45,13 @@
             android:id="@+id/editStartDate"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@color/Celadon"
+            android:background="@drawable/activity_dialog_et"
             android:clickable="true"
             android:ems="10"
             android:focusable="false"
-            android:inputType="date" />
+            android:hint="Pick Start Date"
+            android:inputType="date"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView5"
@@ -56,13 +62,15 @@
         <EditText
             android:id="@+id/editEndDate"
             android:layout_width="match_parent"
-            android:layout_height="41dp"
-            android:background="@color/Celadon"
+            android:layout_height="48dp"
+            android:background="@drawable/activity_dialog_et"
             android:backgroundTint="@color/Celadon"
             android:clickable="true"
             android:ems="10"
             android:focusable="false"
-            android:inputType="date" />
+            android:hint="Pick End Date"
+            android:inputType="date"
+            android:paddingStart="5dp" />
 
         <CheckBox
             android:id="@+id/checkBox"
@@ -79,10 +87,12 @@
         <EditText
             android:id="@+id/editLocation"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
-            android:background="@color/Celadon"
+            android:layout_height="48dp"
+            android:background="@drawable/activity_dialog_et"
             android:ems="10"
-            android:inputType="text" />
+            android:hint="Enter Location"
+            android:inputType="text"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView7"
@@ -94,12 +104,15 @@
             android:id="@+id/editDescription"
             android:layout_width="match_parent"
             android:layout_height="123dp"
-            android:background="@color/Celadon"
-            android:backgroundTint="#C8DBBB"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/activity_dialog_et"
             android:backgroundTintMode="src_in"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
+            android:hint="Enter Description"
+            android:inputType="textMultiLine"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,7 +123,9 @@
                 android:id="@+id/btnCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/logout_btn"
                 android:backgroundTint="#46494C"
                 android:text="Cancel"
                 android:textColor="#D1CCC8" />
@@ -119,7 +134,9 @@
                 android:id="@+id/btnCreate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/dashboard_icon_caregiver"
                 android:backgroundTint="#A285C5"
                 android:text="Create" />
         </LinearLayout>

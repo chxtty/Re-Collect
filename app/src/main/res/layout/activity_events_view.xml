@@ -5,59 +5,38 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/view_events_1_"
+    android:background="@drawable/view_events"
     tools:context=".EventsView">
 
     <ImageView
         android:id="@+id/imgEventLogo"
         android:layout_width="72dp"
         android:layout_height="69dp"
-        android:layout_marginStart="188dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/upcoming"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/crdCreateEvent"
-        android:layout_width="406dp"
-        android:layout_height="99dp"
-        android:layout_marginBottom="28dp"
-        android:foreground="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_2__1_"
-        app:cardCornerRadius="38dp"
-        app:contentPadding="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/parentRecyclerView"
-        app:layout_constraintVertical_bias="0.877" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/parentRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
-
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="427dp"
-        android:layout_height="63dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgEventLogo">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/edtSearchEvents"
-            android:layout_width="wrap_content"
+            android:layout_width="326dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
             android:layout_weight="1000"
-            android:background="#F8F8F8"
+            android:background="@drawable/activity_dialog_et"
             android:backgroundTint="#ABCD9F"
             android:ems="10"
             android:inputType="text" />
@@ -68,7 +47,73 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:foreground="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_3_"
+            android:onClick="showFilterDialog"
             app:cardCornerRadius="20dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout11"
+        android:layout_width="412dp"
+        android:layout_height="675dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="573dp"
+            android:background="@drawable/menu_background_shape"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/parentRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp" />
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/crdCreateEvent"
+            android:layout_width="380dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/entry_button_background"
+            android:elevation="2.5dp">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="50dp"
+                android:layout_height="49dp"
+                android:layout_marginStart="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.073"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.545"
+                app:srcCompat="@drawable/add_btn" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NEW EVENT"
+                android:textColor="@color/dark_gray"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.364"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.516" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

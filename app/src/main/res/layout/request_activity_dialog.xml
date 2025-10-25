@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/creme">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="25dp">
+
+        <ImageView
+            android:id="@+id/imageView14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/activity_icon" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Request"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter Activity Name:"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edtActName"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:background="@drawable/activity_dialog_et"
+            android:ems="10"
+            android:hint="Enter Activity Name"
+            android:inputType="text"
+            android:paddingStart="5dp" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter Description:"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edtActDescr"
+            android:layout_width="match_parent"
+            android:layout_height="158dp"
+            android:background="@drawable/activity_dialog_et"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="Enter Description"
+            android:inputType="textMultiLine"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancelActReq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/logout_btn"
+                android:text="Cancel"
+                android:textColor="@color/creme" />
+
+            <Button
+                android:id="@+id/btnSubmitActReq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/dashboard_icon_caregiver"
+                android:text="Submit" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

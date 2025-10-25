@@ -2,6 +2,7 @@ package com.example.re_collectui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ public class ViewEntry extends AppCompatActivity {
     String content;
     int author;
     int entryId;
+    private CustomToast toast;
 
 
 
@@ -46,6 +48,7 @@ public class ViewEntry extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        toast = new CustomToast(this);
 
         Intent intent = getIntent();
         entryId = intent.getIntExtra("entryId",-1);
@@ -61,15 +64,15 @@ public class ViewEntry extends AppCompatActivity {
 
     }
     private void deleteEntry(int entryId) {
-        String url = "http://100.104.224.68/android/api.php?action=delete_diary_entry";
+        String url = GlobalVars.apiPath + "delete_diary_entry";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
-                    Toast.makeText(ViewEntry.this, "Entry deleted!", Toast.LENGTH_SHORT).show();
+                    toast.GetDeleteToast("Entry deleted successfully").show();
                     finish(); // close this activity and go back to list
                 },
                 error -> {
-                    Toast.makeText(ViewEntry.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    toast.GetErrorToast("Error: " + error.getMessage()).show();
                 }) {
             @Override
             protected Map<String, String> getParams() {
@@ -96,12 +99,17 @@ public class ViewEntry extends AppCompatActivity {
 
         ImageView imgDelete = findViewById(R.id.imgDelete);
         imgDelete.setOnClickListener(v -> {
-            new AlertDialog.Builder(ViewEntry.this)
-                    .setTitle("Delete Entry")
-                    .setMessage("Are you sure you want to delete this diary entry?")
-                    .setPositiveButton("Yes", (dialog, which) -> deleteEntry(entryId))
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            CustomPopupDialogFragment dialog = CustomPopupDialogFragment.newInstance(
+                    "Are you sure you want to delete this entry?",
+                    "Yes",
+                    "Cancel"
+            );
+
+            dialog.setOnPositiveClickListener(() -> {
+                deleteEntry(entryId);
+            });
+
+            dialog.show(getSupportFragmentManager(), "DeleteConfirmationDialog");
         });
     }
 

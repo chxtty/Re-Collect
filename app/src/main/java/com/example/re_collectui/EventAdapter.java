@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.transition.AutoTransition;
+import android.transition.TransitionManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -40,7 +44,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     private List<Event> eventList;
     private List<Event> searchList;
     private Context context;
-    private int expandedPosition = -1;
+
+    private int expandedPosition = RecyclerView.NO_POSITION;
     private String currentQuery = "";
 
     public EventAdapter(Context context, List<Event> eventList, List<Event> searchList) {
@@ -61,51 +66,60 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Event event = searchList.get(position);
 
         holder.eventTitle.setText(event.getTitle());
-        holder.eventDates.setText(event.getStartDate() + " - " + event.getEndDate());
+        if (event.getAllDay()){
+            holder.eventDates.setText(event.getStartDate());
+        } else {
+            holder.eventDates.setText(event.getStartDate() + " - " + event.getEndDate());
+        }
         holder.eventLocation.setText(event.getLocation());
         holder.eventDescription.setText(event.getDescription());
 
 
-        holder.expandableLayout.setVisibility(event.isExpanded() ? View.VISIBLE : View.GONE);
-
+        holder.expandableLayout.setVisibility(position == expandedPosition ? View.VISIBLE : View.GONE);
 
         holder.itemView.setOnClickListener(v -> {
-            int pos = holder.getAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                Event clickedEvent = searchList.get(holder.getAdapterPosition());
-                boolean isExpanded = !clickedEvent.isExpanded();
-
-                // Collapse all
-                for (int i = 0; i < eventList.size(); i++) {
-                    eventList.get(i).setExpanded(false);
-                }
-
-                // Expand the clicked one
-                clickedEvent.setExpanded(isExpanded);
-
-                notifyDataSetChanged();
+            int oldExpanded = expandedPosition;
+            if (oldExpanded == position) {
+                expandedPosition = RecyclerView.NO_POSITION;
+            } else {
+                expandedPosition = position;
             }
+
+            android.transition.TransitionSet transitionSet = new android.transition.TransitionSet()
+                    .addTransition(new AutoTransition())
+                    .addTransition(new Fade(Fade.IN))
+                    .addTransition(new Fade(Fade.OUT))
+                    .setDuration(300);
+
+            TransitionManager.beginDelayedTransition((ViewGroup) holder.itemView.getParent(), transitionSet);
+
+            if (oldExpanded != RecyclerView.NO_POSITION)
+                notifyItemChanged(oldExpanded);
+            notifyItemChanged(position);
         });
 
-        holder.deleteButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(context)
-                    .setTitle("Delete Event")
-                    .setMessage("Are you sure you want to delete this event?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        deleteEventFromServer(event);
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
-        });
+        holder.deleteButton.setOnClickListener(v -> showDeleteDialog(event));
 
         holder.editButton.setOnClickListener(v -> {
             showEditEventDialog(event);
         });
     }
 
+    private void showDeleteDialog(Event event) {
+        CustomPopupDialogFragment dialog = CustomPopupDialogFragment.newInstance(
+                "Are you sure you want to delete this event?",
+                "Yes",
+                "Cancel"
+        );
+        dialog.setOnPositiveClickListener(() -> deleteEventFromServer(event));
+        dialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "DeleteEventDialog");
+    }
+
     private void showEditEventDialog(Event event) {
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.event_create_dialog);
+        CustomToast toast1 = new CustomToast(context);
+
 
         EditText title = dialog.findViewById(R.id.editTitle);
         EditText startDate = dialog.findViewById(R.id.editStartDate);
@@ -127,6 +141,25 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         startDate.setOnClickListener(v -> showDatePicker(startDate));
         endDate.setOnClickListener(v -> showDatePicker(endDate));
 
+        if(event.getAllDay()){
+            endDate.setEnabled(false);
+            endDate.setAlpha(0.5f);
+            endDate.setText("");
+        }
+
+        allDay.setOnCheckedChangeListener((v,b) -> {
+            if (b){
+                endDate.setEnabled(false);
+                endDate.setAlpha(0.5f);
+                if (!startDate.getText().toString().isEmpty()) {
+                    endDate.setText(startDate.getText().toString());
+                }
+            } else {
+                endDate.setEnabled(true);
+                endDate.setAlpha(1.0f);
+            }
+        });
+
         btnCreate.setText("Update");
 
         btnCancel.setOnClickListener(v -> dialog.dismiss());
@@ -138,6 +171,24 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             boolean updatedAllDay = allDay.isChecked();
             String updatedLocation = location.getText().toString().trim();
             String updatedDesc = description.getText().toString().trim();
+
+            if (!updatedAllDay) {
+                updatedEnd = endDate.getText().toString().trim();
+
+            } else {
+                updatedEnd = updatedStart;
+            }
+
+
+            if (updatedTitle.isEmpty() || updatedStart.isEmpty() || updatedEnd.isEmpty()) {
+                toast1.GetErrorToast("Please fill in required fields").show();
+                return;
+            }
+
+            if (updatedStart.compareTo(updatedEnd) > 0) {
+                toast1.GetErrorToast( "Start date must be before the End date").show();
+                return;
+            }
 
             updateEventOnServer(
                     event.getEventID(),
@@ -152,6 +203,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         });
 
         dialog.show();
+
+        dialog.getWindow().setLayout((int) (context.getResources().getDisplayMetrics().widthPixels *0.9),
+                RecyclerView.LayoutParams.WRAP_CONTENT);
     }
 
 
@@ -191,24 +245,24 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private void updateEventOnServer(int eventID, String title, String startDate, String endDate, boolean allDay, String location, String description) {
-        String url = "http://100.104.224.68/android/api.php?action=update_event";
-
+        String url = GlobalVars.apiPath + "update_event";
+        CustomToast toast = new CustomToast(context);
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            Toast.makeText(context, "Event updated", Toast.LENGTH_SHORT).show();
+                            toast.GetInfoToast("Event updated").show();
                             Event updatedEvent = new Event(eventID, title, startDate, endDate, description, location, allDay);
                             updateEventInList(updatedEvent);
                         } else {
-                            Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(context, "Error parsing update response", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(context, "Error parsing update response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(context, "Update failed", Toast.LENGTH_SHORT).show()
+                error -> toast.GetErrorToast("Update failed").show()
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -228,7 +282,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private void deleteEventFromServer(Event eventToDelete) {
-        String url = "http://100.104.224.68/android/api.php?action=delete_event";
+        String url = GlobalVars.apiPath + "delete_event";
+
+        CustomToast toast = new CustomToast(context);
+
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
                     try {
@@ -237,15 +294,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                             eventList.removeIf(e -> e.getEventID() == eventToDelete.getEventID());
                             searchList.removeIf(e -> e.getEventID() == eventToDelete.getEventID());
                             notifyDataSetChanged();
-                            Toast.makeText(context, "Event deleted", Toast.LENGTH_SHORT).show();
+                            toast.GetInfoToast("Event deleted").show();
                         } else {
-                            Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(context, "Delete failed", Toast.LENGTH_SHORT).show()
+                error -> toast.GetErrorToast("Delete failed").show()
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -318,18 +375,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void addEvent(Event event, String currentQuery) {
         eventList.add(event);
 
-        // Update the filtered list according to current search
         if (currentQuery.isEmpty() || event.getTitle().toLowerCase(Locale.getDefault()).contains(currentQuery.toLowerCase(Locale.getDefault()))) {
             searchList.add(event);
             notifyItemInserted(searchList.size() - 1);
         } else {
-            // If event does not match filter, just notify that data changed for filtering
             notifyDataSetChanged();
         }
     }
 
     public void deleteEvent(Event eventToDelete) {
-        // Remove from full list
         Iterator<Event> iterator = eventList.iterator();
         while (iterator.hasNext()) {
             Event e = iterator.next();
@@ -339,7 +393,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             }
         }
 
-        // Re-filter the search list to reflect removal
         filter(currentQuery);
     }
 
