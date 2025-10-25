@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -82,9 +83,9 @@ public class EventsView extends AppCompatActivity {
         parentRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(30));
         toast = new CustomToast(this);
 
-        CardView crdCreate = findViewById(R.id.crdCreateEvent);
+        ConstraintLayout consCreate = findViewById(R.id.crdCreateEvent); // I changed from cardview to constraint layout to fit with the new button and changed name appropriately
 
-        crdCreate.setOnClickListener(v -> showCreateEventDialog());
+        consCreate.setOnClickListener(v -> showCreateEventDialog());
 
         SearchView searchView = findViewById(R.id.edtSearchEvents);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

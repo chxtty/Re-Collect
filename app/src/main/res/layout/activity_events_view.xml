@@ -78,7 +78,7 @@
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/newEntrylyo"
+            android:id="@+id/crdCreateEvent"
             android:layout_width="380dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
