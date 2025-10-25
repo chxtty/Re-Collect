@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -28,6 +31,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -37,9 +41,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
     EditText editEmail, editPassword;
-    Button btnSignIn;
+    Button btnSignIn, btnSignUp;
 
     private CustomToast toast;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +61,19 @@ public class LoginActivity extends AppCompatActivity {
         editEmail = findViewById(R.id.edtEmail);
         editPassword = findViewById(R.id.edtPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
+        btnSignUp = findViewById(R.id.btnSignUp);
+        btnSignUp.setOnClickListener(v -> showSignUpDialog());
 
         btnSignIn.setOnClickListener(v -> {
             String email = editEmail.getText().toString().trim();
             String password = editPassword.getText().toString().trim();
-            login(email,password);
+            login(email,password, "onCreate");
         });
+
     }
 
-    private void login(String email, String password) {
+
+    private void login(String email, String password, String MethodCall) {
         String url = GlobalVars.apiPath + "login";
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -78,17 +87,17 @@ public class LoginActivity extends AppCompatActivity {
                             JSONObject user = jsonResponse.getJSONObject("user");
                             String name = user.getString("firstName");
                             String role = user.optString("role");
-                            int patientID = user.getInt("patientID");
-                            toast.GetGreatingToast("Welcome " + name).show();
 
                             SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putInt("patientID", patientID);
                             editor.putString("role", role);
                             editor.putString("name", name);
+                            toast.GetGreatingToast("This role:" + role).show();
 
                             if (role.equals("patient")){
+                                toast.GetGreatingToast("Welcome " + name).show();
                                 int caregiverID = user.getInt("careGiverID");
+                                int patientID = user.getInt("patientID");
                                 editor.putInt("patientID", patientID);
                                 editor.putInt("caregiverID",caregiverID);
                                 editor.apply();
@@ -97,12 +106,16 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
                                 startActivity(intent);
                             } else if(role.equals("admin")){
-                                int adminID = user.getInt("caregiverID");
+                                toast.GetGreatingToast("Welcome " + name).show();
+                                int adminID = user.getInt("careGiverID");
                                 editor.putInt("caregiverID", adminID);
                                 editor.apply();
-
+                                Intent intent;
                                 //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(LoginActivity.this, DashboardCaregiver.class);
+                                if(MethodCall.equals("showCaregiverLoginDialog")){
+                                    intent = new Intent(LoginActivity.this, CreatePatient.class);
+                                } else{
+                                    intent = new Intent(LoginActivity.this, DashboardCaregiver.class);}
                                 startActivity(intent);
                             }
 
@@ -128,5 +141,59 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         queue.add(stringRequest);
+    }
+
+    private void showSignUpDialog() {
+        // Options for sign up
+        String[] options = {"Caregiver", "Patient"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sign up:")
+                .setSingleChoiceItems(options, -1, (dialog, which) -> {
+                    // Store choice temporarily (caregiver or patient)
+                    if (options[which].equals("Caregiver")) {
+                        // Open caregiver sign up activity
+                        Intent intent = new Intent(LoginActivity.this, CreateCaregiver.class);
+                        startActivity(intent);
+                        dialog.dismiss();
+                    } else {
+                        // If patient → show caregiver login dialog
+                        dialog.dismiss();
+                        showCaregiverLoginDialog();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.create().show();
+    }
+
+    private void showCaregiverLoginDialog() {
+        // Inflate custom layout
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialogue_caregiver_login, null);
+
+        EditText caregiverEmail = dialogView.findViewById(R.id.caregiverEmail);
+        EditText caregiverPassword = dialogView.findViewById(R.id.caregiverPassword);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Caregiver Credentials")
+                .setView(dialogView)
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    String email = caregiverEmail.getText().toString().trim();
+                    String password = caregiverPassword.getText().toString().trim();
+
+                    // 🔑 TODO: Replace with real caregiver verification (e.g. Firebase DB check)
+                    // if (email.equals("caregiver@example.com") && password.equals("1234")) {
+                    //   // If verified → go to patient signup
+                    // Intent intent = new Intent(LoginActivity.this, CreatePatient.class);
+                    //startActivity(intent);
+                    //} else {
+                    //   Toast.makeText(LoginActivity.this, "Invalid caregiver credentials", Toast.LENGTH_SHORT).show();
+                    //}
+                    login(email,password, "showCaregiverLoginDialog");
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.create().show();
     }
 }
