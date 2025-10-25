@@ -149,7 +149,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
         }
     }
     private void deleteActivity(Context context, int detailId) {
-        String url = "http://100.79.152.109/android/api.php?action=delete_activity";
+        String url = GlobalVars.apiPath + "delete_activity";
         CustomToast toast = new CustomToast(context);
 
         Map<String, Integer> params = new HashMap<>();

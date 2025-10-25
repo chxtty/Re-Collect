@@ -124,7 +124,7 @@ public class ActivityDialog extends DialogFragment {
 
 
     private void fetchActivityTypes() {
-        String url = "http://100.79.152.109/android/api.php?action=view_activity_types";
+        String url = GlobalVars.apiPath + "view_activity_types";
         List<String> activityTypes = new ArrayList<>();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,

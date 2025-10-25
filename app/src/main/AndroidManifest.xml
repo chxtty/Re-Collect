@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,7 +14,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ReCollectUI"
-        android:usesCleartextTraffic="true">
+        >
+        <activity
+            android:name=".EditCommMem"
+            android:exported="false" />
+        <activity
+            android:name=".EditPatient"
+            android:exported="false" />
+        <activity
+            android:name=".EditCaregiver"
+            android:exported="false" />
+        <activity
+            android:name=".AddCommMem"
+            android:exported="false" />
+        <activity
+            android:name=".ViewCommunity"
+            android:exported="false" />
+        <activity
+            android:name=".ViewCommunityMember"
+            android:exported="false" />
+        <activity
+            android:name=".ViewCaregiver"
+            android:exported="false" />
+        <activity
+            android:name=".CreateCaregiver"
+            android:exported="false" />
+        <activity
+            android:name=".ViewPatientList"
+            android:exported="false" />
+        <activity
+            android:name=".ViewPatient"
+            android:exported="false" />
+        <activity
+            android:name=".CreatePatient"
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        >
         <activity
             android:name=".RequestEditActivity"
             android:exported="false" />
@@ -42,16 +78,18 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name=".ViewDiaryEntries"
             android:exported="false" />
+
         <activity
             android:name=".ViewEntry"
             android:exported="false" />
+
         <activity
             android:name=".EditEntry"
             android:exported="false"

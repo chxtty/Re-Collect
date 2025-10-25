@@ -51,23 +51,10 @@
             app:cardCornerRadius="20dp" />
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/crdCreateEvent"
-        android:layout_width="406dp"
-        android:layout_height="99dp"
-        android:layout_marginBottom="15dp"
-        android:foreground="@drawable/blue_and_white_illustrated_login_page_mobile_prototype_2__1_"
-        app:cardCornerRadius="38dp"
-        app:contentPadding="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <LinearLayout
         android:id="@+id/linearLayout11"
         android:layout_width="412dp"
         android:layout_height="675dp"
-        android:background="#18000000"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,6 +65,7 @@
             android:id="@+id/linearLayout4"
             android:layout_width="match_parent"
             android:layout_height="573dp"
+            android:background="@drawable/menu_background_shape"
             android:orientation="vertical"
             android:padding="15dp">
 
@@ -88,6 +76,44 @@
                 android:layout_marginTop="12dp" />
 
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/crdCreateEvent"
+            android:layout_width="380dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/entry_button_background"
+            android:elevation="2.5dp">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="50dp"
+                android:layout_height="49dp"
+                android:layout_marginStart="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.073"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.545"
+                app:srcCompat="@drawable/add_btn" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NEW EVENT"
+                android:textColor="@color/dark_gray"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.364"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.516" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

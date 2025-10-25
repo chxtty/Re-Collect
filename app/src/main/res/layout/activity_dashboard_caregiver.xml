@@ -35,7 +35,6 @@
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
         android:focusable="true"
-        android:onClick="on_Caregiver_profile_Click"
         android:id="@+id/caregiver_profile"
         >
 
@@ -67,12 +66,7 @@
           app:srcCompat="@drawable/myself_icon_caregiver" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- <androidx.cardview.widget.CardView
-        android:id="@+id/crdMyself"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:foreground="@drawable/screenshot_2025_07_23_205608"
-        app:cardCornerRadius="20dp" /> -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
 
         android:layout_width="160dp"
@@ -83,7 +77,6 @@
         android:focusable="true"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp"
-        android:onClick="on_Caregiver_patients_Click"
         android:id="@+id/caregiver_patients">
 
       <TextView
@@ -114,21 +107,10 @@
           app:srcCompat="@drawable/my_patients_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- <androidx.cardview.widget.CardView
-        android:id="@+id/crdDiary"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:foreground="@drawable/screenshot_2025_07_23_205833"
-        app:cardCornerRadius="20dp" /> -->
 
-    <!--<androidx.cardview.widget.CardView
-        android:id="@+id/crdComm"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:foreground="@drawable/screenshot_2025_07_23_210230"
-        app:cardCornerRadius="20dp" /> -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
+
 
         android:layout_width="160dp"
         android:layout_height="160dp"
@@ -138,8 +120,7 @@
         android:focusable="true"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp"
-        android:onClick="on_Caregiver_requests_Click"
-        android:id="@+id/caregiver_requests">>
+        android:id="@+id/caregiver_requests">
 
       <TextView
           android:id="@+id/textView6"
@@ -177,12 +158,12 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginEnd="144dp"
-      android:clipToOutline="false"
       android:contentDescription="@string/todo"
       android:translationX="430dp"
       android:translationY="210dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
       app:srcCompat="@drawable/bottom_flora1_caregiver" />
 
   <ImageView
@@ -204,12 +185,13 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="128dp"
-      android:text="@string/welcome_back_name"
+      android:text="@string/welcome_back"
       android:textSize="26sp"
       android:textStyle="bold"
+      android:gravity="center"
+      android:lineSpacingExtra="4sp"
       app:layout_constraintBottom_toTopOf="@+id/menuGrid"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.498"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 

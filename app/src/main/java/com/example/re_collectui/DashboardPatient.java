@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -43,13 +46,12 @@ import java.util.Arrays;
 public class DashboardPatient extends AppCompatActivity {
 
     Button btnLogout;
-    ConstraintLayout eventsOption;
-    ConstraintLayout diaryOption;
-    ConstraintLayout activityOption;
-    int patientID, caregiverID;
+    ConstraintLayout eventsOption, diaryOption, communityOption, caregiverOption, activityOption, myselfOption;
+    int patientID, careGiverID;
     private Uri selectedImageUri = null;
     CustomToast toast;
     private static final int IMAGE_REQUEST = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +72,7 @@ public class DashboardPatient extends AppCompatActivity {
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         patientID = sharedPref.getInt("patientID", -1); // for patientID for session
-        caregiverID = sharedPref.getInt("caregiverID", -1);
+        careGiverID = sharedPref.getInt("careGiverID", -1);
         String name = sharedPref.getString("name", "");
         toast = new CustomToast(this);
 
@@ -78,15 +80,20 @@ public class DashboardPatient extends AppCompatActivity {
         txtWelcome.setText("Welcome, " + name + " :)");
 
 
+
         btnLogout = findViewById(R.id.btnLogout);
         eventsOption = findViewById(R.id.eventsOption);
         diaryOption = findViewById(R.id.dairyOption);
         activityOption = findViewById(R.id.activityOption);
+        myselfOption = findViewById(R.id.myselfOption);
+        communityOption = findViewById(R.id.commOption);
+        caregiverOption = findViewById(R.id.CaregiverOption);
 
         btnLogout.setOnClickListener(v ->{
             Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
             sharedPref.edit().clear().apply();
             startActivity(intent);
+            finish();
         });
 
         eventsOption.setOnClickListener(v -> {
@@ -99,11 +106,36 @@ public class DashboardPatient extends AppCompatActivity {
             startActivity(intent);
         });
 
+        myselfOption.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardPatient.this, ViewPatient.class);
+            intent.putExtra("patientID", patientID);
+            startActivity(intent);
+        });
+
         activityOption.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardPatient.this, ViewActivities.class);
             startActivity(intent);
         });
 
+        communityOption.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardPatient.this, ViewCommunity.class);
+            // You were missing this line. It adds the patient's ID to the intent
+            // so the next screen knows which community to load.
+            intent.putExtra("patientID", patientID);
+            startActivity(intent);
+        });
+
+        // ADDED: OnClickListener for the caregiver option
+        caregiverOption.setOnClickListener(v -> {
+            if (careGiverID != -1) {
+                Intent intent = new Intent(DashboardPatient.this, ViewCaregiver.class);
+                // Pass the assigned caregiver's ID to the ViewCaregiver activity
+                intent.putExtra("careGiverID", careGiverID);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "No caregiver is assigned to this profile.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void showRequestDialog(View view) {
@@ -175,7 +207,7 @@ public class DashboardPatient extends AppCompatActivity {
                 return;
             }
 
-            submitCommRequest(patientID, caregiverID, commType, firstName, lastName, desc, cuteMsg, imgBase64);
+            submitCommRequest(patientID, careGiverID, commType, firstName, lastName, desc, cuteMsg, imgBase64);
             dialog.dismiss();
         });
 

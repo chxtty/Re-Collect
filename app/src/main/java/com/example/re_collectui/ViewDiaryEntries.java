@@ -112,7 +112,7 @@ public class ViewDiaryEntries extends AppCompatActivity {
 
     private void SetUpEntries(){
         entryList.clear();
-        String url = "http://100.79.152.109/android/api.php?action=view_diary_entries_p&patientId=" + patientID;
+        String url = GlobalVars.apiPath + "view_diary_entries_p&patientId=" + patientID;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -149,7 +149,7 @@ public class ViewDiaryEntries extends AppCompatActivity {
     }
 
     private void createDiaryEntry(String title, String date, String content, int authorId) {
-        String url = "http://100.79.152.109/android/api.php?action=create_diary_entry";
+        String url = GlobalVars.apiPath + "create_diary_entry";
 
         Log.d("CreateEntry", "Sending -> " +
                 "Title: " + title +
