@@ -3,6 +3,7 @@ package com.example.re_collectui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -92,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putInt("caregiverID",caregiverID);
                                 editor.apply();
 
-                                Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
                                 startActivity(intent);
                             } else if(role.equals("admin")){
@@ -100,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putInt("caregiverID", adminID);
                                 editor.apply();
 
-                                Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(LoginActivity.this, DashboardCaregiver.class);
                                 startActivity(intent);
                             }
@@ -109,13 +110,13 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                         } else {
                             String message = jsonResponse.getString("message");
-                            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                            toast.GetErrorToast(message);
                         }
                     } catch (JSONException e) {
-                        Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("Error",  e.getMessage());
                     }
                 },
-                error -> Toast.makeText(this, "Network error: " + error.toString(), Toast.LENGTH_LONG).show()
+                error -> Log.e( "Network error",error.toString())
         ) {
             @Override
             protected Map<String, String> getParams() {

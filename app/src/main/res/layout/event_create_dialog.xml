@@ -31,7 +31,9 @@
             android:layout_height="48dp"
             android:background="@drawable/activity_dialog_et"
             android:ems="10"
-            android:inputType="text" />
+            android:hint="Enter Title"
+            android:inputType="text"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView4"
@@ -47,7 +49,9 @@
             android:clickable="true"
             android:ems="10"
             android:focusable="false"
-            android:inputType="date" />
+            android:hint="Pick Start Date"
+            android:inputType="date"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView5"
@@ -64,7 +68,9 @@
             android:clickable="true"
             android:ems="10"
             android:focusable="false"
-            android:inputType="date" />
+            android:hint="Pick End Date"
+            android:inputType="date"
+            android:paddingStart="5dp" />
 
         <CheckBox
             android:id="@+id/checkBox"
@@ -84,7 +90,9 @@
             android:layout_height="48dp"
             android:background="@drawable/activity_dialog_et"
             android:ems="10"
-            android:inputType="text" />
+            android:hint="Enter Location"
+            android:inputType="text"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView7"
@@ -101,7 +109,10 @@
             android:backgroundTintMode="src_in"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
+            android:hint="Enter Description"
+            android:inputType="textMultiLine"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

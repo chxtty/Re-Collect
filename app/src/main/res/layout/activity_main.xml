@@ -86,9 +86,10 @@
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="#2B2D30"
+            android:background="@drawable/activity_dialog_et"
             android:backgroundTint="#ABCD9F"
-            android:hint="Enter Email" />
+            android:hint="Enter Email"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -105,10 +106,11 @@
                 android:id="@+id/edtPassword"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="#F8F8F8"
+                android:background="@drawable/activity_dialog_et"
                 android:backgroundTint="#AACC9E"
                 android:hint="Enter Password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:paddingStart="5dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
