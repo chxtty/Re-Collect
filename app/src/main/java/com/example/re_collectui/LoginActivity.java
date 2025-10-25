@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     EditText editEmail, editPassword;
-    Button btnSignIn;
+    Button btnSignIn, btnSignUp;
 
     private CustomToast toast;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         editEmail = findViewById(R.id.edtEmail);
         editPassword = findViewById(R.id.edtPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
+        btnSignUp = findViewById(R.id.btnSignUp);
         btnSignUp.setOnClickListener(v -> showSignUpDialog());
 
         btnSignIn.setOnClickListener(v -> {
@@ -68,19 +69,6 @@ public class LoginActivity extends AppCompatActivity {
             String password = editPassword.getText().toString().trim();
             login(email,password, "onCreate");
         });
-
-        btnSignIn.setOnClickListener(v -> {
-            String email = editEmail.getText().toString().trim();
-            String password = editPassword.getText().toString().trim();
-            login(email,password);
-        });
-
-        btnSignInCaregiver.setOnClickListener(v -> {
-            String email = editEmail.getText().toString().trim();
-            String password = editPassword.getText().toString().trim();
-            login_caregiver1(email,password);
-        });
-
 
     }
 
