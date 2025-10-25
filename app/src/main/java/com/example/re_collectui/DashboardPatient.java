@@ -2,9 +2,11 @@ package com.example.re_collectui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -120,6 +122,29 @@ public class DashboardPatient extends AppCompatActivity {
         builder.setView(currView);
         AlertDialog dialog = builder.create();
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.type_options)
+        ) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setTextColor(position == 0 ? Color.GRAY : Color.BLACK);
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnType.setAdapter(adapter);
+
+        spnType.setSelection(0);
+
         btnImage.setOnClickListener(v ->{
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
@@ -132,7 +157,7 @@ public class DashboardPatient extends AppCompatActivity {
         btnSave.setOnClickListener(v -> {
             String firstName = edtFName.getText().toString().trim();
             String lastName = edtLName.getText().toString().trim();
-            String commType = spnType.getSelectedItem().toString();
+            String commType = spnType.getSelectedItemPosition() == 0 ? "" : spnType.getSelectedItem().toString();
             String desc = edtDesc.getText().toString().trim();
             String cuteMsg = edtCute.getText().toString().trim();
             String imgBase64 = "";
@@ -140,12 +165,13 @@ public class DashboardPatient extends AppCompatActivity {
                 imgBase64 = uriToBase64(selectedImageUri);
             }
 
-            if (commType.equals("Select Type")) {
-                commType = "";
+            if (commType.isEmpty()) {
+                toast.GetErrorToast("Please select a valid type").show();
+                return;
             }
 
             if (firstName.isEmpty()) {
-                toast.GetErrorToast("Please at least fill First Name");
+                toast.GetErrorToast("Please at least fill First Name").show();
                 return;
             }
 
@@ -169,16 +195,16 @@ public class DashboardPatient extends AppCompatActivity {
                         String status = res.getString("status");
 
                         if (status.equals("success")) {
-                            toast.GetInfoToast( "Community Member request submitted!");
+                            toast.GetInfoToast( "Community Member request submitted!").show();
                         } else {
-                           // Toast.makeText(this, res.getString("message"), Toast.LENGTH_LONG).show();
+                           toast.GetErrorToast(res.getString("message")).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        //Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 },
-                error -> toast.GetErrorToast("Network error: " + error.getMessage())
+                error -> toast.GetErrorToast("Network error: " + error.getMessage()).show()
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -217,7 +243,7 @@ public class DashboardPatient extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
             selectedImageUri = data.getData();
-            toast.GetInfoToast("Image added");
+            toast.GetInfoToast("Image added").show();
         }
     }
 

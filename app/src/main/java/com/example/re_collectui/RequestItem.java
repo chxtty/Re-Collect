@@ -24,10 +24,9 @@ public class RequestItem implements Serializable {
     private String commCuteMessage;
     private String commImage;
 
-    public RequestItem(int id, RequestType type, int patientID, int careGiverID, String status,
-                       String author, String name, String actType, String actDescription,
-                       String commType, String commFirstName, String commLastName,
-                       String commDescription, String commCuteMessage, String commImage) {
+    private String ActIcon;
+
+    public RequestItem(int id, RequestType type, int patientID, int careGiverID, String status, String author, String name, String actType, String actDescription, String commType, String commFirstName, String commLastName, String commDescription, String commCuteMessage, String commImage, String actIcon) {
         this.id = id;
         this.type = type;
         this.patientID = patientID;
@@ -43,7 +42,13 @@ public class RequestItem implements Serializable {
         this.commDescription = commDescription;
         this.commCuteMessage = commCuteMessage;
         this.commImage = commImage;
+        this.ActIcon = actIcon;
     }
+
+    public String getActIcon() {
+        return ActIcon;
+    }
+
     public int getId() { return id; }
     public RequestType getType() { return type; }
     public int getPatientID() { return patientID; }
@@ -66,16 +71,4 @@ public class RequestItem implements Serializable {
     public String getCommCuteMessage() { return commCuteMessage; }
     public String getCommImage() { return commImage; }
 
-    public Bitmap getCommImageBitmap() {
-        if (commImage == null || commImage.isEmpty())
-            return null;
-
-        try {
-            byte[] decodedBytes = Base64.decode(commImage, Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

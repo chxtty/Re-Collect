@@ -2,6 +2,7 @@ package com.example.re_collectui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -92,19 +93,36 @@ public class RequestsView extends AppCompatActivity {
         findViewById(R.id.crdFilterEvents).setOnClickListener(v -> showFilterDialog());
     }
 
-private void fetchRequests() {
-    RequestQueue queue = Volley.newRequestQueue(this);
-    String url = GlobalVars.apiPath + "get_requests";
+    private void fetchRequests() {
+        SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
+        int caregiverID = sharedPref.getInt("caregiverID", -1);
+        Log.i("RequestsView", "Caregiver ID is " + caregiverID);
 
-    JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-            response -> {
-                allRequests.clear();
-                try {
-                    JSONArray data = response.optJSONArray("data");
-                    if (data != null) {
+        String url = GlobalVars.apiPath + "get_requests&careGiverID=" + caregiverID;
+        Log.d("RequestsView", "Fetching requests from URL: " + url);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    Log.d("RequestsView", "Raw response: " + response.toString());
+                    allRequests.clear();
+
+                    try {
+                        JSONArray data = response.optJSONArray("data");
+                        if (data == null) {
+                            Log.w("RequestsView", "No 'data' array in response!");
+                            return;
+                        }
+
+                        Log.d("RequestsView", "Number of items in data: " + data.length());
+
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject obj = data.optJSONObject(i);
-                            if (obj == null) continue;
+                            if (obj == null) {
+                                Log.w("RequestsView", "Skipping null object at index " + i);
+                                continue;
+                            }
 
                             String typeStr = obj.optString("type", "ACTIVITY");
                             RequestItem.RequestType type = "ACTIVITY".equalsIgnoreCase(typeStr) ?
@@ -132,23 +150,30 @@ private void fetchRequests() {
                                     obj.optString("commLastName", null),
                                     obj.optString("commDescription", null),
                                     obj.optString("commCuteMessage", null),
-                                    obj.optString("commImage", null)
+                                    obj.optString("commImage", null),
+                                    obj.optString("actIcon", null)
                             );
+
                             allRequests.add(item);
+                            Log.d("RequestsView", "Added item: id=" + item.getId() + " name=" + item.getName());
                         }
+
+                        Log.d("RequestsView", "Total requests fetched: " + allRequests.size());
+                        applyFiltersAndSearch(); // keeps filtering/sorting
+                        Log.d("RequestsView", "Filtered requests count: " + filteredRequests.size());
+
+                    } catch (Exception e) {
+                        Log.e("RequestsView", "Exception parsing JSON", e);
                     }
-
-                    applyFiltersAndSearch();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                },
+                error -> {
+                    Log.e("RequestsView", "Network error", error);
+                    error.printStackTrace();
                 }
-            },
-            error -> Log.e( "Network error ",  error.getMessage())
-    );
+        );
 
-    queue.add(request);
-}
+        queue.add(request);
+    }
 
 private void applyFiltersAndSearch() {
     filteredRequests.clear();
@@ -164,8 +189,14 @@ private void applyFiltersAndSearch() {
             }
         }
 
-        if (filterDeclined && !"DECLINED".equalsIgnoreCase(item.getStatus())) {
-            matches = false;
+        if (filterDeclined) {
+            if (!"DECLINED".equalsIgnoreCase(item.getStatus().trim())) {
+                matches = false;
+            }
+        } else {
+            if ("DECLINED".equalsIgnoreCase(item.getStatus().trim())) {
+                matches = false;
+            }
         }
 
         if (matches && !searchQuery.isEmpty()) {

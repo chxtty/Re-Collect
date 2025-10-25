@@ -121,12 +121,12 @@ public class EventsView extends AppCompatActivity {
                                 JSONObject event = events.getJSONObject(i);
 
                                 String title = event.getString("eventTitle");
-                                String startDate = event.getString("eventStartDate").split(" ")[0]; // safe date
-                                String endDate = event.getString("eventEndDate").split(" ")[0];     // safe date
+                                String startDate = event.getString("eventStartDate").split(" ")[0];
+                                String endDate = event.getString("eventEndDate").split(" ")[0];
                                 String description = event.getString("eventDescription");
                                 String location = event.getString("eventLocation");
                                 int id = event.getInt("eventID");
-                                boolean allDay = event.optInt("allDay", 0) == 1; // safer
+                                boolean allDay = event.optInt("allDay", 0) == 1;
 
                                 eventList.add(new Event(id, title, startDate, endDate, description, location, allDay));
                             }

@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                         } else {
                             String message = jsonResponse.getString("message");
-                            toast.GetErrorToast(message);
+                            toast.GetErrorToast(message).show();
                         }
                     } catch (JSONException e) {
                         Log.e("Error",  e.getMessage());

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,7 +35,10 @@ public class DashboardCaregiver extends AppCompatActivity {
         });
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-        int patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+        String name = sharedPref.getString("name","");
+
+        TextView txtWelcome = findViewById(R.id.txtWelcome);
+        txtWelcome.setText("Welcome, " + name + " :)");
     }
 
     public void on_Caregiver_profile_Click(View view) {

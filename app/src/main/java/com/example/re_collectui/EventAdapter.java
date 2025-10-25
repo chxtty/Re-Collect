@@ -144,16 +144,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         if(event.getAllDay()){
             endDate.setEnabled(false);
             endDate.setAlpha(0.5f);
-            endDate.setText("");
+            endDate.setText(event.getStartDate());
         }
 
         allDay.setOnCheckedChangeListener((v,b) -> {
             if (b){
                 endDate.setEnabled(false);
                 endDate.setAlpha(0.5f);
-                if (!startDate.getText().toString().isEmpty()) {
-                    endDate.setText(startDate.getText().toString());
-                }
             } else {
                 endDate.setEnabled(true);
                 endDate.setAlpha(1.0f);
