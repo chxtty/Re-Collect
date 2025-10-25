@@ -10,8 +10,8 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="411dp"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
         android:layout_height="126dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,9 +21,11 @@
             android:id="@+id/imageView5"
             android:layout_width="212dp"
             android:layout_height="193dp"
-            app:srcCompat="@drawable/sage_border"
-            tools:layout_editor_absoluteX="257dp"
-            tools:layout_editor_absoluteY="-56dp" />
+            android:layout_marginStart="240dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@drawable/sage_border" />
 
         <TextView
             android:id="@+id/textView3"
@@ -31,7 +33,7 @@
             android:layout_height="109dp"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
-            android:text="Create new Caregiver Account"
+            android:text="Create new Patient Account"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -46,21 +48,25 @@
             android:id="@+id/imageView6"
             android:layout_width="265dp"
             android:layout_height="214dp"
-            app:srcCompat="@drawable/lavendar_border"
-            tools:layout_editor_absoluteX="-80dp"
-            tools:layout_editor_absoluteY="-77dp" />
+            android:layout_marginEnd="228dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:srcCompat="@drawable/lavendar_border" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="504dp"
-        android:background="@color/creme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/formScroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar">
 
 
         <LinearLayout
@@ -87,6 +93,7 @@
                 app:layout_constraintVertical_bias="0.505" />
 
             <EditText
+                android:id="@+id/etFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_field" />
@@ -107,6 +114,7 @@
                 app:layout_constraintVertical_bias="0.505" />
 
             <EditText
+                android:id="@+id/etLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_field" />
@@ -128,6 +136,7 @@
 
 
             <DatePicker
+                android:id="@+id/dpDob"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_field" />
@@ -200,6 +209,7 @@
                 android:background="@drawable/bg_field"
                 android:ems="10"
                 android:inputType="textEmailAddress" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -236,7 +246,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.505" />
+
             <EditText
+                android:id="@+id/etDiagnosis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_field" />
@@ -260,28 +272,30 @@
                 android:id="@+id/button2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_add_photo"
                 android:text="+"
-                android:textSize="30dp"
                 android:textColor="@color/creme"
-                android:background="@drawable/bg_add_photo"/>
+                android:textSize="30dp" />
 
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBar"
         android:layout_width="409dp"
         android:layout_height="89dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        app:layout_constraintTop_toBottomOf="@+id/formScroll"
         app:layout_constraintVertical_bias="1.0"
-        app:layout_goneMarginBottom="0dp">
+        app:layout_goneMarginBottom="0dp"
+        android:paddingTop="20dp">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnFormSignUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign up"
@@ -294,7 +308,7 @@
             />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/btnExit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

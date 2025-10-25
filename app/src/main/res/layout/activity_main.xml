@@ -37,7 +37,17 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="#9E8AB7"
-            android:text="@string/sign_in"
+            android:text="sign in
+            patient"
+            android:textColorLink="#EDEDED" />
+
+        <Button
+            android:id="@+id/btnSignInCare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#AACC9E"
+            android:text="sign in caregiver"
+            android:textColor="#EDEDED"
             android:textColorLink="#EDEDED" />
 
         <Button

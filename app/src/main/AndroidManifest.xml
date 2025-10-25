@@ -15,6 +15,30 @@
         android:theme="@style/Theme.ReCollectUI"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".EditCommMem"
+            android:exported="false" />
+        <activity
+            android:name=".EditPatient"
+            android:exported="false" />
+        <activity
+            android:name=".EditCaregiver"
+            android:exported="false" />
+        <activity
+            android:name=".AddCommMem"
+            android:exported="false" />
+        <activity
+            android:name=".ViewCommunity"
+            android:exported="false" />
+        <activity
+            android:name=".ViewCommunityMember"
+            android:exported="false" />
+        <activity
+            android:name=".ViewCaregiver"
+            android:exported="false" />
+        <activity
+            android:name=".CreateCaregiver"
+            android:exported="false" />
+        <activity
             android:name=".ViewPatientList"
             android:exported="false" />
         <activity
@@ -22,7 +46,8 @@
             android:exported="false" />
         <activity
             android:name=".CreatePatient"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".EventsView"
             android:exported="false" />
@@ -42,21 +67,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name=".ViewDiaryEntries"
             android:exported="false" />
-
         <activity
             android:name=".ViewEntry"
             android:exported="false" />
-
         <activity
             android:name=".EditEntry"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ViewActivities"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardCaregiver"
             android:exported="false" />
 
         <meta-data

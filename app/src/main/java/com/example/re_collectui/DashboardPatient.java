@@ -4,46 +4,40 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class DashboardPatient extends AppCompatActivity {
 
     Button btnLogout;
-    ConstraintLayout eventsOption;
-    ConstraintLayout diaryOption;
-    ConstraintLayout activityOption;
+    ConstraintLayout eventsOption, diaryOption, communityOption, caregiverOption, activityOption, myselfOption;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboardpatient);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-        int patientID = sharedPref.getInt("patientID", -1); // for patientID for session
-
-
+        // Get IDs from the user's session
+        int patientID = sharedPref.getInt("patientID", -1);
+        // IMPORTANT: Assumes careGiverID is saved to session on login
+        int careGiverID = sharedPref.getInt("careGiverID", -1);
 
         btnLogout = findViewById(R.id.btnLogout);
         eventsOption = findViewById(R.id.eventsOption);
         diaryOption = findViewById(R.id.dairyOption);
         activityOption = findViewById(R.id.activityOption);
+        myselfOption = findViewById(R.id.myselfOption);
+        communityOption = findViewById(R.id.commOption);
+        caregiverOption = findViewById(R.id.CaregiverOption);
 
-        btnLogout.setOnClickListener(v ->{
+        btnLogout.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
             sharedPref.edit().clear().apply();
             startActivity(intent);
+            finish();
         });
 
         eventsOption.setOnClickListener(v -> {
@@ -56,10 +50,35 @@ public class DashboardPatient extends AppCompatActivity {
             startActivity(intent);
         });
 
+        myselfOption.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardPatient.this, ViewPatient.class);
+            intent.putExtra("patientID", patientID);
+            startActivity(intent);
+        });
+
         activityOption.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardPatient.this, ViewActivities.class);
             startActivity(intent);
         });
 
+        communityOption.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardPatient.this, ViewCommunity.class);
+            // You were missing this line. It adds the patient's ID to the intent
+            // so the next screen knows which community to load.
+            intent.putExtra("patientID", patientID);
+            startActivity(intent);
+        });
+
+        // ADDED: OnClickListener for the caregiver option
+        caregiverOption.setOnClickListener(v -> {
+            if (careGiverID != -1) {
+                Intent intent = new Intent(DashboardPatient.this, ViewCaregiver.class);
+                // Pass the assigned caregiver's ID to the ViewCaregiver activity
+                intent.putExtra("careGiverID", careGiverID);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "No caregiver is assigned to this profile.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -29,7 +29,7 @@
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:background="@drawable/dashboard_icon"
-
+            android:id="@+id/myselfOption"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="16dp">
 
@@ -110,6 +110,7 @@
             app:cardCornerRadius="20dp" /> -->
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/commOption"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:background="@drawable/dashboard_icon"
@@ -196,9 +197,11 @@
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:background="@drawable/dashboard_icon"
+            android:id="@+id/CaregiverOption"
 
             tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="16dp">
+            tools:layout_editor_absoluteY="16dp"
+            >
 
             <TextView
                 android:id="@+id/textView7"

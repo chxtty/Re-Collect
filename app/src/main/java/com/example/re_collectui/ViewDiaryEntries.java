@@ -110,7 +110,7 @@ public class ViewDiaryEntries extends AppCompatActivity {
 
     private void SetUpEntries(){
         entryList.clear();
-        String url = "http://100.79.152.109/android/api.php?action=view_diary_entries_p&patientId=" + patientID;
+        String url = "http://100.104.224.68/android/api.php?action=view_diary_entries_p&patientId=" + patientID;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {

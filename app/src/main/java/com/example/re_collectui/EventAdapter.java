@@ -191,7 +191,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private void updateEventOnServer(int eventID, String title, String startDate, String endDate, boolean allDay, String location, String description) {
-        String url = "http://10.0.2.2/recollect/api.php?action=update_event";
+        String url = "http://100.104.224.68/android/api.php?action=update_event";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -228,8 +228,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     private void deleteEventFromServer(Event eventToDelete) {
-        String url = "http://10.0.2.2/recollect/api.php?action=delete_event";
-
+        String url = "http://100.104.224.68/android/api.php?action=delete_event";
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
                     try {

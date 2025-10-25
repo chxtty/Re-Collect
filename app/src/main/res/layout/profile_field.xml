@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/profileFieldRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_profile_field_container"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- LABEL e.g., EMAIL: -->
+    <TextView
+        android:id="@+id/tvLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="EMAIL:"
+        android:textAllCaps="true"
+        android:letterSpacing="0.05"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:textColor="@color/gray_lavender"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- VALUE pill e.g., oldlady@gmail.com -->
+    <TextView
+        android:id="@+id/tvValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="example@domain.com"
+        android:background="@drawable/bg_profile_field_value"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"/>
+</LinearLayout>

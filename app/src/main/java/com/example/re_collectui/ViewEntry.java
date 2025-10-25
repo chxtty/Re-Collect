@@ -61,7 +61,7 @@ public class ViewEntry extends AppCompatActivity {
 
     }
     private void deleteEntry(int entryId) {
-        String url = "http://100.79.152.109/android/api.php?action=delete_diary_entry";
+        String url = "http://100.104.224.68/android/api.php?action=delete_diary_entry";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {

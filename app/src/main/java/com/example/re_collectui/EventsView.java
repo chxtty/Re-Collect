@@ -99,7 +99,7 @@ public class EventsView extends AppCompatActivity {
     }
 
     private void getEvents(int patientID) {
-        String url = "http://10.0.2.2/recollect/api.php?action=view_events&patientId=" + patientID;
+        String url = "http://100.104.224.68/android/api.php?action=view_events&patientId=" + patientID;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -211,7 +211,7 @@ public class EventsView extends AppCompatActivity {
             return;
         }
 
-        String url = "http://10.0.2.2/recollect/api.php?action=create_event";
+        String url = "http://100.104.224.68/android/api.php?action=create_event";
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
