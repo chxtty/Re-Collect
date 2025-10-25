@@ -110,12 +110,12 @@ public class LoginActivity extends AppCompatActivity {
                                 int adminID = user.getInt("caregiverID");
                                 editor.putInt("caregiverID", adminID);
                                 editor.apply();
-
+                                Intent intent;
                                 //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
                                 if(MethodCall.equals("showCaregiverLoginDialog")){
-                                    Intent intent = new Intent(LoginActivity.this, CreatePatient.class);
+                                    intent = new Intent(LoginActivity.this, CreatePatient.class);
                                 } else{
-                                Intent intent = new Intent(LoginActivity.this, DashboardCaregiver.class);}
+                                intent = new Intent(LoginActivity.this, DashboardCaregiver.class);}
                                 startActivity(intent);
                             }
 
