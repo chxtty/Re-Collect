@@ -40,6 +40,15 @@
             android:background="@drawable/dashboard_icon_caregiver"
             android:text="@string/sign_in"
             android:textColorLink="#EDEDED" />
+        <Button
+            android:id="@+id/btnSignInCare"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/dashboard_icon_caregiver"
+            android:text="@string/sign_in"
+            android:textColorLink="#EDEDED" />
+
 
         <Button
             android:id="@+id/btnSignUp"
