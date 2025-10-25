@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -62,11 +65,11 @@ public class LoginActivity extends AppCompatActivity {
         btnSignIn.setOnClickListener(v -> {
             String email = editEmail.getText().toString().trim();
             String password = editPassword.getText().toString().trim();
-            login(email,password);
+            login(email,password, "onCreate");
         });
     }
 
-    private void login(String email, String password) {
+    private void login(String email, String password, String MethodCall) {
         String url = GlobalVars.apiPath + "login";
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -105,7 +108,10 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.apply();
 
                                 //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(LoginActivity.this, DashboardCaregiver.class);
+                                if(MethodCall.equals("showCaregiverLoginDialog")){
+                                    Intent intent = new Intent(LoginActivity.this, CreatePatient.class);
+                                } else{
+                                Intent intent = new Intent(LoginActivity.this, DashboardCaregiver.class);}
                                 startActivity(intent);
                             }
 
@@ -133,125 +139,57 @@ public class LoginActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-    // You'll need this variable at the class level (if you don't have it already)
-    // to store the role once it's fetched.
-    /**
-     * Fetches the user role from the API using just the email.
-     * This runs on a background thread and calls handleRoleResponse on the main thread.
-     *
-     * @param email The email to query.
-     */
-    private void fetchUserRole(String email) {
-        // You could show a loading indicator here
+    private void showSignUpDialog() {
+        // Options for sign up
+        String[] options = {"Caregiver", "Patient"};
 
-        executor.execute(() -> {
-            // This block runs on a background thread
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sign up:")
+                .setSingleChoiceItems(options, -1, (dialog, which) -> {
+                    // Store choice temporarily (caregiver or patient)
+                    if (options[which].equals("Caregiver")) {
+                        // Open caregiver sign up activity
+                        Intent intent = new Intent(LoginActivity.this, CreateCaregiver.class);
+                        startActivity(intent);
+                        dialog.dismiss();
+                    } else {
+                        // If patient → show caregiver login dialog
+                        dialog.dismiss();
+                        showCaregiverLoginDialog();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-            // !!! IMPORTANT: Update this to your correct API endpoint !!!
-            String urlString = GlobalVars.apiPath + "getUserRoleByEmail";
-            HttpURLConnection urlConnection = null;
-            StringBuilder result = new StringBuilder();
-
-            try {
-                // 1. Create POST data
-                String postData = "email=" + URLEncoder.encode(email, StandardCharsets.UTF_8.name());
-                byte[] postDataBytes = postData.getBytes(StandardCharsets.UTF_8);
-
-                // 2. Setup Connection
-                URL url = new URL(urlString);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("POST"); // Use "POST" or "GET" as your API requires
-                urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                urlConnection.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
-                urlConnection.setDoOutput(true);
-                urlConnection.setReadTimeout(10000); // 10 seconds
-                urlConnection.setConnectTimeout(10000);
-
-                // 3. Write data to connection
-                try (OutputStream os = urlConnection.getOutputStream()) {
-                    os.write(postDataBytes);
-                }
-
-                // 4. Read response
-                int responseCode = urlConnection.getResponseCode();
-                BufferedReader br;
-
-                if (responseCode >= 200 && responseCode < 300) {
-                    // Success
-                    br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                } else {
-                    // Error
-                    br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
-                }
-
-                String line;
-                while ((line = br.readLine()) != null) {
-                    result.append(line);
-                }
-                br.close();
-
-                // 5. Post result to Main Thread
-                String responseString = result.toString();
-                // This schedules handleRoleResponse to run on the main UI thread
-                runOnUiThread(() -> handleRoleResponse(responseString, responseCode));
-
-            } catch (Exception e) {
-                Log.e("Network_Exception", "Error during role fetch", e);
-                runOnUiThread(() -> {
-                    // Hide loading indicator
-                    toast.GetErrorToast("Network error: ".concat(e.getMessage())).show();
-                });
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-        });
+        builder.create().show();
     }
 
-    /**
-     * Handles the JSON response from the role fetch API on the main thread.
-     *
-     * @param jsonResponseString The JSON string from the server.
-     * @param responseCode       The HTTP response code.
-     */
-    private void handleRoleResponse(String jsonResponseString, int responseCode) {
-        // Hide loading indicator here
+    private void showCaregiverLoginDialog() {
+        // Inflate custom layout
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialogue_caregiver_login, null);
 
-        try {
-            JSONObject jsonResponse = new JSONObject(jsonResponseString);
+        EditText caregiverEmail = dialogView.findViewById(R.id.caregiverEmail);
+        EditText caregiverPassword = dialogView.findViewById(R.id.caregiverPassword);
 
-            // Check for both HTTP success and API-level success
-            if (responseCode >= 200 && responseCode < 300 && jsonResponse.getString("status").equals("success")) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Caregiver Credentials")
+                .setView(dialogView)
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    String email = caregiverEmail.getText().toString().trim();
+                    String password = caregiverPassword.getText().toString().trim();
 
-                // --- This is the part you care about ---
+                    // 🔑 TODO: Replace with real caregiver verification (e.g. Firebase DB check)
+                    // if (email.equals("caregiver@example.com") && password.equals("1234")) {
+                    //   // If verified → go to patient signup
+                    // Intent intent = new Intent(LoginActivity.this, CreatePatient.class);
+                    //startActivity(intent);
+                    //} else {
+                    //   Toast.makeText(LoginActivity.this, "Invalid caregiver credentials", Toast.LENGTH_SHORT).show();
+                    //}
+                    login(email,password, "showCaregiverLoginDialog");
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-                // Assuming the JSON response is like:
-                // {"status":"success", "user": {"role":"patient", ...}}
-                JSONObject user = jsonResponse.getJSONObject("user");
-                String fetchedRole = user.getString("role");
-
-                Log.i("UserRoleFetch", "Successfully fetched role: " + fetchedRole);
-
-                // 1. Store the role in your variable
-                //this.role = fetchedRole;
-
-                // 2. Now call your use case method
-                // runMyUseCase(this.role);
-
-                // Or just show a toast for testing
-                //toast.GetGreatingToast("Role found: " + this.role).show();
-
-            } else {
-                // Handle API error message (e.g., "user not found")
-                String message = jsonResponse.optString("message", "Could not find user.");
-                toast.GetErrorToast(message).show();
-            }
-        } catch (JSONException e) {
-            Log.e("JSON_Parse_Error", "Error parsing role response: " + jsonResponseString, e);
-            toast.GetErrorToast("Invalid response from server.").show();
-        }
+        builder.create().show();
     }
-
-
 }
