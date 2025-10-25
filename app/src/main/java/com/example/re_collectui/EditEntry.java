@@ -119,7 +119,7 @@ public class EditEntry extends AppCompatActivity {
 
     private void saveDiaryEntry(String title, String content) {
         try {
-            URL url = new URL("http://100.79.152.109/android/api.php?action=update_diary_entry");
+            URL url = new URL(GlobalVars.apiPath + "update_diary_entry");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
