@@ -1,19 +1,28 @@
 package com.example.re_collectui;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,15 +35,26 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ViewCommunity extends AppCompatActivity {
 
     private ImageButton fabAddMember;
+
+    CustomToast toast;
+    private Uri selectedImageUri = null;
+    private ImageButton btnRequestComm;
     private RecyclerView recyclerView;
     private CommunityAdapter adapter;
     private ArrayList<Community_Member> memberList = new ArrayList<>();
     private int patientID = -1;
+    private int careGiverID = -1;
+
+    private static final int IMAGE_REQUEST = 101;
 
 
     // In ViewCommunity.java
@@ -51,7 +71,29 @@ public class ViewCommunity extends AppCompatActivity {
             return insets;
         });
 
+        fabAddMember = findViewById(R.id.btnAddMember);
+        btnRequestComm = findViewById(R.id.btnRequestComm);
+
+        // 2. Determine the user's role from SharedPreferences
+        SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
+        // If patientID in session is -1, it's a Caregiver. Otherwise, it's a Patient.
+        boolean isCaregiver = sharedPref.getInt("patientID", -1) == -1;
+
+        // 3. Set button visibility based on the user's role
+        if (isCaregiver) {
+            // CARECAREGIVER: Show the "Add Member" button, hide the "Request" button
+            fabAddMember.setVisibility(View.VISIBLE);
+            btnRequestComm.setVisibility(View.GONE);
+        } else {
+            // PATIENT: Show the "Request" button, hide the "Add Member" button
+            fabAddMember.setVisibility(View.GONE);
+            btnRequestComm.setVisibility(View.VISIBLE);
+        }
+
         patientID = getIntent().getIntExtra("patientID", -1);
+        careGiverID = sharedPref.getInt("careGiverID", -1);
+
+
         if (patientID == -1) {
             Toast.makeText(this, "Error: Could not identify the patient's community.", Toast.LENGTH_LONG).show();
             finish(); // Exit if no valid ID was passed to this screen
@@ -60,25 +102,24 @@ public class ViewCommunity extends AppCompatActivity {
 
         // 2. NOW, set up your button's click listener.
         // It will now have the correct patientID to pass along.
-        fabAddMember = findViewById(R.id.btnAddMember);
-        fabAddMember.setOnClickListener(view -> {
+       fabAddMember.setOnClickListener(view -> {
             Intent intent = new Intent(ViewCommunity.this, AddCommMem.class);
             intent.putExtra("patientID", patientID);
             startActivity(intent);
         });
 
+
         ImageView imgBack = findViewById(R.id.imgBack);
         imgBack.setOnClickListener(e -> onBackPressed());
+
 
         recyclerView = findViewById(R.id.rvCommunity);
 
         // ✅ THIS IS THE FIX
         // 1. Determine the user's role by checking the session.
-        SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         boolean isCaregiverViewing = sharedPref.getInt("patientID", -1) == -1;
 
-        Toast.makeText(this, "1. ViewCommunity: Role isCaregiver = " + isCaregiverViewing, Toast.LENGTH_LONG).show();
-        // 2. You MUST call the constructor with THREE arguments, passing the role.
+         // 2. You MUST call the constructor with THREE arguments, passing the role.
         // The old two-argument call `new CommunityAdapter(this, memberList)` is wrong.
         adapter = new CommunityAdapter(this, memberList, isCaregiverViewing);
 
@@ -97,7 +138,8 @@ public class ViewCommunity extends AppCompatActivity {
     }
 
     private void fetchCommunityMembers() {
-        String url = "http://100.104.224.68/android/api.php?action=view_community_by_patient&patientId=" + patientID;
+        String urlpath= GlobalVars.apiPath;
+        String url = urlpath + "view_community_by_patient&patientId=" + patientID;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -131,4 +173,114 @@ public class ViewCommunity extends AppCompatActivity {
             fetchCommunityMembers();
         }
     }
+
+    private void submitCommRequest(int patientID, int careGiverID, String commType,
+                                   String firstName, String lastName, String desc, String cuteMsg, String commImageBase64) {
+
+        String url = GlobalVars.apiPath + "create_community_request";
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject res = new JSONObject(response);
+                        String status = res.getString("status");
+
+                        if (status.equals("success")) {
+                            toast.GetInfoToast( "Community Member request submitted!");
+                        } else {
+                            // Toast.makeText(this, res.getString("message"), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        //Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                },
+                error -> toast.GetErrorToast("Network error: " + error.getMessage())
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("patientID", String.valueOf(patientID));
+                params.put("careGiverID", String.valueOf(careGiverID));
+                params.put("commType", commType);
+                params.put("commFirstName", firstName);
+                params.put("commLastName", lastName);
+                params.put("commDescription", desc);
+                params.put("commCuteMessage", cuteMsg);
+                params.put("commImage", commImageBase64 != null ? commImageBase64 : "");
+                return params;
+            }
+        };
+        queue.add(request);
+
+    }
+
+    public void showRequestDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View currView = getLayoutInflater().inflate(R.layout.request_community_dialog,null);
+
+        EditText edtFName = currView.findViewById(R.id.edtFNameCommReq);
+        EditText edtLName = currView.findViewById(R.id.edtLNameCommReq);
+        Spinner spnType = currView.findViewById(R.id.spnType);
+        EditText edtDesc = currView.findViewById(R.id.edtDescCommReq);
+        EditText edtCute = currView.findViewById(R.id.edtCuteMessageCommReq);
+        Button btnImage = currView.findViewById(R.id.btnAddImage);
+        Button btnSave = currView.findViewById(R.id.btnSendCommReq);
+        Button btnCancel = currView.findViewById(R.id.btnCancelCommReq);
+
+        builder.setView(currView);
+        AlertDialog dialog = builder.create();
+
+        btnImage.setOnClickListener(v ->{
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_REQUEST);
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnSave.setOnClickListener(v -> {
+            String firstName = edtFName.getText().toString().trim();
+            String lastName = edtLName.getText().toString().trim();
+            String commType = spnType.getSelectedItem().toString();
+            String desc = edtDesc.getText().toString().trim();
+            String cuteMsg = edtCute.getText().toString().trim();
+            String imgBase64 = "";
+            if (selectedImageUri != null) {
+                imgBase64 = uriToBase64(selectedImageUri);
+            }
+
+            if (commType.equals("Select Type")) {
+                commType = "";
+            }
+
+            if (firstName.isEmpty()) {
+                toast.GetErrorToast("Please at least fill First Name");
+                return;
+            }
+
+            submitCommRequest(patientID, careGiverID, commType, firstName, lastName, desc, cuteMsg, imgBase64);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private String uriToBase64(Uri imageUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            inputStream.close();
+            return android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //Toast.makeText(this, "Failed to encode image", Toast.LENGTH_SHORT).show();
+            return "";
+        }
+    }
+
+
 }

@@ -169,7 +169,8 @@ public class EditCaregiver extends AppCompatActivity {
     private void saveChanges() {
         if (!validate()) return;
         // ... (rest of the saveChanges method is unchanged)
-        String url = "http://100.104.224.68/android/api.php?action=edit_caregiver";
+        String urlpath= GlobalVars.apiPath;
+        String url = urlpath + "edit_caregiver";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         final String newFirstName = etFirstName.getText().toString().trim();

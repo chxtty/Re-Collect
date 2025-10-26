@@ -111,7 +111,9 @@ public class AddCommMem extends AppCompatActivity {
             return;
         }
 
-        String url = "http://100.104.224.68/android/api.php?action=add_community_member";
+        String apiUrl =  GlobalVars.apiPath;
+
+        String url = apiUrl + "add_community_member";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {

@@ -35,7 +35,7 @@ import java.time.Period;
 
 public class ViewPatient extends AppCompatActivity {
 
-    private static final String BASE_URL = "http://100.104.224.68/android/api.php";
+    private static final String BASE_URL = GlobalVars.apiPath;
 
     private TextView tvName;
     private ImageView ivUser;
@@ -161,7 +161,7 @@ public class ViewPatient extends AppCompatActivity {
     }
 
     private void fetchPatient(int patientId) {
-        String url = BASE_URL + "?action=view_patient&patientId=" + patientId;
+        String url = BASE_URL + "view_patient&patientId=" + patientId;
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest req = new StringRequest(Request.Method.GET, url, response -> {
             try {

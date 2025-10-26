@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class ViewCommunityMember extends AppCompatActivity {
 
-    private static final String BASE_URL = "http://100.104.224.68/android/api.php";
+    private static final String BASE_URL = GlobalVars.apiPath;
 
     private TextView quote, details, name, relationship;
     private Button editButton, deleteButton;
@@ -80,7 +80,7 @@ public class ViewCommunityMember extends AppCompatActivity {
     }
 
     private void fetchCommunityMember(int commId) {
-        String url = BASE_URL + "?action=view_community_member&commId=" + commId;
+        String url = BASE_URL + "view_community_member&commId=" + commId;
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest req = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -143,7 +143,7 @@ public class ViewCommunityMember extends AppCompatActivity {
     }
 
     private void deleteCommunityMember() {
-        String url = BASE_URL + "?action=delete_community_member";
+        String url = BASE_URL + "delete_community_member";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest deleteRequest = new StringRequest(Request.Method.POST, url,

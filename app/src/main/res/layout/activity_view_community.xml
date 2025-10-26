@@ -81,20 +81,40 @@
             android:paddingBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.01" />
+
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageButton
+            android:id="@+id/btnRequestComm"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/circular_background"
+            android:clickable="true"
+            android:contentDescription="Request communication"
+            android:elevation="6dp"
+            android:onClick="showRequestDialog"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/interview"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnAddMember" />
 
         <ImageButton
             android:id="@+id/btnAddMember"
-            android:layout_width="80dp"  android:layout_height="80dp" android:layout_margin="16dp"
-            android:src="@drawable/add_btn"
-            android:scaleType="fitCenter"
-            android:padding="12dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/circular_background" android:clickable="true"
             android:contentDescription="Add new community member"
-            android:background="@android:color/transparent"
             android:elevation="6dp"
+            android:padding="16dp"                           android:scaleType="fitCenter"
+            android:src="@drawable/add_btn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

@@ -66,7 +66,7 @@ public class CreatePatient extends AppCompatActivity {
                 }
             }
     );
-    private static final String API_URL = "http://100.104.224.68/android/api.php";
+    private static final String API_URL = GlobalVars.apiPath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -166,7 +166,7 @@ public class CreatePatient extends AppCompatActivity {
             return;
         }
 
-        String url = API_URL + "?action=create_patient";
+        String url = API_URL + "create_patient";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,

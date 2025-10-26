@@ -195,7 +195,8 @@ public class CreateCaregiver extends AppCompatActivity {
     private void toast(String s) { Toast.makeText(this, s, Toast.LENGTH_SHORT).show(); }
 
     private void createCaregiver(String firstName, String lastName, String dob, String contactNumber, String workNumber, String employerType, String email, String password, String userImage) {
-        String url = "http://100.104.224.68/android/api.php?action=create_caregiver";
+        String apiUrl = GlobalVars.apiPath;
+        String url = apiUrl + "create_caregiver";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,

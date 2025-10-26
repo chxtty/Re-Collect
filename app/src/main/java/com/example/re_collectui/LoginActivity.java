@@ -54,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText editEmail, editPassword;
     Button btnSignIn, btnSignUp;
     RadioGroup userTypeRadioGroup;
+    String urlpath= GlobalVars.apiPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginUser(String userType, String email, String password, final LoginAction actionOnSuccess) {
         String action = userType.equals("patient") ? "login" : "login_caregiver";
-        String url = "http://100.104.224.68/android/api.php?action=" + action;
+
+        String url = urlpath + action;
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {

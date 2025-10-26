@@ -32,8 +32,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
         this.memberList = memberList;
         this.memberListFull = new ArrayList<>(memberList);
         this.isCaregiver = isCaregiver; // Set the role for this adapter instance
-        Toast.makeText(context, "2. Adapter Created: Role isCaregiver = " + this.isCaregiver, Toast.LENGTH_SHORT).show();
-    }
+        }
 
     @NonNull
     @Override

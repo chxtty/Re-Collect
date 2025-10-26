@@ -167,7 +167,8 @@ public class EditPatient extends AppCompatActivity {
 
     private void saveChanges() {
         // ... (This method remains unchanged)
-        String url = "http://100.104.224.68/android/api.php?action=edit_patient";
+        String urlpath= GlobalVars.apiPath;
+        String url = urlpath + "edit_patient";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,

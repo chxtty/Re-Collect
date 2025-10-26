@@ -144,7 +144,8 @@ public class EditCommMem extends AppCompatActivity {
 
     private void saveChanges() {
         // ... (This method remains unchanged)
-        String url = "http://100.104.224.68/android/api.php?action=edit_community_member";
+        String urlpath= GlobalVars.apiPath;
+        String url = urlpath + "edit_community_member";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,

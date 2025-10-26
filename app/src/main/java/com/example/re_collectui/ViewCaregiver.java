@@ -35,8 +35,7 @@ import java.util.Map;
 
 public class ViewCaregiver extends AppCompatActivity {
 
-    private static final String BASE_URL = "http://100.104.224.68/android/api.php";
-
+    private static final String BASE_URL = GlobalVars.apiPath;
     private TextView tvName;
     private ImageView ivUser;
     private ImageButton exitBtn;
@@ -164,7 +163,7 @@ public class ViewCaregiver extends AppCompatActivity {
 
     // ✅ New method to handle the actual network request
     private void performDeleteRequest(final String actionType, final String newEmail, final String newPassword) {
-        String url = BASE_URL + "?action=delete_caregiver_account";
+        String url = BASE_URL + "delete_caregiver_account";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
@@ -204,7 +203,7 @@ public class ViewCaregiver extends AppCompatActivity {
 
     // ... (fetchCaregiver, updateUI, setupTiles, getAgeFromIso methods remain the same) ...
     private void fetchCaregiver(int careGiverId) {
-        String url = BASE_URL + "?action=view_caregiver&careGiverId=" + careGiverId;
+        String url = BASE_URL + "view_caregiver&careGiverId=" + careGiverId;
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest req = new StringRequest(Request.Method.GET, url, response -> {
             try {
