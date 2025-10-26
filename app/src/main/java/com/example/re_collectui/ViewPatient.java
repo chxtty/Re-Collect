@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -90,17 +91,21 @@ public class ViewPatient extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         int loggedInPatientId = sharedPref.getInt("patientID", -1);
 
+        Log.d("VISIBILITY_CHECK", "------------------------------------");
+        Log.d("VISIBILITY_CHECK", "Logged-in User's patientID: " + loggedInPatientId);
+        Log.d("VISIBILITY_CHECK", "Viewing Profile of patientID: " + patient.getPatientID());
         // ✅ CORRECTED LOGIC:
         // We check if the ID of the logged-in user (if they are a patient)
         // is the same as the ID of the profile being viewed.
         if (loggedInPatientId == patient.getPatientID()) {
             // This is the patient viewing their own profile.
+            Log.d("VISIBILITY_CHECK", "RESULT: IDs match. Hiding community button.");
             // As per the requirement, hide the community option.
             commOption.setVisibility(View.GONE);
         } else {
             // This is another user viewing the profile (i.e., the caregiver).
             // A caregiver's loggedInPatientId is -1, so this condition will always be true for them.
-            // Show the community option.
+            Log.d("VISIBILITY_CHECK", "RESULT: IDs DO NOT match. Showing community button.");// Show the community option.
             commOption.setVisibility(View.VISIBLE);
             commOption.setOnClickListener(v -> {
                 Intent intent = new Intent(ViewPatient.this, ViewCommunity.class);

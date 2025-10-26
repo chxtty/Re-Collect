@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,6 +21,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,10 +36,12 @@ public class EditPatient extends AppCompatActivity {
 
     private EditText etFirstName, etLastName, etPassword, etPhone, etEmail, etEmergencyPhone, etDiagnosis;
     private DatePicker dpDob;
-    private Button btnSaveChanges, btnAddPhoto;
+    private Button btnSaveChanges;
+    private FloatingActionButton btnAddPhoto;
     private ImageButton btnBack;
+    private ImageView ivProfileImage;
 
-    private String userImageBase64 = null; // Holds new image if selected
+    private String userImageBase64 = null;
     private Patient patientToEdit;
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
@@ -45,6 +50,7 @@ public class EditPatient extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     if (imageUri != null) {
+                        Glide.with(this).load(imageUri).into(ivProfileImage);
                         try {
                             encodeImage(imageUri);
                             Toast.makeText(this, "Photo selected", Toast.LENGTH_SHORT).show();
@@ -69,6 +75,7 @@ public class EditPatient extends AppCompatActivity {
         }
 
         bindViews();
+        dpDob.setMaxDate(System.currentTimeMillis());
         populateFields();
 
         btnAddPhoto.setOnClickListener(v -> openGallery());
@@ -80,27 +87,70 @@ public class EditPatient extends AppCompatActivity {
         etFirstName = findViewById(R.id.etFirstName);
         etLastName = findViewById(R.id.etLastName);
         dpDob = findViewById(R.id.dpDob);
-        etPassword = findViewById(R.id.editTextTextPassword); // Using ID from your create XML
+        etPassword = findViewById(R.id.editTextTextPassword);
         etPhone = findViewById(R.id.editTextPhone);
         etEmail = findViewById(R.id.editTextTextEmailAddress);
         etEmergencyPhone = findViewById(R.id.editTextEmPhone);
         etDiagnosis = findViewById(R.id.etDiagnosis);
+        ivProfileImage = findViewById(R.id.ivProfileImage);
         btnSaveChanges = findViewById(R.id.btnSaveChanges);
-        btnAddPhoto = findViewById(R.id.button2);
+        btnAddPhoto = findViewById(R.id.fabAddPhoto);
         btnBack = findViewById(R.id.btnExit);
     }
 
     private void populateFields() {
-        etFirstName.setText(patientToEdit.getFirstName());
-        etLastName.setText(patientToEdit.getLastName());
-        etPassword.setText(patientToEdit.getPatientPassword());
-        etPhone.setText(patientToEdit.getContactNumber());
-        etEmail.setText(patientToEdit.getEmail());
-        etEmergencyPhone.setText(patientToEdit.getEmergencyContact());
-        etDiagnosis.setText(patientToEdit.getDiagnosis());
+        // --- THIS IS THE FIX ---
+        // Use the helper method to safely set text fields
+        setText(etFirstName, patientToEdit.getFirstName());
+        setText(etLastName, patientToEdit.getLastName());
+        setText(etPassword, patientToEdit.getPatientPassword());
+        setText(etPhone, patientToEdit.getContactNumber());
+        setText(etEmail, patientToEdit.getEmail());
+        setText(etEmergencyPhone, patientToEdit.getEmergencyContact());
+        setText(etDiagnosis, patientToEdit.getDiagnosis());
 
-        String[] dobParts = patientToEdit.getDoB().split("-");
-        dpDob.updateDate(Integer.parseInt(dobParts[0]), Integer.parseInt(dobParts[1]) - 1, Integer.parseInt(dobParts[2]));
+        // Safely set the date
+        if (patientToEdit.getDoB() != null && !patientToEdit.getDoB().isEmpty()) {
+            String[] dobParts = patientToEdit.getDoB().split("-");
+            if (dobParts.length == 3) {
+                try {
+                    int year = Integer.parseInt(dobParts[0]);
+                    int month = Integer.parseInt(dobParts[1]) - 1;
+                    int day = Integer.parseInt(dobParts[2]);
+                    dpDob.updateDate(year, month, day);
+                } catch (NumberFormatException e) {
+                    // Date was in a wrong format, do nothing
+                }
+            }
+        }
+
+        // Safely load the image, catching any errors from bad data
+        if (patientToEdit.getImage() != null && !patientToEdit.getImage().isEmpty()) {
+            try {
+                byte[] decodedString = Base64.decode(patientToEdit.getImage(), Base64.DEFAULT);
+                Glide.with(this)
+                        .load(decodedString)
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .into(ivProfileImage);
+            } catch (IllegalArgumentException e) {
+                // If decoding fails, load the default avatar
+                ivProfileImage.setImageResource(R.drawable.default_avatar);
+            }
+        } else {
+            ivProfileImage.setImageResource(R.drawable.default_avatar);
+        }
+        // --- END FIX ---
+    }
+
+    // --- ADD THIS HELPER METHOD ---
+    // Safely sets text on an EditText, preventing crashes from null values.
+    private void setText(EditText editText, String text) {
+        if (text != null) {
+            editText.setText(text);
+        } else {
+            editText.setText("");
+        }
     }
 
     private void openGallery() {
@@ -116,6 +166,7 @@ public class EditPatient extends AppCompatActivity {
     }
 
     private void saveChanges() {
+        // ... (This method remains unchanged)
         String url = "http://100.104.224.68/android/api.php?action=edit_patient";
         RequestQueue queue = Volley.newRequestQueue(this);
 

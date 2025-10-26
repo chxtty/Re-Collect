@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,6 +20,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,8 +34,10 @@ import java.util.Map;
 public class EditCommMem extends AppCompatActivity {
 
     private EditText etFirstName, etLastName, etType, etDescription, etCuteMessage;
-    private Button btnSaveChanges, btnAddPhoto;
+    private Button btnSaveChanges;
+    private FloatingActionButton btnAddPhoto;
     private ImageButton btnBack;
+    private ImageView ivProfileImage;
 
     private String userImageBase64 = null;
     private Community_Member memberToEdit;
@@ -43,6 +48,7 @@ public class EditCommMem extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     if (imageUri != null) {
+                        Glide.with(this).load(imageUri).into(ivProfileImage);
                         try {
                             encodeImage(imageUri);
                             Toast.makeText(this, "Photo selected", Toast.LENGTH_SHORT).show();
@@ -80,17 +86,48 @@ public class EditCommMem extends AppCompatActivity {
         etType = findViewById(R.id.etType);
         etDescription = findViewById(R.id.etDescription);
         etCuteMessage = findViewById(R.id.etCuteMessage);
+        ivProfileImage = findViewById(R.id.ivProfileImage);
         btnSaveChanges = findViewById(R.id.btnSaveChanges);
-        btnAddPhoto = findViewById(R.id.button2);
+        btnAddPhoto = findViewById(R.id.fabAddPhoto);
         btnBack = findViewById(R.id.imgBack);
     }
 
     private void populateFields() {
-        etFirstName.setText(memberToEdit.getCommFirstName());
-        etLastName.setText(memberToEdit.getCommLastName());
-        etType.setText(memberToEdit.getCommType());
-        etDescription.setText(memberToEdit.getCommDescription());
-        etCuteMessage.setText(memberToEdit.getCommCuteMessage());
+        // --- THIS IS THE FIX ---
+        // Use the helper method to safely set text fields
+        setText(etFirstName, memberToEdit.getCommFirstName());
+        setText(etLastName, memberToEdit.getCommLastName());
+        setText(etType, memberToEdit.getCommType());
+        setText(etDescription, memberToEdit.getCommDescription());
+        setText(etCuteMessage, memberToEdit.getCommCuteMessage());
+
+        // Safely load the image, catching any errors from bad data
+        if (memberToEdit.getCommImage() != null && !memberToEdit.getCommImage().isEmpty()) {
+            try {
+                byte[] decodedString = Base64.decode(memberToEdit.getCommImage(), Base64.DEFAULT);
+                Glide.with(this)
+                        .load(decodedString)
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .into(ivProfileImage);
+            } catch (IllegalArgumentException e) {
+                // If decoding fails, load the default avatar
+                ivProfileImage.setImageResource(R.drawable.default_avatar);
+            }
+        } else {
+            ivProfileImage.setImageResource(R.drawable.default_avatar);
+        }
+        // --- END FIX ---
+    }
+
+    // --- ADD THIS HELPER METHOD ---
+    // Safely sets text on an EditText, preventing crashes from null values.
+    private void setText(EditText editText, String text) {
+        if (text != null) {
+            editText.setText(text);
+        } else {
+            editText.setText("");
+        }
     }
 
     private void openGallery() {
@@ -106,6 +143,7 @@ public class EditCommMem extends AppCompatActivity {
     }
 
     private void saveChanges() {
+        // ... (This method remains unchanged)
         String url = "http://100.104.224.68/android/api.php?action=edit_community_member";
         RequestQueue queue = Volley.newRequestQueue(this);
 

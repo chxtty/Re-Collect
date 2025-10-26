@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,6 +23,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,10 +38,11 @@ public class EditCaregiver extends AppCompatActivity {
 
     private EditText etFirstName, etLastName, etPassword, etContactNumber, etEmail, etWorkNumber, etEmployerType;
     private DatePicker dpDob;
-    private Button btnSaveChanges, btnAddPhoto;
+    private Button btnSaveChanges;
+    private FloatingActionButton btnAddPhoto;
     private ImageButton btnBack;
-
-    private String userImageBase64 = null; // Holds the new image if one is selected
+    private ImageView ivProfileImage;
+    private String userImageBase64 = null;
     private Care_giver caregiverToEdit;
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
@@ -47,6 +51,7 @@ public class EditCaregiver extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Uri imageUri = result.getData().getData();
                     if (imageUri != null) {
+                        Glide.with(this).load(imageUri).into(ivProfileImage);
                         try {
                             encodeImage(imageUri);
                             Toast.makeText(this, "Photo selected successfully", Toast.LENGTH_SHORT).show();
@@ -72,6 +77,7 @@ public class EditCaregiver extends AppCompatActivity {
         }
 
         bindViews();
+        dpDob.setMaxDate(System.currentTimeMillis());
         populateFields();
 
         btnBack.setOnClickListener(v -> onBackPressed());
@@ -88,26 +94,64 @@ public class EditCaregiver extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etWorkNumber = findViewById(R.id.etWorkNumber);
         etEmployerType = findViewById(R.id.etEmployerType);
+        ivProfileImage = findViewById(R.id.ivProfileImage);
         btnSaveChanges = findViewById(R.id.btnSaveChanges);
-        btnAddPhoto = findViewById(R.id.btnAddPhoto);
+        btnAddPhoto = findViewById(R.id.fabAddPhoto);
         btnBack = findViewById(R.id.btnExit);
     }
 
     private void populateFields() {
-        etFirstName.setText(caregiverToEdit.getFirstName());
-        etLastName.setText(caregiverToEdit.getLastName());
-        etPassword.setText(caregiverToEdit.getCaregiverPassword());
-        etContactNumber.setText(caregiverToEdit.getContactNumber());
-        etEmail.setText(caregiverToEdit.getEmail());
-        etWorkNumber.setText(caregiverToEdit.getWorkNumber());
-        etEmployerType.setText(caregiverToEdit.getEmployerType());
+        // Use the helper method to safely set text
+        setText(etFirstName, caregiverToEdit.getFirstName());
+        setText(etLastName, caregiverToEdit.getLastName());
+        setText(etPassword, caregiverToEdit.getCaregiverPassword());
+        setText(etContactNumber, caregiverToEdit.getContactNumber());
+        setText(etEmail, caregiverToEdit.getEmail());
+        setText(etWorkNumber, caregiverToEdit.getWorkNumber());
+        setText(etEmployerType, caregiverToEdit.getEmployerType());
 
-        // Set DatePicker
-        String[] dobParts = caregiverToEdit.getDoB().split("-");
-        int year = Integer.parseInt(dobParts[0]);
-        int month = Integer.parseInt(dobParts[1]) - 1; // Month is 0-indexed
-        int day = Integer.parseInt(dobParts[2]);
-        dpDob.updateDate(year, month, day);
+        // Safely set the date
+        if (caregiverToEdit.getDoB() != null && !caregiverToEdit.getDoB().isEmpty()) {
+            String[] dobParts = caregiverToEdit.getDoB().split("-");
+            if (dobParts.length == 3) {
+                try {
+                    int year = Integer.parseInt(dobParts[0]);
+                    int month = Integer.parseInt(dobParts[1]) - 1;
+                    int day = Integer.parseInt(dobParts[2]);
+                    dpDob.updateDate(year, month, day);
+                } catch (NumberFormatException e) {
+                    // Date was in a wrong format, do nothing
+                }
+            }
+        }
+
+        // --- THIS IS THE FIX ---
+        // Safely load the image, catching any errors from bad data
+        if (caregiverToEdit.getUserImage() != null && !caregiverToEdit.getUserImage().isEmpty()) {
+            try {
+                byte[] decodedString = Base64.decode(caregiverToEdit.getUserImage(), Base64.DEFAULT);
+                Glide.with(this)
+                        .load(decodedString)
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .into(ivProfileImage);
+            } catch (IllegalArgumentException e) {
+                // If decoding fails, load the default avatar
+                ivProfileImage.setImageResource(R.drawable.default_avatar);
+            }
+        } else {
+            ivProfileImage.setImageResource(R.drawable.default_avatar);
+        }
+        // --- END FIX ---
+    }
+
+    // Helper method to prevent setting null text
+    private void setText(EditText editText, String text) {
+        if (text != null) {
+            editText.setText(text);
+        } else {
+            editText.setText("");
+        }
     }
 
     private void openGallery() {
@@ -119,13 +163,12 @@ public class EditCaregiver extends AppCompatActivity {
         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        byte[] byteArray = baos.toByteArray();
-        this.userImageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        this.userImageBase64 = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 
     private void saveChanges() {
         if (!validate()) return;
-
+        // ... (rest of the saveChanges method is unchanged)
         String url = "http://100.104.224.68/android/api.php?action=edit_caregiver";
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -140,8 +183,11 @@ public class EditCaregiver extends AppCompatActivity {
                             SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
                             editor.putString("caregiverFirstName", newFirstName);
+                            if (userImageBase64 != null) {
+                                editor.putString("caregiverImage", userImageBase64);
+                            }
                             editor.apply();
-                            setResult(RESULT_OK); // Signal to ViewCaregiver to refresh
+                            setResult(RESULT_OK);
                             finish();
                         } else {
                             Toast.makeText(this, "Error: " + res.getString("message"), Toast.LENGTH_LONG).show();
@@ -150,9 +196,7 @@ public class EditCaregiver extends AppCompatActivity {
                         Toast.makeText(this, "Invalid response from server", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> {
-                    Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                }
+                error -> Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show()
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -168,7 +212,6 @@ public class EditCaregiver extends AppCompatActivity {
                 params.put("email", etEmail.getText().toString().trim());
                 params.put("caregiverPassword", etPassword.getText().toString());
 
-                // Only include the image if a new one was selected
                 if (userImageBase64 != null && !userImageBase64.isEmpty()) {
                     params.put("userImage", userImageBase64);
                 }
@@ -179,7 +222,6 @@ public class EditCaregiver extends AppCompatActivity {
     }
 
     private boolean validate() {
-        // Add your validation logic here, similar to CreateCaregiver
         if (etFirstName.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "First name is required", Toast.LENGTH_SHORT).show();
             return false;
@@ -188,7 +230,10 @@ public class EditCaregiver extends AppCompatActivity {
             Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
             return false;
         }
-        // ... more validation ...
+        if (etPassword.getText().toString().length() < 8) {
+            Toast.makeText(this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
 }

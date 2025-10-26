@@ -7,104 +7,113 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+// REMOVED: import android.widget.EditText; // No longer needed
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+// This is the only text field import you need
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private enum LoginAction {
+        GO_TO_DASHBOARD,
+        GO_TO_CREATE_PATIENT
+    }
 
-    EditText editEmail, editPassword;
-    Button btnSignIn, btnSignUp, btnSignInCaregiver;
+    // --- THIS IS THE FIX ---
+    // Change the variable types here to match your modern XML layout
+    TextInputEditText editEmail, editPassword;
+    Button btnSignIn, btnSignUp;
+    RadioGroup userTypeRadioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        //fetchDataFromAPI();
 
+        // These findViewById calls will now work correctly
         editEmail = findViewById(R.id.edtEmail);
         editPassword = findViewById(R.id.edtPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
-        btnSignInCaregiver=findViewById(R.id.btnSignInCare);
         btnSignUp = findViewById(R.id.btnSignUp);
+        userTypeRadioGroup = findViewById(R.id.userTypeRadioGroup);
 
         btnSignUp.setOnClickListener(v -> showSignUpDialog());
 
         btnSignIn.setOnClickListener(v -> {
             String email = editEmail.getText().toString().trim();
             String password = editPassword.getText().toString().trim();
-            login(email,password);
+            int selectedId = userTypeRadioGroup.getCheckedRadioButtonId();
+
+            if (selectedId == R.id.rbPatient) {
+                loginUser("patient", email, password, LoginAction.GO_TO_DASHBOARD);
+            } else if (selectedId == R.id.rbCaregiver) {
+                loginUser("caregiver", email, password, LoginAction.GO_TO_DASHBOARD);
+            } else {
+                Toast.makeText(this, "Please select a user type", Toast.LENGTH_SHORT).show();
+            }
         });
-
-        btnSignInCaregiver.setOnClickListener(v -> {
-            String email = editEmail.getText().toString().trim();
-            String password = editPassword.getText().toString().trim();
-            login_caregiver1(email,password);
-        });
-
-
     }
 
-    private void login(String email, String password) {
-        String url = "http://100.104.224.68/android/api.php?action=login";
+    private void loginUser(String userType, String email, String password, final LoginAction actionOnSuccess) {
+        String action = userType.equals("patient") ? "login" : "login_caregiver";
+        String url = "http://100.104.224.68/android/api.php?action=" + action;
         RequestQueue queue = Volley.newRequestQueue(this);
-
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
                         String status = jsonResponse.getString("status");
-
                         if (status.equals("success")) {
                             JSONObject user = jsonResponse.getJSONObject("user");
-                            String name = user.getString("firstName");
-                            int patientID = user.getInt("patientID");
-                            int caregiverID= user.getInt("careGiverID");
-                            //toast.GetGreatingToast("Welcome " + name).show();
-                            Toast.makeText(this,"Welcome " + name , Toast.LENGTH_LONG).show();
-
                             SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putInt("patientID", patientID);
-                            editor.putInt("careGiverID", caregiverID);
-                            editor.putString("name", name);
-                            editor.apply();
-
-                            Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
-                            startActivity(intent);
-                            finish();
+                            if (userType.equals("patient")) {
+                                String name = user.getString("firstName");
+                                int patientID = user.getInt("patientID");
+                                int caregiverID = user.getInt("careGiverID");
+                                editor.putInt("patientID", patientID);
+                                editor.putInt("careGiverID", caregiverID);
+                                editor.putString("name", name);
+                                editor.apply();
+                                Toast.makeText(this, "Welcome " + name, Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                String name = user.getString("firstName");
+                                int careGiverID = user.getInt("careGiverID");
+                                editor.clear();
+                                editor.putInt("careGiverID", careGiverID);
+                                editor.putString("caregiverFirstName", name);
+                                editor.putInt("patientID", -1);
+                                editor.apply();
+                                if (actionOnSuccess == LoginAction.GO_TO_DASHBOARD) {
+                                    Toast.makeText(this, "Welcome " + name, Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(LoginActivity.this, DashboardCaregiver.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else if (actionOnSuccess == LoginAction.GO_TO_CREATE_PATIENT) {
+                                    Intent intent = new Intent(LoginActivity.this, CreatePatient.class);
+                                    intent.putExtra("NAVIGATE_TO_DASHBOARD", true);
+                                    startActivity(intent);
+                                }
+                            }
                         } else {
                             String message = jsonResponse.getString("message");
                             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
@@ -123,162 +132,84 @@ public class LoginActivity extends AppCompatActivity {
                 return params;
             }
         };
-
         queue.add(stringRequest);
-
-
     }
 
     private void showSignUpDialog() {
-        // Options for sign up
-        String[] options = {"Caregiver", "Patient"};
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Sign up:")
-                .setSingleChoiceItems(options, -1, (dialog, which) -> {
-                    // Store choice temporarily (caregiver or patient)
-                    if (options[which].equals("Caregiver")) {
-                        // Open caregiver sign up activity
-                        Intent intent = new Intent(LoginActivity.this, CreateCaregiver.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                    } else {
-                        // If patient → show caregiver login dialog
-                        dialog.dismiss();
-                        showCaregiverLoginDialog();
-                    }
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
-        builder.create().show();
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_signup_options, null);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        TextView optionCaregiver = dialogView.findViewById(R.id.optionCaregiver);
+        TextView optionPatient = dialogView.findViewById(R.id.optionPatient);
+        Button optionCancel = dialogView.findViewById(R.id.optionCancel);
+        optionCaregiver.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, CreateCaregiver.class);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+        optionPatient.setOnClickListener(v -> {
+            showCaregiverLoginDialog();
+            dialog.dismiss();
+        });
+        optionCancel.setOnClickListener(v -> dialog.dismiss());
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        dialog.show();
     }
+
+    // In LoginActivity.java
+
+    // In LoginActivity.java
+
+    // In LoginActivity.java
+
+    // In LoginActivity.java
+
+    // In LoginActivity.java
 
     private void showCaregiverLoginDialog() {
-        // Inflate custom layout
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialogue_caregiver_login, null);
-
-        EditText caregiverEmail = dialogView.findViewById(R.id.caregiverEmail);
-        EditText caregiverPassword = dialogView.findViewById(R.id.caregiverPassword);
-
+        // 1. Create the builder. No special theme is needed now that your main app theme is correct.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter Caregiver Credentials")
-                .setView(dialogView)
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    String email = caregiverEmail.getText().toString().trim();
-                    String password = caregiverPassword.getText().toString().trim();
 
-                    // 🔑 TODO: Replace with real caregiver verification (e.g. Firebase DB check)
-                    // if (email.equals("caregiver@example.com") && password.equals("1234")) {
-                    //   // If verified → go to patient signup
-                    // Intent intent = new Intent(LoginActivity.this, CreatePatient.class);
-                    //startActivity(intent);
-                    //} else {
-                    //   Toast.makeText(LoginActivity.this, "Invalid caregiver credentials", Toast.LENGTH_SHORT).show();
-                    //}
-                    login_caregiver2(email,password);
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        // 2. Inflate your custom layout file.
+        View dialogView = getLayoutInflater().inflate(R.layout.dialogue_caregiver_login, null);
+        builder.setView(dialogView);
 
-        builder.create().show();
-    }
+        // 3. Create the dialog from the builder.
+        AlertDialog dialog = builder.create();
 
-    private void login_caregiver2(String email, String password) {
-        String url = "http://100.104.224.68/android/api.php?action=login_caregiver";
-        RequestQueue queue = Volley.newRequestQueue(this);
+        // 4. Find all the views inside your custom layout.
+        TextInputEditText caregiverEmail = dialogView.findViewById(R.id.caregiverEmail);
+        TextInputEditText caregiverPassword = dialogView.findViewById(R.id.caregiverPassword);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        String status = jsonResponse.getString("status");
+        // 5. Set the click listener for the "Cancel" button.
+        btnCancel.setOnClickListener(v -> {
+            dialog.dismiss(); // Just closes the dialog.
+        });
 
-                        if (status.equals("success")) {
-                            JSONObject user = jsonResponse.getJSONObject("user");
-                            int careGiverID = user.getInt("careGiverID");
-                            String firstName = user.getString("firstName");
+        // 6. Set the click listener for the "Confirm" button.
+        btnConfirm.setOnClickListener(v -> {
+            // Safely get the text from the fields to prevent crashes.
+            String email = (caregiverEmail.getText() != null) ? caregiverEmail.getText().toString().trim() : "";
+            String password = (caregiverPassword.getText() != null) ? caregiverPassword.getText().toString().trim() : "";
 
-                            SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putInt("careGiverID", careGiverID);
-                            editor.putString("caregiverFirstName", firstName);
-                            editor.apply();
+            // Call your existing login logic.
+            loginUser("caregiver", email, password, LoginAction.GO_TO_CREATE_PATIENT);
 
-                            Intent intent = new Intent(LoginActivity.this, CreatePatient.class);
-                            // This flag tells CreatePatient where to go next
-                            intent.putExtra("NAVIGATE_TO_DASHBOARD", true);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            String message = jsonResponse.getString("message");
-                            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                },
-                error -> Toast.makeText(this, "Network error: " + error.toString(), Toast.LENGTH_LONG).show()
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("email", email);
-                params.put("password", password);
-                return params;
-            }
-        };
+            // Close the dialog after the action is initiated.
+            dialog.dismiss();
+        });
 
-        queue.add(stringRequest);
+        // 7. Make the dialog's window transparent to show your custom rounded background.
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
-
-    }
-
-    private void login_caregiver1(String email, String password) {
-        String url = "http://100.104.224.68/android/api.php?action=login_caregiver";
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        String status = jsonResponse.getString("status");
-
-                        if (status.equals("success")) {
-                            JSONObject user = jsonResponse.getJSONObject("user");
-                            String name = user.getString("firstName");
-                            int careGiverID = user.getInt("careGiverID");
-
-
-                            SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putInt("careGiverID", careGiverID);
-                            editor.putString("caregiverFirstName", name);
-                            editor.apply();
-
-                            Intent intent = new Intent(LoginActivity.this, DashboardCaregiver.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            String message = jsonResponse.getString("message");
-                            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                },
-                error -> Toast.makeText(this, "Network error: " + error.toString(), Toast.LENGTH_LONG).show()
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("email", email);
-                params.put("password", password);
-                return params;
-            }
-        };
-
-        queue.add(stringRequest);
-
-
+        // 8. Show the dialog.
+        dialog.show();
     }
 }

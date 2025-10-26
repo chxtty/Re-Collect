@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 
 public class ViewCommunity extends AppCompatActivity {
 
-    private FloatingActionButton fabAddMember;
+    private ImageButton fabAddMember;
     private RecyclerView recyclerView;
     private CommunityAdapter adapter;
     private ArrayList<Community_Member> memberList = new ArrayList<>();
@@ -50,19 +51,21 @@ public class ViewCommunity extends AppCompatActivity {
             return insets;
         });
 
-        fabAddMember = findViewById(R.id.fabAddMember);
+        patientID = getIntent().getIntExtra("patientID", -1);
+        if (patientID == -1) {
+            Toast.makeText(this, "Error: Could not identify the patient's community.", Toast.LENGTH_LONG).show();
+            finish(); // Exit if no valid ID was passed to this screen
+            return;
+        }
+
+        // 2. NOW, set up your button's click listener.
+        // It will now have the correct patientID to pass along.
+        fabAddMember = findViewById(R.id.btnAddMember);
         fabAddMember.setOnClickListener(view -> {
             Intent intent = new Intent(ViewCommunity.this, AddCommMem.class);
             intent.putExtra("patientID", patientID);
             startActivity(intent);
         });
-
-        patientID = getIntent().getIntExtra("patientID", -1);
-        if (patientID == -1) {
-            Toast.makeText(this, "Error: Could not identify the patient's community.", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
 
         ImageView imgBack = findViewById(R.id.imgBack);
         imgBack.setOnClickListener(e -> onBackPressed());

@@ -1,17 +1,33 @@
 package com.example.re_collectui;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +35,30 @@ public class AddCommMem extends AppCompatActivity {
 
     private EditText etFirstName, etLastName, etType, etDescription, etCuteMessage;
     private Button btnSaveMember;
-
     private ImageButton backbtn;
+    private FloatingActionButton btnAddPhoto;
+    private ImageView ivProfileImage;
+
     private int patientID = -1;
+    private String userImageBase64 = null;
+
+    private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    if (imageUri != null) {
+                        Glide.with(this).load(imageUri).into(ivProfileImage);
+                        try {
+                            encodeImage(imageUri);
+                            Toast.makeText(this, "Photo selected", Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            Toast.makeText(this, "Failed to encode image", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+    );
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,25 +71,40 @@ public class AddCommMem extends AppCompatActivity {
         etDescription = findViewById(R.id.etDescription);
         etCuteMessage = findViewById(R.id.etCuteMessage);
         btnSaveMember = findViewById(R.id.btnSaveMember);
-        backbtn=findViewById(R.id.imgBack);
-        // Retrieve the patientID passed from the previous activity
+        backbtn = findViewById(R.id.imgBack);
+        ivProfileImage = findViewById(R.id.ivProfileImage);
+        btnAddPhoto = findViewById(R.id.fabAddPhoto);
+
         patientID = getIntent().getIntExtra("patientID", -1);
         if (patientID == -1) {
             Toast.makeText(this, "Error: Patient link not found.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
-        backbtn.setOnClickListener(view -> finish());
 
+        backbtn.setOnClickListener(view -> finish());
         btnSaveMember.setOnClickListener(view -> saveMember());
+        btnAddPhoto.setOnClickListener(v -> openGallery());
+    }
+
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryLauncher.launch(galleryIntent);
+    }
+
+    private void encodeImage(Uri imageUri) throws IOException {
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        this.userImageBase64 = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 
     private void saveMember() {
-        String firstName = etFirstName.getText().toString().trim();
-        String lastName = etLastName.getText().toString().trim();
-        String type = etType.getText().toString().trim();
-        String description = etDescription.getText().toString().trim();
-        String cuteMessage = etCuteMessage.getText().toString().trim();
+        final String firstName = etFirstName.getText().toString().trim();
+        final String lastName = etLastName.getText().toString().trim();
+        final String type = etType.getText().toString().trim();
+        final String description = etDescription.getText().toString().trim();
+        final String cuteMessage = etCuteMessage.getText().toString().trim();
 
         if (firstName.isEmpty() || type.isEmpty()) {
             Toast.makeText(this, "First Name and Relationship are required.", Toast.LENGTH_SHORT).show();
@@ -67,7 +119,8 @@ public class AddCommMem extends AppCompatActivity {
                         JSONObject jsonResponse = new JSONObject(response);
                         if (jsonResponse.getString("status").equals("success")) {
                             Toast.makeText(this, "Member added successfully!", Toast.LENGTH_SHORT).show();
-                            finish(); // Close this activity and return to the list
+                            setResult(RESULT_OK);
+                            finish();
                         } else {
                             Toast.makeText(this, "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
                         }
@@ -89,7 +142,14 @@ public class AddCommMem extends AppCompatActivity {
                 params.put("commType", type);
                 params.put("commDescription", description);
                 params.put("commCuteMessage", cuteMessage);
-                // Image handling would be added here in a more complex request
+
+                // --- THIS IS THE FIX ---
+                // If an image was selected, add it to the request.
+                if (userImageBase64 != null && !userImageBase64.isEmpty()) {
+                    params.put("commImage", userImageBase64);
+                }
+                // --- END FIX ---
+
                 return params;
             }
         };
