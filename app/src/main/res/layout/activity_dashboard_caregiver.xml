@@ -109,18 +109,18 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-
-
         android:id="@+id/caregiver_requests"
         android:layout_width="160dp"
         android:layout_height="160dp"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
         android:background="@drawable/dashboard_icon_caregiver"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:onClick="on_Caregiver_requests_Click"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp">
+        android:onClick="on_Caregiver_requests_Click">
 
       <TextView
           android:id="@+id/textView6"
@@ -211,4 +211,9 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal"></LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
