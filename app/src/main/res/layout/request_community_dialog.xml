@@ -3,33 +3,187 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginVertical="6dp"
+    android:layout_height="wrap_content"
     android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="6dp"
     android:animateLayoutChanges="true"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/creme">
+    app:cardBackgroundColor="@color/creme"
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        >
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
+
+        <ImageView
+            android:id="@+id/imageView18"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/community" />
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:fillViewport="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView18">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutIcons"
+                    android:layout_width="71dp"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:paddingTop="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/linearLayout5">
+
+                    <ImageView
+                        android:id="@+id/imageView15"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="5dp"
+                        app:srcCompat="@drawable/add_group" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/imageView16"
+                        android:layout_width="67dp"
+                        android:layout_height="77dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/chat" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/imageView17"
+                        android:layout_width="61dp"
+                        android:layout_height="68dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="16dp"
+                        app:srcCompat="@drawable/photo_camera" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:background="@color/creme"
+                    android:elevation="4dp"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/linearLayoutIcons"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <EditText
+                        android:id="@+id/edtFNameCommReq"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/activity_dialog_et"
+                        android:ems="10"
+                        android:hint="Enter First Name"
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:padding="12dp" />
+
+                    <EditText
+                        android:id="@+id/edtLNameCommReq"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/activity_dialog_et"
+                        android:ems="10"
+                        android:hint="Enter Last Name"
+                        android:inputType="text"
+                        android:minHeight="48dp"
+                        android:padding="12dp" />
+
+                    <Spinner
+                        android:id="@+id/spnType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/activity_dialog_et"
+                        android:entries="@array/type_options"
+                        android:minHeight="48dp"
+                        android:paddingStart="5dp"
+                        android:spinnerMode="dropdown" />
+
+                    <EditText
+                        android:id="@+id/edtDescCommReq"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/activity_dialog_et"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:hint="Enter Description"
+                        android:inputType="textMultiLine"
+                        android:padding="12dp" />
+
+                    <EditText
+                        android:id="@+id/edtCuteMessageCommReq"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/activity_dialog_et"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:hint="Enter Cute Message"
+                        android:inputType="textMultiLine"
+                        android:padding="12dp" />
+
+                    <Button
+                        android:id="@+id/btnAddImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/activity_dialog_done_bg"
+                        android:text="Add Image " />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
         <LinearLayout
             android:id="@+id/linearLayout6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal"
             android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scrollView2">
 
             <Button
                 android:id="@+id/btnCancelCommReq"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
@@ -40,7 +194,7 @@
 
             <Button
                 android:id="@+id/btnSendCommReq"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
@@ -48,163 +202,6 @@
                 android:padding="10dp"
                 android:text="Submit" />
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/imageView18"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/community" />
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="15dp"
-            android:padding="20dp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView18">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp">
-
-                    <LinearLayout
-                        android:id="@+id/linearLayout5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="677dp"
-                        android:layout_marginEnd="4dp"
-                        android:background="@color/creme"
-                        android:elevation="4dp"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <EditText
-                            android:id="@+id/edtFNameCommReq"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginBottom="15dp"
-                            android:layout_weight="12.5"
-                            android:background="@drawable/activity_dialog_et"
-                            android:ems="10"
-                            android:hint="Enter First Name"
-                            android:inputType="text"
-                            android:paddingStart="5dp" />
-
-                        <EditText
-                            android:id="@+id/edtLNameCommReq"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginBottom="15dp"
-                            android:layout_weight="12.5"
-                            android:background="@drawable/activity_dialog_et"
-                            android:ems="10"
-                            android:hint="Enter Last Name"
-                            android:inputType="text"
-                            android:paddingStart="5dp" />
-
-                        <Spinner
-                            android:id="@+id/spnType"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginBottom="15dp"
-                            android:layout_weight="12.5"
-                            android:background="@drawable/activity_dialog_et"
-                            android:entries="@array/type_options"
-                            android:spinnerMode="dropdown"
-                            android:paddingStart="5dp" />
-
-                        <EditText
-                            android:id="@+id/edtDescCommReq"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginBottom="15dp"
-                            android:layout_weight="10"
-                            android:background="@drawable/activity_dialog_et"
-                            android:ems="10"
-                            android:gravity="start|top"
-                            android:hint="Enter Description"
-                            android:inputType="textMultiLine"
-                            android:paddingStart="5dp"
-                            android:paddingTop="5dp" />
-
-                        <EditText
-                            android:id="@+id/edtCuteMessageCommReq"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginBottom="15dp"
-                            android:layout_weight="10"
-                            android:background="@drawable/activity_dialog_et"
-                            android:ems="10"
-                            android:gravity="start|top"
-                            android:hint="Enter Cute Message"
-                            android:inputType="textMultiLine"
-                            android:paddingStart="5dp"
-                            android:paddingTop="5dp" />
-
-                        <Button
-                            android:id="@+id/btnAddImage"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/activity_dialog_done_bg"
-                            android:text="Add Image " />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="71dp"
-                        android:layout_height="669dp"
-                        android:layout_marginEnd="4dp"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/linearLayout5"
-                        app:layout_constraintHorizontal_bias="0.733"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="1.0">
-
-                        <ImageView
-                            android:id="@+id/imageView15"
-                            android:layout_width="66dp"
-                            android:layout_height="67dp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="340dp"
-                            app:srcCompat="@drawable/add_group" />
-
-                        <ImageView
-                            android:id="@+id/imageView16"
-                            android:layout_width="67dp"
-                            android:layout_height="77dp"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="110dp"
-                            app:srcCompat="@drawable/chat" />
-
-                        <ImageView
-                            android:id="@+id/imageView17"
-                            android:layout_width="61dp"
-                            android:layout_height="68dp"
-                            android:layout_gravity="center"
-                            app:srcCompat="@drawable/photo_camera" />
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
