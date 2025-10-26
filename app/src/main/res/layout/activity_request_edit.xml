@@ -260,7 +260,7 @@
                         android:layout_height="62dp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="5dp"
-                        android:layout_marginBottom="320dp"
+                        android:layout_marginBottom="275dp"
                         app:srcCompat="@drawable/add_group" />
 
                     <ImageView
@@ -268,7 +268,7 @@
                         android:layout_width="67dp"
                         android:layout_height="77dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="30dp"
+                        android:layout_marginBottom="22dp"
                         app:srcCompat="@drawable/chat" />
 
                     <ImageView
