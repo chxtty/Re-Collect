@@ -127,10 +127,16 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } catch (JSONException e) {
                         Log.e("Error",  e.getMessage());
+                        toast.GetErrorToast("JSON Error: " + e.getMessage()).show();
                     }
                 },
-                error -> Log.e( "Network error",error.toString())
-        ) {
+                error -> {
+            Log.e( "Network error",error.toString());
+            toast.GetErrorToast("Network Error: " + error.getMessage()).show();
+        }
+
+        )
+        {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();

@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.activity.OnBackPressedCallback;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -31,6 +32,8 @@ public class EditEntry extends AppCompatActivity {
     String title;
     String date;
     String content;
+    String originalTitle;
+    String originalContent;
     int author;
     int entryId;
 
@@ -65,13 +68,13 @@ public class EditEntry extends AppCompatActivity {
         imgBack = findViewById(R.id.backButton);
         imgSave = findViewById(R.id.saveButton);
         imgBack.setOnClickListener( e -> {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         });
 
 
         fetchInfo();
         SaveButton(imgSave);
-
+        setupOnBackPressed();
 
     }
 
@@ -82,8 +85,11 @@ public class EditEntry extends AppCompatActivity {
         apiHelper.getDiaryEntry(entryId, new DiaryFetcher.DiaryEntryCallback() {
             @Override
             public void onSuccess(DiaryFetcher.DiaryEntry entry) {
-                etTitle.setText(entry.diaryTitle);
-                etEdit.setText(entry.content);
+                originalTitle = (entry.diaryTitle != null) ? entry.diaryTitle : "";
+                originalContent = (entry.content != null) ? entry.content : "";
+
+                etTitle.setText(originalTitle);
+                etEdit.setText(originalContent);
                 date = entry.diaryDate;
                 dateFormatter(date);
             }
@@ -173,6 +179,68 @@ public class EditEntry extends AppCompatActivity {
                 new Thread(() -> saveDiaryEntry(title, content)).start();
             }
         });
+    }
+
+    /**
+     * Checks if the user has changed the title or content.
+     * @return true if changes were made, false otherwise.
+     */
+    private boolean hasChanges() {
+        // Get the current text from the EditTexts
+        String currentTitle = etTitle.getText().toString();
+        String currentContent = etEdit.getText().toString();
+
+        // Avoid a crash if originals haven't loaded yet
+        if (originalTitle == null || originalContent == null) {
+            return false;
+        }
+
+        // Return true if either field is different from its original value
+        return !originalTitle.equals(currentTitle) || !originalContent.equals(currentContent);
+    }
+
+    /**
+     * Sets up the custom logic for the system back button.
+     */
+    private void setupOnBackPressed() {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (hasChanges()) {
+                    showUnsavedChangesDialog();
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        };
+
+        // Add the callback to the activity's dispatcher
+        getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    /**
+     * Creates and shows the CustomPopupDialogFragment.
+     */
+    private void showUnsavedChangesDialog() {
+        String message = "Are you sure you want to leave without saving?";
+        String positiveText = "Leave";
+        String negativeText = "Stay";
+
+        // Use the newInstance factory method from your CustomPopupDialogFragment
+        CustomPopupDialogFragment popup = CustomPopupDialogFragment.newInstance(message, positiveText, negativeText);
+
+        // Set the listener for the "Leave" button
+        popup.setOnPositiveClickListener(new CustomPopupDialogFragment.OnPositiveClickListener() {
+            @Override
+            public void onPositiveClick() {
+                // User confirmed they want to leave, so finish the activity.
+                finish();
+            }
+        });
+
+        // Show the dialog
+        popup.show(getSupportFragmentManager(), "UnsavedChangesDialog");
     }
 
 }
