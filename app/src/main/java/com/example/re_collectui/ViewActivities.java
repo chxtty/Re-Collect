@@ -316,7 +316,7 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
             String descr = edtDesc.getText().toString().trim();
 
             if (type.isEmpty() || descr.isEmpty()) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                toast.GetErrorToast( "Please fill all fields").show();
                 return;
             }
 
@@ -339,16 +339,16 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
                         String status = res.getString("status");
 
                         if (status.equals("success")) {
-                            Toast.makeText(this, "Activity request submitted!", Toast.LENGTH_SHORT).show();
+                            toast.GetInfoToast("Activity request submitted!").show();
                         } else {
-                            Toast.makeText(this, res.getString("message"), Toast.LENGTH_LONG).show();
+                            toast.GetErrorToast(res.getString("message")).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 },
-                error -> Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show()
+                error -> toast.GetErrorToast("Network error: " + error.getMessage()).show()
         ) {
             @Override
             protected Map<String, String> getParams() {

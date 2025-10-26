@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="40dp"
-    android:padding="24dp"
-    android:background="@drawable/dialog_background"> <!-- Optional: for rounded corners -->
+    android:background="@drawable/entry_button_background"
+    android:padding="24dp"> <!-- Optional: for rounded corners -->
 
     <!-- Icon at the top-center of the dialog -->
 
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/confirmation_dlg_btn_bg"
+        android:background="@drawable/delete_dlg_btn_bg"
         android:text="OK"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,8 +51,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="92dp"
+        android:background="@drawable/activity_dialog_cancel_bg"
         android:text="Cancel"
-        android:background="@drawable/delete_dlg_btn_bg"
+        android:textColor="@color/creme"
         app:layout_constraintBottom_toBottomOf="@id/btnPositive"
         app:layout_constraintEnd_toStartOf="@id/btnPositive"
         app:layout_constraintTop_toTopOf="@id/btnPositive"

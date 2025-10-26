@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,15 @@ public class DashboardCaregiver extends AppCompatActivity {
         String caregiverName = sharedPref.getString("name", "");
         TextView caregiverNameTextView = findViewById(R.id.txtWelcome);
         caregiverNameTextView.setText("Welcome, " + caregiverName + " :)");
+
+        Button btnLogout = findViewById(R.id.btnLogout);
+
+        btnLogout.setOnClickListener(v ->{
+            Intent intent = new Intent(DashboardCaregiver.this, LoginActivity.class);
+            sharedPref.edit().clear().apply();
+            startActivity(intent);
+            finish();
+        });
 
     }
 

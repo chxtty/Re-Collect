@@ -1,5 +1,7 @@
 package com.example.re_collectui;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -18,6 +20,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -245,7 +248,7 @@ public class RequestEditActivity extends AppCompatActivity {
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getString("status").equals("success")) {
-                                toast.GetInfoToast( "Request deleted").show();
+                                toast.GetDeleteToast( "Request deleted").show();
                                 finish();
                             } else {
                                 //Toast.makeText(this, "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -274,9 +277,16 @@ public class RequestEditActivity extends AppCompatActivity {
                 "Yes",
                 "Cancel"
         );
-
         dialog.setOnPositiveClickListener(() -> acceptRequest(view));
         dialog.show(getSupportFragmentManager(), "AcceptConfirmationDialog");
+
+        getSupportFragmentManager().executePendingTransactions();
+        if (dialog.getDialog() != null) {
+            Button btnPositive = dialog.getDialog().findViewById(R.id.btnPositive);
+            if (btnPositive != null) {
+                btnPositive.setBackgroundResource(R.drawable.dashboard_icon_caregiver);
+            }
+        }
     }
 
     private void acceptRequest(View view) {

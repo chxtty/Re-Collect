@@ -31,8 +31,11 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -187,6 +190,32 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 return;
             }
 
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date startD = null;
+            Date endD = null;
+            try {
+                if (updatedStart != null) {
+                    startD = sdf.parse(updatedStart);
+
+                }
+                if (updatedEnd !=null){
+                    endD = sdf.parse(updatedEnd);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            Date today = cal.getTime(); //resets to midnight in case event wants to start today
+
+            if (startD.before(today) && endD.before(today)) { //since can edit an event thats currently going on
+                toast1.GetErrorToast("Event cannot start and end in the past").show();
+                return;
+            }
+
             updateEventOnServer(
                     event.getEventID(),
                     updatedTitle,
@@ -253,7 +282,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                             Event updatedEvent = new Event(eventID, title, startDate, endDate, description, location, allDay);
                             updateEventInList(updatedEvent);
                         } else {
-                            // Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (JSONException e) {
                        // Toast.makeText(context, "Error parsing update response", Toast.LENGTH_SHORT).show();
@@ -291,9 +320,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                             eventList.removeIf(e -> e.getEventID() == eventToDelete.getEventID());
                             searchList.removeIf(e -> e.getEventID() == eventToDelete.getEventID());
                             notifyDataSetChanged();
-                            toast.GetInfoToast("Event deleted").show();
+                            toast.GetDeleteToast("Event deleted :(").show();
                         } else {
-                           // Toast.makeText(context, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                           toast.GetErrorToast((obj.getString("message"))).show();
                         }
                     } catch (JSONException e) {
                         // Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();

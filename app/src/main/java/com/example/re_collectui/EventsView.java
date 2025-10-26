@@ -35,8 +35,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -230,6 +233,27 @@ public class EventsView extends AppCompatActivity {
                 return;
             }
 
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date startD = null;
+            try {
+                if (startDate != null) {
+                    startD = sdf.parse(startDate);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            Date today = cal.getTime(); //resets to midnight in case event wants to start today
+
+            if (startD.before(today)) {
+                toast1.GetErrorToast("Event cannot start in the past").show();
+                return;
+            }
+
             createEvent(title, startDate, endDate, allDay, location, description);
 
 
@@ -244,10 +268,6 @@ public class EventsView extends AppCompatActivity {
     private void createEvent(String title, String startDate, String endDate, boolean allDay, String location, String description) {
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         int patientID = sharedPref.getInt("patientID", -1);
-        if (patientID == -1) {
-            Log.e("Session Info", "Session expired. Please log in again.");
-            return;
-        }
 
         String url = GlobalVars.apiPath + "create_event";
 
@@ -264,7 +284,7 @@ public class EventsView extends AppCompatActivity {
                             eventList.add(event);
                             applyEventFilterDialog(currentQuery,filterByTitle,filterByLocation,sortAsc,completed);
                         } else {
-                           Log.e("Error: ", res.getString("message"));
+                           toast.GetErrorToast(res.getString("message")).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -366,9 +386,9 @@ public class EventsView extends AppCompatActivity {
         boolean matchesSearch = false;
 
         if(!query.isEmpty()) {
-            if (filterByTitle && event.getTitle().toLowerCase().contains(query)) {
+            if (filterByTitle && startsWithWord(event.getTitle(), query)) {
                 matchesSearch = true;
-            } else if (filterByLocation && event.getLocation().toLowerCase().contains(query)) {
+            } else if (filterByLocation && startsWithWord(event.getLocation(), query)) {
                 matchesSearch = true;
             }
         } else {
@@ -389,5 +409,16 @@ public class EventsView extends AppCompatActivity {
     searchList.clear();
     searchList.addAll(filtered);
     adapter.notifyDataSetChanged();
+    }
+
+    //since startWith only works on the first work
+    private boolean startsWithWord(String text, String query) {
+        String[] words = text.toLowerCase(Locale.getDefault()).split("\\s+");
+        for (String word : words) {
+            if (word.startsWith(query)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

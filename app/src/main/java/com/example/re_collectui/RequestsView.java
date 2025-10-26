@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class RequestsView extends AppCompatActivity {
@@ -175,53 +176,66 @@ public class RequestsView extends AppCompatActivity {
         queue.add(request);
     }
 
-private void applyFiltersAndSearch() {
-    filteredRequests.clear();
+    private void applyFiltersAndSearch() {
+        filteredRequests.clear();
 
-    for (RequestItem item : allRequests) {
-        boolean matches = true;
+        for (RequestItem item : allRequests) {
+            boolean matches = true;
 
-        if (selectedType != null) {
-            if (selectedType == RequestItem.RequestType.ACTIVITY && item.getType() != RequestItem.RequestType.ACTIVITY) {
-                matches = false;
-            } else if (selectedType == RequestItem.RequestType.COMMUNITY && item.getType() != RequestItem.RequestType.COMMUNITY) {
-                matches = false;
+            if (selectedType != null) {
+                if (selectedType == RequestItem.RequestType.ACTIVITY && item.getType() != RequestItem.RequestType.ACTIVITY) {
+                    matches = false;
+                } else if (selectedType == RequestItem.RequestType.COMMUNITY && item.getType() != RequestItem.RequestType.COMMUNITY) {
+                    matches = false;
+                }
             }
+
+            if (filterDeclined) {
+                if (!"DECLINED".equalsIgnoreCase(item.getStatus().trim())) {
+                    matches = false;
+                }
+            } else {
+                if ("DECLINED".equalsIgnoreCase(item.getStatus().trim())) {
+                    matches = false;
+                }
+            }
+
+            if (matches && !searchQuery.isEmpty()) {
+                String lowerQuery = searchQuery.toLowerCase();
+                boolean nameMatches = startsWithWord(item.getName(), lowerQuery);
+                boolean authorMatches = startsWithWord(item.getAuthor(), lowerQuery);
+
+                if (sortByName) {
+                    if (!nameMatches) matches = false;
+                } else {
+                    if (!authorMatches) matches = false;
+                }
+            }
+
+            if (matches) filteredRequests.add(item);
         }
 
-        if (filterDeclined) {
-            if (!"DECLINED".equalsIgnoreCase(item.getStatus().trim())) {
-                matches = false;
-            }
-        } else {
-            if ("DECLINED".equalsIgnoreCase(item.getStatus().trim())) {
-                matches = false;
-            }
-        }
+            Comparator<RequestItem> comparator = sortByName
+                    ? Comparator.comparing(RequestItem::getName, String.CASE_INSENSITIVE_ORDER)
+                    : Comparator.comparing(RequestItem::getAuthor, String.CASE_INSENSITIVE_ORDER);
 
-        if (matches && !searchQuery.isEmpty()) {
-            String lowerQuery = searchQuery.toLowerCase();
-            if (!(item.getName().toLowerCase().contains(lowerQuery) ||
-                  item.getAuthor().toLowerCase().contains(lowerQuery))) {
-                matches = false;
+            if (sortAscending) {
+                Collections.sort(filteredRequests, comparator);
+            } else {
+                Collections.sort(filteredRequests, comparator.reversed());
             }
-        }
 
-        if (matches) filteredRequests.add(item);
+        adapter.notifyDataSetChanged();
     }
-
-        Comparator<RequestItem> comparator = sortByName
-                ? Comparator.comparing(RequestItem::getName, String.CASE_INSENSITIVE_ORDER)
-                : Comparator.comparing(RequestItem::getAuthor, String.CASE_INSENSITIVE_ORDER);
-
-        if (sortAscending) {
-            Collections.sort(filteredRequests, comparator);
-        } else {
-            Collections.sort(filteredRequests, comparator.reversed());
-        }
-
-    adapter.notifyDataSetChanged();
-}
+    private boolean startsWithWord(String text, String query) {
+            String[] words = text.toLowerCase(Locale.getDefault()).split("\\s+");
+            for (String word : words) {
+                if (word.startsWith(query)) {
+                    return true;
+                }
+            }
+            return false;
+    }
 
     @SuppressLint("SuspiciousIndentation")
     private void showFilterDialog() {

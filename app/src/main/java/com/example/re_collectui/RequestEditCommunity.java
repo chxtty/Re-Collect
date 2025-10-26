@@ -146,7 +146,7 @@ public class RequestEditCommunity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Community request deleted").show();
+                            toast.GetDeleteToast("Community request deleted").show();
                             finish();
                         } else {
                             toast.GetErrorToast("Error: " + obj.getString("message")).show();
@@ -284,6 +284,14 @@ public class RequestEditCommunity extends AppCompatActivity {
 
         dialog.setOnPositiveClickListener(() -> acceptRequest(view));
         dialog.show(getSupportFragmentManager(), "AcceptRequestDialog");
+
+        getSupportFragmentManager().executePendingTransactions();
+        if (dialog.getDialog() != null) {
+            Button btnPositive = dialog.getDialog().findViewById(R.id.btnPositive);
+            if (btnPositive != null) {
+                btnPositive.setBackgroundResource(R.drawable.dashboard_icon_caregiver);
+            }
+        }
     }
 
     private void acceptRequest(View view) {
@@ -362,27 +370,27 @@ public class RequestEditCommunity extends AppCompatActivity {
         dialog.show(getSupportFragmentManager(), tag);
     }
 
-private void setImageFromBase64(String base64String) {
-    if (base64String != null && !base64String.isEmpty()) {
-        try {
-            byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
-            Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    private void setImageFromBase64(String base64String) {
+        if (base64String != null && !base64String.isEmpty()) {
+            try {
+                byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+                Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
 
-            imgPreview.setVisibility(View.VISIBLE);
-            imgPreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imgPreview.setVisibility(View.VISIBLE);
+                imgPreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            int sizePx = (int) (50 * getResources().getDisplayMetrics().density + 0.5f);
-            ViewGroup.LayoutParams lp = imgPreview.getLayoutParams();
-            lp.width = sizePx;
-            lp.height = sizePx;
-            imgPreview.setLayoutParams(lp);
+                int sizePx = (int) (50 * getResources().getDisplayMetrics().density + 0.5f);
+                ViewGroup.LayoutParams lp = imgPreview.getLayoutParams();
+                lp.width = sizePx;
+                lp.height = sizePx;
+                imgPreview.setLayoutParams(lp);
 
-            imgPreview.setImageBitmap(bitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
+                imgPreview.setImageBitmap(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-}
 
     private String encodeImageToBase64(Uri imageUri) {
         try {
