@@ -195,7 +195,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
-  <Button
+  <androidx.appcompat.widget.AppCompatButton
       android:id="@+id/btnLogout"
       android:layout_width="111dp"
       android:layout_height="49dp"

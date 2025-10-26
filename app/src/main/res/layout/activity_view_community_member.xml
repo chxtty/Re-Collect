@@ -68,7 +68,9 @@
                 android:text="Suzy Goops"
                 android:textColor="#333333"
                 android:textSize="32sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/relationship_text"/>
 
         </RelativeLayout>
 
@@ -194,7 +196,7 @@
             android:contentDescription="Back"
             android:layout_marginEnd="16dp" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/delete_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

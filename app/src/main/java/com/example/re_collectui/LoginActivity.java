@@ -7,9 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+// REMOVED: import android.widget.EditText; // No longer needed
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +26,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+// This is the only text field import you need
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,56 +157,80 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showSignUpDialog() {
-        // Options for sign up
-        String[] options = {"Caregiver", "Patient"};
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Sign up:")
-                .setSingleChoiceItems(options, -1, (dialog, which) -> {
-                    // Store choice temporarily (caregiver or patient)
-                    if (options[which].equals("Caregiver")) {
-                        // Open caregiver sign up activity
-                        Intent intent = new Intent(LoginActivity.this, CreateCaregiver.class);
-                        startActivity(intent);
-                        dialog.dismiss();
-                    } else {
-                        // If patient → show caregiver login dialog
-                        dialog.dismiss();
-                        showCaregiverLoginDialog();
-                    }
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
-        builder.create().show();
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_signup_options, null);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        TextView optionCaregiver = dialogView.findViewById(R.id.optionCaregiver);
+        TextView optionPatient = dialogView.findViewById(R.id.optionPatient);
+        Button optionCancel = dialogView.findViewById(R.id.optionCancel);
+        optionCaregiver.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, CreateCaregiver.class);
+            startActivity(intent);
+            dialog.dismiss();
+        });
+        optionPatient.setOnClickListener(v -> {
+            showCaregiverLoginDialog();
+            dialog.dismiss();
+        });
+        optionCancel.setOnClickListener(v -> dialog.dismiss());
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        dialog.show();
     }
 
+    // In LoginActivity.java
+
+    // In LoginActivity.java
+
+    // In LoginActivity.java
+
+    // In LoginActivity.java
+
+    // In LoginActivity.java
+
     private void showCaregiverLoginDialog() {
-        // Inflate custom layout
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialogue_caregiver_login, null);
-
-        EditText caregiverEmail = dialogView.findViewById(R.id.caregiverEmail);
-        EditText caregiverPassword = dialogView.findViewById(R.id.caregiverPassword);
-
+        // 1. Create the builder. No special theme is needed now that your main app theme is correct.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter Caregiver Credentials")
-                .setView(dialogView)
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    String email = caregiverEmail.getText().toString().trim();
-                    String password = caregiverPassword.getText().toString().trim();
 
-                    // 🔑 TODO: Replace with real caregiver verification (e.g. Firebase DB check)
-                    // if (email.equals("caregiver@example.com") && password.equals("1234")) {
-                    //   // If verified → go to patient signup
-                    // Intent intent = new Intent(LoginActivity.this, CreatePatient.class);
-                    //startActivity(intent);
-                    //} else {
-                    //   Toast.makeText(LoginActivity.this, "Invalid caregiver credentials", Toast.LENGTH_SHORT).show();
-                    //}
-                    login(email,password, "showCaregiverLoginDialog");
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        // 2. Inflate your custom layout file.
+        View dialogView = getLayoutInflater().inflate(R.layout.dialogue_caregiver_login, null);
+        builder.setView(dialogView);
 
-        builder.create().show();
+        // 3. Create the dialog from the builder.
+        AlertDialog dialog = builder.create();
+
+        // 4. Find all the views inside your custom layout.
+        TextInputEditText caregiverEmail = dialogView.findViewById(R.id.caregiverEmail);
+        TextInputEditText caregiverPassword = dialogView.findViewById(R.id.caregiverPassword);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
+
+        // 5. Set the click listener for the "Cancel" button.
+        btnCancel.setOnClickListener(v -> {
+            dialog.dismiss(); // Just closes the dialog.
+        });
+
+        // 6. Set the click listener for the "Confirm" button.
+        btnConfirm.setOnClickListener(v -> {
+            // Safely get the text from the fields to prevent crashes.
+            String email = (caregiverEmail.getText() != null) ? caregiverEmail.getText().toString().trim() : "";
+            String password = (caregiverPassword.getText() != null) ? caregiverPassword.getText().toString().trim() : "";
+
+            // Call your existing login logic.
+            login(email, password, "showCaregiverLoginDialog");
+
+            // Close the dialog after the action is initiated.
+            dialog.dismiss();
+        });
+
+        // 7. Make the dialog's window transparent to show your custom rounded background.
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        // 8. Show the dialog.
+        dialog.show();
     }
 }

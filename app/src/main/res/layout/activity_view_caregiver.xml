@@ -151,7 +151,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/bottom_flora1_caregiver" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnDeleteAccount"
             android:layout_width="0dp"
             android:layout_height="60dp"
