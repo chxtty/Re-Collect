@@ -97,27 +97,17 @@ public class RequestsView extends AppCompatActivity {
     private void fetchRequests() {
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
         int caregiverID = sharedPref.getInt("caregiverID", -1);
-        Log.i("RequestsView", "Caregiver ID is " + caregiverID);
 
         String url = GlobalVars.apiPath + "get_requests&careGiverID=" + caregiverID;
-        Log.d("RequestsView", "Fetching requests from URL: " + url);
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
-                    Log.d("RequestsView", "Raw response: " + response.toString());
                     allRequests.clear();
 
                     try {
                         JSONArray data = response.optJSONArray("data");
-                        if (data == null) {
-                            Log.w("RequestsView", "No 'data' array in response!");
-                            return;
-                        }
-
-                        Log.d("RequestsView", "Number of items in data: " + data.length());
-
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject obj = data.optJSONObject(i);
                             if (obj == null) {
@@ -158,10 +148,7 @@ public class RequestsView extends AppCompatActivity {
                             allRequests.add(item);
                             Log.d("RequestsView", "Added item: id=" + item.getId() + " name=" + item.getName());
                         }
-
-                        Log.d("RequestsView", "Total requests fetched: " + allRequests.size());
-                        applyFiltersAndSearch(); // keeps filtering/sorting
-                        Log.d("RequestsView", "Filtered requests count: " + filteredRequests.size());
+                        applyFiltersAndSearch();
 
                     } catch (Exception e) {
                         Log.e("RequestsView", "Exception parsing JSON", e);

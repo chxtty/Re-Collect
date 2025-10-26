@@ -16,7 +16,7 @@ import java.util.List;
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder> {
 
     public interface OnItemClickListener {
-        void onClick(RequestItem requestItem); // for going to request page
+        void onClick(RequestItem requestItem); // for going to request edit page
     }
     private final List<RequestItem> requests;
     private final OnItemClickListener listener;
@@ -40,7 +40,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
         holder.txtName.setText(item.getName());
         holder.txtAuthor.setText("Request by " + item.getAuthor());
 
-        if (item.getType() == RequestItem.RequestType.ACTIVITY) { // correct icon
+        if (item.getType() == RequestItem.RequestType.ACTIVITY) {
             holder.imgType.setImageResource(R.drawable.activity_icon);
         } else {
             holder.imgType.setImageResource(R.drawable.community);

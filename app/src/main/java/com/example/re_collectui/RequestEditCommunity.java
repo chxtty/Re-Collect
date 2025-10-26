@@ -146,10 +146,10 @@ public class RequestEditCommunity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetDeleteToast("Community request deleted").show();
+                            toast.GetDeleteToast("Community Request deleted :(").show();
                             finish();
                         } else {
-                            toast.GetErrorToast("Error: " + obj.getString("message")).show();
+                            toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -196,9 +196,9 @@ public class RequestEditCommunity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Community request saved").show();
+                            toast.GetInfoToast("Community Request saved").show();
                         } else {
-                            toast.GetErrorToast("Error: " + obj.getString("message")).show();
+                            toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -249,10 +249,10 @@ public class RequestEditCommunity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Community request declined").show();
+                            toast.GetInfoToast("Community Request declined :(").show();
                             finish();
                         } else {
-                            toast.GetErrorToast("Error: " + obj.getString("message")).show();
+                            toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -289,7 +289,7 @@ public class RequestEditCommunity extends AppCompatActivity {
         if (dialog.getDialog() != null) {
             Button btnPositive = dialog.getDialog().findViewById(R.id.btnPositive);
             if (btnPositive != null) {
-                btnPositive.setBackgroundResource(R.drawable.dashboard_icon_caregiver);
+                btnPositive.setBackgroundResource(R.drawable.dashboard_icon_caregiver); // make button purple instead of red
             }
         }
     }
@@ -318,10 +318,10 @@ public class RequestEditCommunity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Community request accepted").show();
+                            toast.GetInfoToast("Community Request accepted :)").show();
                             finish();
                         } else {
-                            toast.GetErrorToast("Error: " + obj.getString("message")).show();
+                            toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -375,16 +375,13 @@ public class RequestEditCommunity extends AppCompatActivity {
             try {
                 byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
                 Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-
                 imgPreview.setVisibility(View.VISIBLE);
                 imgPreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
                 int sizePx = (int) (50 * getResources().getDisplayMetrics().density + 0.5f);
                 ViewGroup.LayoutParams lp = imgPreview.getLayoutParams();
                 lp.width = sizePx;
                 lp.height = sizePx;
                 imgPreview.setLayoutParams(lp);
-
                 imgPreview.setImageBitmap(bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -410,16 +407,13 @@ public class RequestEditCommunity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-
             imgPreview.setVisibility(View.VISIBLE);
             imgPreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
             int sizePx = (int) (50 * getResources().getDisplayMetrics().density + 0.5f);
             ViewGroup.LayoutParams lp = imgPreview.getLayoutParams();
             lp.width = sizePx;
             lp.height = sizePx;
             imgPreview.setLayoutParams(lp);
-
             imgPreview.setImageURI(selectedImageUri);
             toast.GetInfoToast("Image selected").show();
         }

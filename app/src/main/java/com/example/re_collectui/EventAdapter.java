@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -278,14 +279,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Event updated").show();
+                            toast.GetInfoToast("Event updated :)").show();
                             Event updatedEvent = new Event(eventID, title, startDate, endDate, description, location, allDay);
                             updateEventInList(updatedEvent);
                         } else {
                             toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (JSONException e) {
-                       // Toast.makeText(context, "Error parsing update response", Toast.LENGTH_SHORT).show();
+                        Log.e("JSON", "Invalid response from server");
                     }
                 },
                 error -> toast.GetErrorToast("Update failed").show()
@@ -325,7 +326,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                            toast.GetErrorToast((obj.getString("message"))).show();
                         }
                     } catch (JSONException e) {
-                        // Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();
+                        Log.e("JSON", "Invalid response from server");
                     }
                 },
                 error -> toast.GetErrorToast("Delete failed").show()

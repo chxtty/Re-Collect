@@ -86,7 +86,7 @@ public class EventsView extends AppCompatActivity {
         parentRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(30));
         toast = new CustomToast(this);
 
-        ConstraintLayout consCreate = findViewById(R.id.crdCreateEvent); // I changed from cardview to constraint layout to fit with the new button and changed name appropriately
+        ConstraintLayout consCreate = findViewById(R.id.crdCreateEvent);
 
         consCreate.setOnClickListener(v -> showCreateEventDialog());
 
@@ -114,8 +114,6 @@ public class EventsView extends AppCompatActivity {
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
-                    Log.d("EventsView", "API response: " + response.toString()); // ADD THIS
-
                     try {
                         if (response.getString("status").equals("success")) {
                             JSONArray events = response.getJSONArray("events");
@@ -125,8 +123,8 @@ public class EventsView extends AppCompatActivity {
                                 JSONObject event = events.getJSONObject(i);
 
                                 String title = event.getString("eventTitle");
-                                String startDate = event.getString("eventStartDate").split(" ")[0];
-                                String endDate = event.getString("eventEndDate").split(" ")[0];
+                                String startDate = event.getString("eventStartDate");
+                                String endDate = event.getString("eventEndDate");
                                 String description = event.getString("eventDescription");
                                 String location = event.getString("eventLocation");
                                 int id = event.getInt("eventID");
@@ -138,17 +136,14 @@ public class EventsView extends AppCompatActivity {
                             applyEventFilterDialog(currentQuery, filterByTitle, filterByLocation, sortAsc, completed);
 
                         } else {
-                            Log.e("EventsView", "API returned error: " + response.getString("message"));
+                            Log.e("EventsView", "API error: " + response.getString("message"));
                         }
-
                     } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.e("EventsView", "JSON parsing error");
+                        Log.e("EventsView", "Exception parsing JSON", e);
                     }
-
                 },
                 error -> {
-                    Log.e("Volley", "Error: " + error.toString());
+                    Log.e("EventsView", "Network error", error);
                 });
 
         Volley.newRequestQueue(this).add(request);
@@ -287,7 +282,7 @@ public class EventsView extends AppCompatActivity {
                            toast.GetErrorToast(res.getString("message")).show();
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                       e.printStackTrace();
                        Log.e("JSON", "Invalid response from server");
                     }
                 },
@@ -411,7 +406,7 @@ public class EventsView extends AppCompatActivity {
     adapter.notifyDataSetChanged();
     }
 
-    //since startWith only works on the first work
+    //since startWith method only works on the first word of string
     private boolean startsWithWord(String text, String query) {
         String[] words = text.toLowerCase(Locale.getDefault()).split("\\s+");
         for (String word : words) {

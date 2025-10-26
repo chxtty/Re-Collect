@@ -98,21 +98,17 @@ public class RequestEditActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
-
             ImageView imgPreviewAct = findViewById(R.id.imgPreviewAct);
             imgPreviewAct.setVisibility(View.VISIBLE);
             imgPreviewAct.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
             int sizePx = (int) (50 * getResources().getDisplayMetrics().density + 0.5f);
             ViewGroup.LayoutParams lp = imgPreviewAct.getLayoutParams();
             lp.width = sizePx;
             lp.height = sizePx;
             imgPreviewAct.setLayoutParams(lp);
-
             imgPreviewAct.setImageURI(selectedImageUri);
             toast.GetInfoToast("Image selected").show();
         }
-
     }
 
     public void onDeclineRequest(View view) {
@@ -134,16 +130,19 @@ public class RequestEditActivity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Request declined").show();
+                            toast.GetInfoToast("Activity Request declined :(").show();
                             finish();
                         } else {
-                            //Toast.makeText(view.getContext(), "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 },
-                error -> Log.e("Network error", Objects.requireNonNull(error.getMessage()))
+                error -> {
+                    Log.e("Network error", Objects.requireNonNull(error.getMessage()));
+                    toast.GetErrorToast("Network error occurred").show();
+                }
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -198,9 +197,9 @@ public class RequestEditActivity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Request saved").show();
+                            toast.GetInfoToast("Activity Request saved").show();
                         } else {
-                            toast.GetErrorToast("Error: " + obj.getString("message")).show();
+                            toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -248,16 +247,19 @@ public class RequestEditActivity extends AppCompatActivity {
                         try {
                             JSONObject obj = new JSONObject(response);
                             if (obj.getString("status").equals("success")) {
-                                toast.GetDeleteToast( "Request deleted").show();
+                                toast.GetDeleteToast( "Activity Request deleted :(").show();
                                 finish();
                             } else {
-                                //Toast.makeText(this, "Error: " + obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                toast.GetErrorToast(obj.getString("message")).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     },
-                    error -> Log.e("Network error", Objects.requireNonNull(error.getMessage()))
+                    error -> {
+                        Log.e("Network error", error.getMessage());
+                        toast.GetErrorToast("Network error occurred").show();
+                    }
             ) {
                 @Override
                 protected Map<String, String> getParams() {
@@ -284,7 +286,7 @@ public class RequestEditActivity extends AppCompatActivity {
         if (dialog.getDialog() != null) {
             Button btnPositive = dialog.getDialog().findViewById(R.id.btnPositive);
             if (btnPositive != null) {
-                btnPositive.setBackgroundResource(R.drawable.dashboard_icon_caregiver);
+                btnPositive.setBackgroundResource(R.drawable.dashboard_icon_caregiver); // making the button purple instead of red
             }
         }
     }
@@ -299,7 +301,7 @@ public class RequestEditActivity extends AppCompatActivity {
                 : (currentItem != null ? currentItem.getActIcon() : "");
 
         if (actType.isEmpty() || actDescription.isEmpty() || imagePath.isEmpty()) {
-            toast.GetErrorToast("Please fill in all fields").show();
+            toast.GetErrorToast("Please fill in all fields!").show();
             return;
         }
 
@@ -308,10 +310,10 @@ public class RequestEditActivity extends AppCompatActivity {
                     try {
                         JSONObject obj = new JSONObject(response);
                         if (obj.getString("status").equals("success")) {
-                            toast.GetInfoToast("Activity accepted").show();
+                            toast.GetInfoToast("Activity Request accepted! :)").show();
                             finish();
                         } else {
-                            toast.GetErrorToast("Error: " + obj.getString("message")).show();
+                            toast.GetErrorToast(obj.getString("message")).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -319,7 +321,7 @@ public class RequestEditActivity extends AppCompatActivity {
                     }
                 },
                 error -> {
-                    Log.e("Network error", Objects.requireNonNull(error.getMessage()));
+                    Log.e("Network error", error.getMessage());
                     toast.GetErrorToast("Network error occurred").show();
                 }
         ) {
