@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (role.equals("patient")){
                                 toast.GetGreatingToast("Welcome " + name).show();
-                                int caregiverID = user.getInt("careGiverID");
+                                int caregiverID = user.getInt("caregiverID");
                                 int patientID = user.getInt("patientID");
                                 editor.putInt("patientID", patientID);
                                 editor.putInt("caregiverID",caregiverID);
@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(intent);
                             } else if(role.equals("admin")){
                                 toast.GetGreatingToast("Welcome " + name).show();
-                                int adminID = user.getInt("careGiverID");
+                                int adminID = user.getInt("caregiverID");
                                 editor.putInt("caregiverID", adminID);
                                 editor.apply();
                                 Intent intent;
