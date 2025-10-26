@@ -12,7 +12,6 @@
         android:id="@+id/imgEventLogo"
         android:layout_width="72dp"
         android:layout_height="69dp"
-        android:layout_marginTop="16dp"
         android:src="@drawable/upcoming"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,9 +21,9 @@
         android:id="@+id/linearLayout3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
-        android:padding="10dp"
+        android:padding="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,11 +50,13 @@
             app:cardCornerRadius="20dp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout11"
-        android:layout_width="412dp"
-        android:layout_height="675dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/menu_background_shape"
         android:orientation="vertical"
+        android:layout_marginTop="8dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,11 +64,16 @@
 
         <LinearLayout
             android:id="@+id/linearLayout4"
-            android:layout_width="match_parent"
-            android:layout_height="573dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/menu_background_shape"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/crdCreateEvent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/parentRecyclerView"
@@ -82,10 +88,12 @@
             android:layout_width="380dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/entry_button_background"
-            android:elevation="2.5dp">
+            android:elevation="2.5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -115,6 +123,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.516" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
