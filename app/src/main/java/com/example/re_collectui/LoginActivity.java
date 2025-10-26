@@ -13,7 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,8 +30,17 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -68,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please select a user type", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private void loginUser(String userType, String email, String password, final LoginAction actionOnSuccess) {
@@ -79,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
                         String status = jsonResponse.getString("status");
+
                         if (status.equals("success")) {
                             JSONObject user = jsonResponse.getJSONObject("user");
                             SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
@@ -122,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 },
-                error -> Toast.makeText(this, "Network error: " + error.toString(), Toast.LENGTH_LONG).show()
+                error -> Log.e( "Network error",error.toString())
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -132,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
                 return params;
             }
         };
+
         queue.add(stringRequest);
     }
 
