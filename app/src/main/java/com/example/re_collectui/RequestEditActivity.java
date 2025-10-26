@@ -66,6 +66,11 @@ public class RequestEditActivity extends AppCompatActivity {
         btnImage = findViewById(R.id.btnIconPicker);
         ImageView imgPreview = findViewById(R.id.imgPreview);
 
+        ImageView imgBack = findViewById(R.id.imgBackCR);
+        imgBack.setOnClickListener(e -> {
+            onBackPressed();
+        });
+
 
         Intent intent = getIntent();
 
