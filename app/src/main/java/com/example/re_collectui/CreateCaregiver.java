@@ -3,7 +3,7 @@ package com.example.re_collectui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory; // Import for default image
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView; // Import ImageView
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,7 +25,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.floatingactionbutton.FloatingActionButton; // Import FAB
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,11 +33,11 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar; // Import Calendar
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.hdodenhof.circleimageview.CircleImageView; // Import CircleImageView
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreateCaregiver extends AppCompatActivity {
 
@@ -46,11 +45,10 @@ public class CreateCaregiver extends AppCompatActivity {
     private DatePicker dpDob;
     private Button btnSignUp;
     private ImageButton btnBack;
-    private FloatingActionButton fabAddPhoto; // Changed to FloatingActionButton
-    private CircleImageView ivProfilePicture; // ImageView to display profile picture
+    private FloatingActionButton fabAddPhoto;
+    private CircleImageView ivProfilePicture;
 
     private String userImageBase64 = null;
-    private Bitmap selectedImageBitmap = null; // To hold the selected image bitmap
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -60,9 +58,13 @@ public class CreateCaregiver extends AppCompatActivity {
                     if (imageUri != null) {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                            selectedImageBitmap = bitmap; // Store the bitmap
-                            ivProfilePicture.setImageBitmap(bitmap); // Display the selected image
-                            encodeImage(bitmap); // Encode the selected bitmap
+
+                            // --- OPTIMIZATION: Resize the bitmap before encoding ---
+                            Bitmap resizedBitmap = getResizedBitmap(bitmap, 1024); // Resize to max 1024x1024
+
+                            ivProfilePicture.setImageBitmap(resizedBitmap); // Display the resized image
+                            encodeImage(resizedBitmap); // Encode the resized bitmap
+
                             Toast.makeText(this, "Photo selected successfully", Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -79,19 +81,17 @@ public class CreateCaregiver extends AppCompatActivity {
         setContentView(R.layout.activity_create_caregiver);
 
         bindViews();
-        setupDatePicker(); // New method to set up date picker restrictions
-        setInitialProfileImage(); // Set the default profile image
+        setupDatePicker();
+        setInitialProfileImage();
 
         btnBack.setOnClickListener(v -> onBackPressed());
-
-        fabAddPhoto.setOnClickListener(v -> { // Changed to fabAddPhoto
+        fabAddPhoto.setOnClickListener(v -> {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(galleryIntent);
         });
-
         btnSignUp.setOnClickListener(v -> {
             if (!validate()) return;
-
+            // ... (rest of the method is unchanged)
             String firstName = etFirstName.getText().toString().trim();
             String lastName = etLastName.getText().toString().trim();
             String password = etPassword.getText().toString();
@@ -118,47 +118,55 @@ public class CreateCaregiver extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etWorkNumber = findViewById(R.id.etWorkNumber);
         etEmployerType = findViewById(R.id.etEmployerType);
-
         btnSignUp = findViewById(R.id.btnSignUp);
-        fabAddPhoto = findViewById(R.id.fabAddPhoto); // Bind the FloatingActionButton
-        ivProfilePicture = findViewById(R.id.ivProfilePicture); // Bind the ImageView
+        fabAddPhoto = findViewById(R.id.fabAddPhoto);
+        ivProfilePicture = findViewById(R.id.ivProfilePicture);
         btnBack = findViewById(R.id.btnExit);
     }
 
-    private void setupDatePicker() {
-        Calendar today = Calendar.getInstance();
-        dpDob.setMaxDate(today.getTimeInMillis()); // Prevent future dates
+    // --- ADD THIS NEW HELPER METHOD for resizing images ---
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-        // Set initial date to something sensible, e.g., 20 years ago for typical adult
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+
+    private void setupDatePicker() {
+        dpDob.setMaxDate(System.currentTimeMillis());
         Calendar defaultDate = Calendar.getInstance();
         defaultDate.add(Calendar.YEAR, -20);
         dpDob.updateDate(defaultDate.get(Calendar.YEAR), defaultDate.get(Calendar.MONTH), defaultDate.get(Calendar.DAY_OF_MONTH));
     }
 
     private void setInitialProfileImage() {
-        // Set a default profile image (e.g., from drawable resources)
         ivProfilePicture.setImageResource(R.drawable.default_avatar);
-
-        // Optionally, encode the default image as Base64 if you want to send it
-        // even if the user doesn't pick a new one.
-        // This is important if your API requires an image for *all* users.
         try {
             Bitmap defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.default_avatar);
-            encodeImage(defaultBitmap); // Encode default image initially
+            encodeImage(defaultBitmap);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("CreateCaregiver", "Failed to encode default profile picture.");
         }
     }
 
-
     private void encodeImage(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream); // Compress to JPEG, 50% quality
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream); // 80% quality is a good balance
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         this.userImageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
+    // ... (Your validate, helper, and createCaregiver methods remain the same)
     private boolean validate() {
         String first = get(etFirstName);
         String last = get(etLastName);
@@ -166,7 +174,6 @@ public class CreateCaregiver extends AppCompatActivity {
         String phone = digitsOnly(get(etContactNumber));
         String email = get(etEmail);
 
-        // Date picker validation: Ensure selected date is not in the future (already handled by setMaxDate, but good to double check)
         Calendar selectedDate = Calendar.getInstance();
         selectedDate.set(dpDob.getYear(), dpDob.getMonth(), dpDob.getDayOfMonth());
         if (selectedDate.after(Calendar.getInstance())) {
@@ -183,7 +190,6 @@ public class CreateCaregiver extends AppCompatActivity {
         return true;
     }
 
-    // Helper methods
     private static String get(EditText et) { return et.getText() == null ? "" : et.getText().toString().trim(); }
     private static String digitsOnly(String s) { return s.replaceAll("\\D+", ""); }
     private void toast(String s) { Toast.makeText(this, s, Toast.LENGTH_SHORT).show(); }
@@ -202,7 +208,12 @@ public class CreateCaregiver extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPref.edit();
                             int careGiverID= Integer.parseInt(res.getString("caregiverID"));
                             editor.putInt("careGiverID", careGiverID);
+                            // Also save other caregiver details you might need immediately
+                            editor.putString("caregiverFirstName", firstName);
+                            editor.putString("caregiverEmail", email);
+                            if(userImage != null) editor.putString("caregiverImage", userImage);
                             editor.apply();
+
                             Intent intent = new Intent(CreateCaregiver.this, DashboardCaregiver.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);

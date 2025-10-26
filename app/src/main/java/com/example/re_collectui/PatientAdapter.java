@@ -2,6 +2,7 @@ package com.example.re_collectui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Base64; // ✅ ADD THIS IMPORT
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-// ## ADD GLIDE IMPORT ##
 import com.bumptech.glide.Glide;
-
-// ## ADD CircleImageView IMPORT ##
-import de.hdodenhof.circleimageview.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PatientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
@@ -54,14 +53,14 @@ public class PatientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView tvPatientName;
         TextView tvPatientIdentifier;
         ImageButton DeleteBtn;
-        CircleImageView ivPatientImage; // ## ADD THIS LINE ##
+        CircleImageView ivPatientImage;
 
         public PatientViewHolder(@NonNull View itemView) {
             super(itemView);
             tvPatientName = itemView.findViewById(R.id.tvName);
             tvPatientIdentifier = itemView.findViewById(R.id.tvID);
             DeleteBtn = itemView.findViewById(R.id.deleteButton);
-            ivPatientImage = itemView.findViewById(R.id.patientImageView); // ## ADD THIS LINE ##
+            ivPatientImage = itemView.findViewById(R.id.patientImageView);
         }
     }
 
@@ -104,28 +103,34 @@ public class PatientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             patientHolder.tvPatientName.setText(fullName);
             patientHolder.tvPatientIdentifier.setText(patientIdString);
 
-            // ## START: IMAGE LOADING LOGIC ##
-            String imagePath = currentPatient.getImage();
-            if (imagePath != null && !imagePath.isEmpty()) {
-                // Construct the full URL for the image
-                String fullImageUrl = "http://100.104.224.68/android/" + imagePath;
+            // --- THIS IS THE FIX ---
+            // The getImage() method now returns a Base64 string.
+            String base64Image = currentPatient.getImage();
 
-                // Use Glide to load the image
-                Glide.with(context)
-                        .load(fullImageUrl)
-                        .placeholder(R.drawable.default_avatar) // Image to show while loading
-                        .error(R.drawable.default_avatar)       // Image to show if loading fails
-                        .into(patientHolder.ivPatientImage);
+            if (base64Image != null && !base64Image.isEmpty()) {
+                try {
+                    // Decode the Base64 string into a byte array
+                    byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+
+                    // Load the byte array directly with Glide
+                    Glide.with(context)
+                            .load(decodedString)
+                            .placeholder(R.drawable.default_avatar)
+                            .error(R.drawable.default_avatar)
+                            .into(patientHolder.ivPatientImage);
+                } catch (IllegalArgumentException e) {
+                    // If the Base64 string is corrupted, show the default avatar
+                    patientHolder.ivPatientImage.setImageResource(R.drawable.default_avatar);
+                }
             } else {
-                // If there's no image path, set the default image
+                // If there is no image string, show the default avatar
                 patientHolder.ivPatientImage.setImageResource(R.drawable.default_avatar);
             }
-            // ## END: IMAGE LOADING LOGIC ##
+            // --- END FIX ---
 
             patientHolder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ViewPatient.class);
                 intent.putExtra("patientID", currentPatient.getPatientID());
-                // ... (your other putExtra calls)
                 context.startActivity(intent);
             });
 
@@ -143,7 +148,6 @@ public class PatientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return patientList.size() + 1;
     }
 
-    // --- The rest of your adapter code remains the same ---
     public void replaceData(List<Patient> newData) {
         patientList.clear();
         patientList.addAll(newData);
@@ -197,5 +201,4 @@ public class PatientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             notifyDataSetChanged();
         }
     };
-
 }

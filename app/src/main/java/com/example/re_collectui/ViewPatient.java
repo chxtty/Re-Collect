@@ -194,13 +194,31 @@ public class ViewPatient extends AppCompatActivity {
         ((TextView) emergencyTile.findViewById(R.id.tvValue)).setText(p.getEmergencyContact());
         ((EditText) pillPassword.findViewById(R.id.tvValue)).setText(p.getPatientPassword());
         ((TextView) pillAge.findViewById(R.id.tvValue)).setText(String.valueOf(getAgeFromIso(p.getDoB())));
-        String imagePath = p.getImage();
-        if (imagePath != null && !imagePath.isEmpty()) {
-            String fullImageUrl = "http://100.104.224.68/android/" + imagePath;
-            Glide.with(this).load(fullImageUrl).placeholder(R.drawable.default_avatar).error(R.drawable.default_avatar).into(ivUser);
+
+        // --- THIS IS THE FIX ---
+        // The 'getImage()' method now returns a Base64 string, not a path.
+        String base64Image = p.getImage(); // Changed variable name for clarity
+
+        if (base64Image != null && !base64Image.isEmpty()) {
+            try {
+                // Decode the Base64 string into a byte array
+                byte[] decodedString = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT);
+
+                // Load the byte array directly with Glide
+                Glide.with(this)
+                        .load(decodedString)
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .into(ivUser);
+            } catch (IllegalArgumentException e) {
+                // If the Base64 string is corrupted, show the default avatar
+                ivUser.setImageResource(R.drawable.default_avatar);
+            }
         } else {
+            // If there is no image string, show the default avatar
             ivUser.setImageResource(R.drawable.default_avatar);
         }
+        // --- END FIX ---
     }
 
     public static int getAgeFromIso(String dobIso) {

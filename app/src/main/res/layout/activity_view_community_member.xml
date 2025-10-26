@@ -68,7 +68,9 @@
                 android:text="Suzy Goops"
                 android:textColor="#333333"
                 android:textSize="32sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/relationship_text"/>
 
         </RelativeLayout>
 
