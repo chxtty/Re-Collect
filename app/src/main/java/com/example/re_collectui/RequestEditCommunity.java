@@ -363,70 +363,57 @@ public class RequestEditCommunity extends AppCompatActivity {
     }
 
 private void setImageFromBase64(String base64String) {
-    if (base64String == null || base64String.trim().isEmpty()) {
-        imgPreview.setVisibility(View.GONE);
-        return;
-    }
-    try {
-        base64String = base64String.replace("\n", "").trim();
-        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    if (base64String != null && !base64String.isEmpty()) {
+        try {
+            byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+            Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
 
-        if (bitmap != null) {
-            imgPreview.setImageBitmap(bitmap);
             imgPreview.setVisibility(View.VISIBLE);
             imgPreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            int sizePx = (int) (80 * getResources().getDisplayMetrics().density + 0.5f);
+
+            int sizePx = (int) (50 * getResources().getDisplayMetrics().density + 0.5f);
             ViewGroup.LayoutParams lp = imgPreview.getLayoutParams();
             lp.width = sizePx;
             lp.height = sizePx;
             imgPreview.setLayoutParams(lp);
-        } else {
-            imgPreview.setVisibility(View.GONE);
+
+            imgPreview.setImageBitmap(bitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        imgPreview.setVisibility(View.GONE);
     }
 }
 
     private String encodeImageToBase64(Uri imageUri) {
-        if (imageUri == null) return null;
-
-        try (InputStream inputStream = getContentResolver().openInputStream(imageUri);
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            return Base64.encodeToString(outputStream.toByteArray(), Base64.NO_WRAP); // NO_WRAP avoids newlines
-
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            inputStream.close();
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return "";
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
 
-    if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-        selectedImageUri = data.getData();
-        toast.GetInfoToast("Image selected").show();
-        try {
-            Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri));
-            if (bitmap != null) {
-                imgPreview.setImageBitmap(bitmap);
-                imgPreview.setVisibility(View.VISIBLE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            imgPreview.setVisibility(View.GONE);
+            imgPreview.setVisibility(View.VISIBLE);
+            imgPreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            int sizePx = (int) (50 * getResources().getDisplayMetrics().density + 0.5f);
+            ViewGroup.LayoutParams lp = imgPreview.getLayoutParams();
+            lp.width = sizePx;
+            lp.height = sizePx;
+            imgPreview.setLayoutParams(lp);
+
+            imgPreview.setImageURI(selectedImageUri);
+            toast.GetInfoToast("Image selected").show();
         }
-    }
     }
 }

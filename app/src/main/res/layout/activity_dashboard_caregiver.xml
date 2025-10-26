@@ -108,19 +108,19 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
 
 
+        android:id="@+id/caregiver_requests"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:background="@drawable/dashboard_icon_caregiver"
         android:clickable="true"
-        android:foreground="?attr/selectableItemBackground"
         android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:onClick="on_Caregiver_requests_Click"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp"
-        android:id="@+id/caregiver_requests">
+        tools:layout_editor_absoluteY="16dp">
 
       <TextView
           android:id="@+id/textView6"

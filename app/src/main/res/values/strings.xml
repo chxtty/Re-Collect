@@ -34,6 +34,7 @@ Sometimes I get scared when I can’t remember things. But other times, like now
         <item>Friend</item>
         <item>Caregiver</item>
         <item>Professional</item>
+        <item>Pet</item>
         <item>Other</item>
     </string-array>
     <!-- Strings used for fragments for navigation -->
