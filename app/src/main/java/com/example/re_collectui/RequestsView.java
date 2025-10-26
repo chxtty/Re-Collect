@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -75,6 +76,11 @@ public class RequestsView extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(30));
+
+        ImageView imgBack = findViewById(R.id.imgBackR);
+        imgBack.setOnClickListener(e -> {
+            onBackPressed();
+        });
 
         fetchRequests(); // get requests from db
 

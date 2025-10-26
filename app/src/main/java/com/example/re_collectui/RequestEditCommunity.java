@@ -73,6 +73,11 @@ public class RequestEditCommunity extends AppCompatActivity {
         txtSubTitle = findViewById(R.id.txtSubTitleReq);
         imgPreview = findViewById(R.id.imgPreview);
 
+        ImageView imgBack = findViewById(R.id.imgBackAR);
+        imgBack.setOnClickListener(e -> {
+            onBackPressed();
+        });
+
         Intent intent = getIntent();
 
         if (intent!=null){

@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import androidx.appcompat.widget.SearchView;
 
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -85,6 +86,11 @@ public class EventsView extends AppCompatActivity {
         parentRecyclerView.setAdapter(adapter);
         parentRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(30));
         toast = new CustomToast(this);
+
+        ImageView imgBack = findViewById(R.id.imgBackE);
+        imgBack.setOnClickListener(e -> {
+            onBackPressed();
+        });
 
         ConstraintLayout consCreate = findViewById(R.id.crdCreateEvent);
 
