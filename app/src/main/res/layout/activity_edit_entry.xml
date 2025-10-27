@@ -63,7 +63,7 @@
                     android:layout_gravity="start|bottom"
                     android:layout_marginBottom="0dp"
                     android:translationZ="2dp"
-                    app:srcCompat="@drawable/edit_btn" />
+                    app:srcCompat="@drawable/save_btn" />
 
             </FrameLayout>
 
