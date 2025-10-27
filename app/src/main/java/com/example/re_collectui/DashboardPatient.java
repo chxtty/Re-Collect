@@ -139,6 +139,13 @@ public class DashboardPatient extends AppCompatActivity {
                 Toast.makeText(this, "No caregiver is assigned to this profile.", Toast.LENGTH_SHORT).show();
             }
         });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                toast.GetInfoToast( "Please log out to exit").show();
+            }
+        });
     }
 
     public void showRequestDialog(View view) {

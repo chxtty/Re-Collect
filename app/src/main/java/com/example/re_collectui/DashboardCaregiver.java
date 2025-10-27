@@ -39,6 +39,7 @@ public class DashboardCaregiver extends AppCompatActivity {
         String caregiverName = sharedPref.getString("name", "");
         TextView caregiverNameTextView = findViewById(R.id.txtWelcome);
         caregiverNameTextView.setText("Welcome, " + caregiverName + " :)");
+        CustomToast toast = new CustomToast(this);
 
         Button btnLogout = findViewById(R.id.btnLogout);
 
@@ -47,6 +48,13 @@ public class DashboardCaregiver extends AppCompatActivity {
             sharedPref.edit().clear().apply();
             startActivity(intent);
             finish();
+        });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                toast.GetInfoToast( "Please log out to exit").show();
+            }
         });
 
     }
