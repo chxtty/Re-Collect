@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                                 int caregiverID = user.getInt("careGiverID");
                                 int patientID = user.getInt("patientID");
                                 editor.putInt("patientID", patientID);
-                                editor.putInt("carGiverID",caregiverID);
+                                editor.putInt("caregiverID",caregiverID);
                                 editor.apply();
 
                                 //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
