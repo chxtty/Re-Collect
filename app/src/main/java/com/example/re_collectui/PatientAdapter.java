@@ -2,7 +2,7 @@ package com.example.re_collectui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Base64; // ✅ ADD THIS IMPORT
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,30 +103,23 @@ public class PatientAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             patientHolder.tvPatientName.setText(fullName);
             patientHolder.tvPatientIdentifier.setText(patientIdString);
 
-            // --- THIS IS THE FIX ---
-            // The getImage() method now returns a Base64 string.
             String base64Image = currentPatient.getImage();
 
             if (base64Image != null && !base64Image.isEmpty()) {
                 try {
-                    // Decode the Base64 string into a byte array
                     byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
 
-                    // Load the byte array directly with Glide
                     Glide.with(context)
                             .load(decodedString)
                             .placeholder(R.drawable.default_avatar)
                             .error(R.drawable.default_avatar)
                             .into(patientHolder.ivPatientImage);
                 } catch (IllegalArgumentException e) {
-                    // If the Base64 string is corrupted, show the default avatar
                     patientHolder.ivPatientImage.setImageResource(R.drawable.default_avatar);
                 }
             } else {
-                // If there is no image string, show the default avatar
                 patientHolder.ivPatientImage.setImageResource(R.drawable.default_avatar);
             }
-            // --- END FIX ---
 
             patientHolder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ViewPatient.class);

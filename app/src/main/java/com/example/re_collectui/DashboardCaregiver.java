@@ -42,14 +42,14 @@ public class DashboardCaregiver extends AppCompatActivity {
         });
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-        int patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+        int patientID = sharedPref.getInt("patientID", -1);
         int careGiverID = sharedPref.getInt("careGiverID", -1);
         String caregiverName = sharedPref.getString("name", "");
         caregiver_profile = findViewById(R.id.caregiver_profile);
         caregiver_patients = findViewById(R.id.caregiver_patients);
         caregiver_requests = findViewById(R.id.caregiver_requests);
 
-        txtWelcome = findViewById(R.id.txtWelcome); // ## ADD THIS ##
+        txtWelcome = findViewById(R.id.txtWelcome);
         txtWelcome.setText("Hi,\n" + caregiverName+":)");
         TextView caregiverNameTextView = findViewById(R.id.txtWelcome);
         caregiverNameTextView.setText("Welcome, " + caregiverName + " :)");
@@ -58,7 +58,6 @@ public class DashboardCaregiver extends AppCompatActivity {
         Button btnLogout = findViewById(R.id.btnLogout);
 
         btnLogout.setOnClickListener(v ->{
-            //Intent intent = new Intent(DashboardCaregiver.this, LoginActivity.class);
             sharedPref.edit().clear().apply();
             Intent intent = new Intent(DashboardCaregiver.this, goodbye_splash.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -102,7 +101,6 @@ public class DashboardCaregiver extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // This method is called every time the user returns to this screen.
         updateWelcomeMessage();
     }
 
@@ -111,6 +109,5 @@ public class DashboardCaregiver extends AppCompatActivity {
         String caregiverFirstName = sharedPref.getString("caregiverFirstName", "Caregiver");
         txtWelcome.setText("Welcome back,\n" + caregiverFirstName);
     }
-
 
 }

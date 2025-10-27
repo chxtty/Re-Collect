@@ -31,7 +31,6 @@ public class ConfirmDeletePatientDialog extends DialogFragment {
         return fragment;
     }
 
-    // Set the listener from the hosting Activity
     @Override
     public void onAttach(@NonNull android.content.Context context) {
         super.onAttach(context);
@@ -45,7 +44,6 @@ public class ConfirmDeletePatientDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Use the new secure dialog layout
         View view = inflater.inflate(R.layout.dialog_confirm_delete_patient, container, false);
 
         if (getDialog() != null && getDialog().getWindow() != null) {
@@ -71,7 +69,6 @@ public class ConfirmDeletePatientDialog extends DialogFragment {
                 return;
             }
 
-            // Pass data back to the activity for server-side authentication
             if (authListener != null) {
                 authListener.onAuthenticationSuccess(patientId, email, password, position);
             }

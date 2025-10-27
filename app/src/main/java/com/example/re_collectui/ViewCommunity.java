@@ -60,15 +60,11 @@ public class ViewCommunity extends AppCompatActivity {
     private int careGiverID = -1;
     private static final int IMAGE_REQUEST = 101;
 
-
-    // In ViewCommunity.java
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_community);
 
-        // Remove or keep this EdgeToEdge code as you see fit
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -78,18 +74,13 @@ public class ViewCommunity extends AppCompatActivity {
         fabAddMember = findViewById(R.id.btnAddMember);
         btnRequestComm = findViewById(R.id.btnRequestComm);
 
-        // 2. Determine the user's role from SharedPreferences
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-        // If patientID in session is -1, it's a Caregiver. Otherwise, it's a Patient.
         boolean isCaregiver = sharedPref.getInt("patientID", -1) == -1;
 
-        // 3. Set button visibility based on the user's role
         if (isCaregiver) {
-            // CARECAREGIVER: Show the "Add Member" button, hide the "Request" button
             fabAddMember.setVisibility(View.VISIBLE);
             btnRequestComm.setVisibility(View.GONE);
         } else {
-            // PATIENT: Show the "Request" button, hide the "Add Member" button
             fabAddMember.setVisibility(View.GONE);
             btnRequestComm.setVisibility(View.VISIBLE);
         }
@@ -97,34 +88,24 @@ public class ViewCommunity extends AppCompatActivity {
         patientID = getIntent().getIntExtra("patientID", -1);
         careGiverID = sharedPref.getInt("careGiverID", -1);
 
-
         if (patientID == -1) {
             Toast.makeText(this, "Error: Could not identify the patient's community.", Toast.LENGTH_LONG).show();
-            finish(); // Exit if no valid ID was passed to this screen
+            finish();
             return;
         }
 
-        // 2. NOW, set up your button's click listener.
-        // It will now have the correct patientID to pass along.
-       fabAddMember.setOnClickListener(view -> {
+        fabAddMember.setOnClickListener(view -> {
             Intent intent = new Intent(ViewCommunity.this, AddCommMem.class);
             intent.putExtra("patientID", patientID);
             startActivity(intent);
         });
 
-
         ImageView imgBack = findViewById(R.id.imgBack);
         imgBack.setOnClickListener(e -> onBackPressed());
 
-
         recyclerView = findViewById(R.id.rvCommunity);
 
-        // ✅ THIS IS THE FIX
-        // 1. Determine the user's role by checking the session.
         boolean isCaregiverViewing = sharedPref.getInt("patientID", -1) == -1;
-
-         // 2. You MUST call the constructor with THREE arguments, passing the role.
-        // The old two-argument call `new CommunityAdapter(this, memberList)` is wrong.
         adapter = new CommunityAdapter(this, memberList, isCaregiverViewing);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -321,6 +302,4 @@ public class ViewCommunity extends AppCompatActivity {
             toast.GetInfoToast("Image added").show();
         }
     }
-
-
 }

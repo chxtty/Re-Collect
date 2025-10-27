@@ -25,14 +25,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
     private ArrayList<Community_Member> memberListFull;
     private boolean isCaregiver;
 
-    // ✅ THIS IS THE ONLY CONSTRUCTOR THAT SHOULD EXIST.
-    // It forces the calling activity to specify the user's role.
     public CommunityAdapter(Context context, ArrayList<Community_Member> memberList, boolean isCaregiver) {
         this.context = context;
         this.memberList = memberList;
         this.memberListFull = new ArrayList<>(memberList);
-        this.isCaregiver = isCaregiver; // Set the role for this adapter instance
-        }
+        this.isCaregiver = isCaregiver;
+    }
 
     @NonNull
     @Override
@@ -68,13 +66,11 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
             Toast.makeText(context, "3. Adapter Click: Sending isCaregiver = " + this.isCaregiver, Toast.LENGTH_LONG).show();
             Intent intent = new Intent(context, ViewCommunityMember.class);
             intent.putExtra("commID", member.getCommID());
-            // This now correctly passes the role it received from the constructor
             intent.putExtra("isCaregiver", this.isCaregiver);
             context.startActivity(intent);
         });
     }
 
-    // ... The rest of your adapter code (getItemCount, MyViewHolder, Filter, replaceData) is fine ...
     public void replaceData(List<Community_Member> newData) { memberList.clear(); memberList.addAll(newData); memberListFull.clear(); memberListFull.addAll(newData); notifyDataSetChanged(); }
     @Override public int getItemCount() { return memberList.size(); }
     public static class MyViewHolder extends RecyclerView.ViewHolder { CircleImageView ivMemberImage; TextView tvMemberName; TextView tvMemberType; public MyViewHolder(@NonNull View itemView) { super(itemView); ivMemberImage = itemView.findViewById(R.id.tvImage); tvMemberName = itemView.findViewById(R.id.tvName); tvMemberType = itemView.findViewById(R.id.tvType); } }

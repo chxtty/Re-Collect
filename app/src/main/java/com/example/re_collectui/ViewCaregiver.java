@@ -39,7 +39,7 @@ public class ViewCaregiver extends AppCompatActivity {
     private TextView tvName;
     private ImageView ivUser;
     private ImageButton exitBtn;
-    private Button btnEditProfile, btnDeleteAccount; // ✅ Add delete button
+    private Button btnEditProfile, btnDeleteAccount;
 
     private View emailTile, contactTile, workNumberTile, employerTypeTile, pillPassword, pillAge;
     private Care_giver currentCaregiver;
@@ -79,7 +79,7 @@ public class ViewCaregiver extends AppCompatActivity {
         ivUser = findViewById(R.id.profileImage);
         exitBtn = findViewById(R.id.btnExit);
         btnEditProfile = findViewById(R.id.btnEditProfile);
-        btnDeleteAccount = findViewById(R.id.btnDeleteAccount); // ✅ Bind new button
+        btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
         emailTile = findViewById(R.id.fieldEmail);
         contactTile = findViewById(R.id.fieldContact);
         workNumberTile = findViewById(R.id.fieldWorkNumber);
@@ -95,7 +95,7 @@ public class ViewCaregiver extends AppCompatActivity {
 
         if (isCaregiverLoggedIn && profileId == loggedInCaregiverId) {
             btnEditProfile.setVisibility(View.VISIBLE);
-            btnDeleteAccount.setVisibility(View.VISIBLE); // ✅ Show delete button
+            btnDeleteAccount.setVisibility(View.VISIBLE);
 
             btnEditProfile.setOnClickListener(v -> {
                 if (currentCaregiver != null) {
@@ -105,27 +105,24 @@ public class ViewCaregiver extends AppCompatActivity {
                 }
             });
 
-            // ✅ Add OnClickListener for the delete button
             btnDeleteAccount.setOnClickListener(v -> {
                 showDeleteOptionsDialog();
             });
 
         } else {
             btnEditProfile.setVisibility(View.GONE);
-            btnDeleteAccount.setVisibility(View.GONE); // ✅ Hide delete button
+            btnDeleteAccount.setVisibility(View.GONE);
         }
     }
 
-    // ✅ New method to show the first dialog with delete options
     private void showDeleteOptionsDialog() {
         final String[] options = {"Transfer my patients", "Delete my patients and account"};
         new AlertDialog.Builder(this)
                 .setTitle("Delete Account")
                 .setItems(options, (dialog, which) -> {
-                    if (which == 0) { // Transfer my patients
+                    if (which == 0) {
                         showTransferCredentialsDialog();
-                    } else { // Delete my patients
-                        // Ask for one final confirmation before deleting everything
+                    } else {
                         new AlertDialog.Builder(this)
                                 .setTitle("Confirm Deletion")
                                 .setMessage("Are you sure? This will permanently delete your account and all associated patient profiles.")
@@ -138,10 +135,9 @@ public class ViewCaregiver extends AppCompatActivity {
                 .show();
     }
 
-    // ✅ New method to show the dialog for entering new caregiver credentials
     private void showTransferCredentialsDialog() {
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialogue_caregiver_login, null); // Re-use your existing layout
+        View dialogView = inflater.inflate(R.layout.dialogue_caregiver_login, null);
         final EditText etEmail = dialogView.findViewById(R.id.caregiverEmail);
         final EditText etPassword = dialogView.findViewById(R.id.caregiverPassword);
 
@@ -161,7 +157,6 @@ public class ViewCaregiver extends AppCompatActivity {
                 .show();
     }
 
-    // ✅ New method to handle the actual network request
     private void performDeleteRequest(final String actionType, final String newEmail, final String newPassword) {
         String url = BASE_URL + "delete_caregiver_account";
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -172,7 +167,6 @@ public class ViewCaregiver extends AppCompatActivity {
                         JSONObject jsonResponse = new JSONObject(response);
                         if ("success".equals(jsonResponse.getString("status"))) {
                             Toast.makeText(this, "Account deleted successfully.", Toast.LENGTH_LONG).show();
-                            // Clear session and navigate to login screen
                             getSharedPreferences("userSession", MODE_PRIVATE).edit().clear().apply();
                             Intent intent = new Intent(ViewCaregiver.this, LoginActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -201,7 +195,6 @@ public class ViewCaregiver extends AppCompatActivity {
         queue.add(request);
     }
 
-    // ... (fetchCaregiver, updateUI, setupTiles, getAgeFromIso methods remain the same) ...
     private void fetchCaregiver(int careGiverId) {
         String url = BASE_URL + "view_caregiver&careGiverId=" + careGiverId;
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -212,7 +205,7 @@ public class ViewCaregiver extends AppCompatActivity {
                     JSONArray arr = json.optJSONArray("caregivers");
                     if (arr != null && arr.length() > 0) {
                         JSONObject obj = arr.getJSONObject(0);
-                        currentCaregiver = Care_giver.fromJson(obj); // Assuming Caregiver class
+                        currentCaregiver = Care_giver.fromJson(obj);
                         updateUI(currentCaregiver);
                     } else {
                         Toast.makeText(this, "Caregiver not found", Toast.LENGTH_LONG).show();
@@ -227,43 +220,29 @@ public class ViewCaregiver extends AppCompatActivity {
         queue.add(req);
     }
 
-    // In your ViewCaregiver.java file...
-
-// (Assume other methods like onCreate, bindViews, etc., are present)
-
     private void updateUI(Care_giver caregiver) {
-        // Update other text views as you normally would...
         tvName.setText(caregiver.getFirstName() + " " + caregiver.getLastName());
         ((TextView) emailTile.findViewById(R.id.tvValue)).setText(caregiver.getEmail());
-        // ... and so on for contact number, work number, etc.
 
-        // --- THIS IS THE FIX ---
-        // The 'getUserImage()' method now returns a Base64 string.
         String base64Image = caregiver.getUserImage();
 
         if (base64Image != null && !base64Image.isEmpty()) {
             try {
-                // Decode the Base64 string into a byte array
                 byte[] decodedString = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT);
 
-                // Load the byte array directly with Glide
                 Glide.with(this)
                         .load(decodedString)
-                        .placeholder(R.drawable.default_avatar) // Default image while loading
-                        .error(R.drawable.default_avatar)       // Default image if loading fails
-                        .into(ivUser); // Your ImageView for the caregiver's profile
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .into(ivUser);
             } catch (IllegalArgumentException e) {
-                // If the Base64 string is corrupted, show the default avatar
                 ivUser.setImageResource(R.drawable.default_avatar);
             }
         } else {
-            // If there is no image string, show the default avatar
             ivUser.setImageResource(R.drawable.default_avatar);
         }
-        // --- END FIX ---
     }
 
-    // setupTiles() and getAgeFromIso() remain the same
     private void setupTiles() {
         ((TextView) emailTile.findViewById(R.id.tvLabel)).setText("EMAIL:");
         ((TextView) contactTile.findViewById(R.id.tvLabel)).setText("CONTACT NO.:");

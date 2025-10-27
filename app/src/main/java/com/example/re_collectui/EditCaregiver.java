@@ -101,7 +101,6 @@ public class EditCaregiver extends AppCompatActivity {
     }
 
     private void populateFields() {
-        // Use the helper method to safely set text
         setText(etFirstName, caregiverToEdit.getFirstName());
         setText(etLastName, caregiverToEdit.getLastName());
         setText(etPassword, caregiverToEdit.getCaregiverPassword());
@@ -110,7 +109,6 @@ public class EditCaregiver extends AppCompatActivity {
         setText(etWorkNumber, caregiverToEdit.getWorkNumber());
         setText(etEmployerType, caregiverToEdit.getEmployerType());
 
-        // Safely set the date
         if (caregiverToEdit.getDoB() != null && !caregiverToEdit.getDoB().isEmpty()) {
             String[] dobParts = caregiverToEdit.getDoB().split("-");
             if (dobParts.length == 3) {
@@ -120,13 +118,10 @@ public class EditCaregiver extends AppCompatActivity {
                     int day = Integer.parseInt(dobParts[2]);
                     dpDob.updateDate(year, month, day);
                 } catch (NumberFormatException e) {
-                    // Date was in a wrong format, do nothing
                 }
             }
         }
 
-        // --- THIS IS THE FIX ---
-        // Safely load the image, catching any errors from bad data
         if (caregiverToEdit.getUserImage() != null && !caregiverToEdit.getUserImage().isEmpty()) {
             try {
                 byte[] decodedString = Base64.decode(caregiverToEdit.getUserImage(), Base64.DEFAULT);
@@ -136,16 +131,13 @@ public class EditCaregiver extends AppCompatActivity {
                         .error(R.drawable.default_avatar)
                         .into(ivProfileImage);
             } catch (IllegalArgumentException e) {
-                // If decoding fails, load the default avatar
                 ivProfileImage.setImageResource(R.drawable.default_avatar);
             }
         } else {
             ivProfileImage.setImageResource(R.drawable.default_avatar);
         }
-        // --- END FIX ---
     }
 
-    // Helper method to prevent setting null text
     private void setText(EditText editText, String text) {
         if (text != null) {
             editText.setText(text);
@@ -168,7 +160,6 @@ public class EditCaregiver extends AppCompatActivity {
 
     private void saveChanges() {
         if (!validate()) return;
-        // ... (rest of the saveChanges method is unchanged)
         String urlpath= GlobalVars.apiPath;
         String url = urlpath + "edit_caregiver";
         RequestQueue queue = Volley.newRequestQueue(this);

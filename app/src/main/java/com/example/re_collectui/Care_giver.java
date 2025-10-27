@@ -1,9 +1,9 @@
 package com.example.re_collectui;
 
 import org.json.JSONObject;
-import java.io.Serializable; // Import this
+import java.io.Serializable;
 
-public class Care_giver implements Serializable { // Implement this
+public class Care_giver implements Serializable {
 
     private int careGiverID;
     private String firstName;
@@ -31,7 +31,6 @@ public class Care_giver implements Serializable { // Implement this
         return caregiver;
     }
 
-    // --- Getters ---
     public int getCareGiverID() { return careGiverID; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }

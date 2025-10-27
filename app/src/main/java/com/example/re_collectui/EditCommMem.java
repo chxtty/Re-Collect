@@ -93,15 +93,12 @@ public class EditCommMem extends AppCompatActivity {
     }
 
     private void populateFields() {
-        // --- THIS IS THE FIX ---
-        // Use the helper method to safely set text fields
         setText(etFirstName, memberToEdit.getCommFirstName());
         setText(etLastName, memberToEdit.getCommLastName());
         setText(etType, memberToEdit.getCommType());
         setText(etDescription, memberToEdit.getCommDescription());
         setText(etCuteMessage, memberToEdit.getCommCuteMessage());
 
-        // Safely load the image, catching any errors from bad data
         if (memberToEdit.getCommImage() != null && !memberToEdit.getCommImage().isEmpty()) {
             try {
                 byte[] decodedString = Base64.decode(memberToEdit.getCommImage(), Base64.DEFAULT);
@@ -111,17 +108,13 @@ public class EditCommMem extends AppCompatActivity {
                         .error(R.drawable.default_avatar)
                         .into(ivProfileImage);
             } catch (IllegalArgumentException e) {
-                // If decoding fails, load the default avatar
                 ivProfileImage.setImageResource(R.drawable.default_avatar);
             }
         } else {
             ivProfileImage.setImageResource(R.drawable.default_avatar);
         }
-        // --- END FIX ---
     }
 
-    // --- ADD THIS HELPER METHOD ---
-    // Safely sets text on an EditText, preventing crashes from null values.
     private void setText(EditText editText, String text) {
         if (text != null) {
             editText.setText(text);
@@ -143,7 +136,6 @@ public class EditCommMem extends AppCompatActivity {
     }
 
     private void saveChanges() {
-        // ... (This method remains unchanged)
         String urlpath= GlobalVars.apiPath;
         String url = urlpath + "edit_community_member";
         RequestQueue queue = Volley.newRequestQueue(this);

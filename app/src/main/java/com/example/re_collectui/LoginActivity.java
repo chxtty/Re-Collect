@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-// REMOVED: import android.widget.EditText; // No longer needed
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-// This is the only text field import you need
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
@@ -46,7 +44,6 @@ import java.util.concurrent.Executors;
 
 public class LoginActivity extends AppCompatActivity {
 
-
     EditText editEmail, editPassword;
     Button btnSignIn, btnSignUp;
 
@@ -63,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        //fetchDataFromAPI();
         toast = new CustomToast(this);
         editEmail = findViewById(R.id.edtEmail);
         editPassword = findViewById(R.id.edtPassword);
@@ -76,9 +72,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = editPassword.getText().toString().trim();
             login(email,password, "onCreate");
         });
-
     }
-
 
     private void login(String email, String password, String MethodCall) {
         String url = GlobalVars.apiPath + "login";
@@ -109,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putInt("carGiverID",caregiverID);
                                 editor.apply();
 
-                                //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
                                 startActivity(intent);
                             } else if(role.equals("admin")){
@@ -118,7 +111,6 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putInt("careGiverID", adminID);
                                 editor.apply();
                                 Intent intent;
-                                //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
                                 if(MethodCall.equals("showCaregiverLoginDialog")){
                                     intent = new Intent(LoginActivity.this, CreatePatient.class);
                                     intent.putExtra("NAVIGATE_TO_DASHBOARD", true);
@@ -126,7 +118,6 @@ public class LoginActivity extends AppCompatActivity {
                                     intent = new Intent(LoginActivity.this, DashboardCaregiver.class);}
                                 startActivity(intent);
                             }
-
 
                             finish();
                         } else {
@@ -139,9 +130,9 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 },
                 error -> {
-            Log.e( "Network error",error.toString());
-            toast.GetErrorToast("Network Error: " + error.getMessage()).show();
-        }
+                    Log.e( "Network error",error.toString());
+                    toast.GetErrorToast("Network Error: " + error.getMessage()).show();
+                }
 
         )
         {
@@ -182,58 +173,34 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showCaregiverLoginDialog() {
-        // 1. Define the Material Components theme you want to use.
         int materialDialogTheme = com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog_Alert;
-
-        // 2. Create a ContextThemeWrapper using the Activity context and the Material theme.
-        //    This is the correct, public class to use.
         android.content.Context themedContext = new android.view.ContextThemeWrapper(this, materialDialogTheme);
-
-        // 3. Get the LayoutInflater from this new THEMED context.
         LayoutInflater inflater = LayoutInflater.from(themedContext);
-
-        // 4. Inflate the view using the themed inflater. This will fix the crash.
         View dialogView = inflater.inflate(R.layout.dialogue_caregiver_login, null);
-
-        // 5. Create the builder, passing in the themedContext.
         AlertDialog.Builder builder = new AlertDialog.Builder(themedContext);
-
-        // 6. Set the (now correctly inflated) view to the builder.
         builder.setView(dialogView);
-
-        // 7. Create the dialog from the builder.
         AlertDialog dialog = builder.create();
 
-        // 8. Find all the views inside your custom layout.
         TextInputEditText caregiverEmail = dialogView.findViewById(R.id.caregiverEmail);
         TextInputEditText caregiverPassword = dialogView.findViewById(R.id.caregiverPassword);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
 
-        // 9. Set the click listener for the "Cancel" button.
         btnCancel.setOnClickListener(v -> {
-            dialog.dismiss(); // Just closes the dialog.
-        });
-
-        // 10. Set the click listener for the "Confirm" button.
-        btnConfirm.setOnClickListener(v -> {
-            // Safely get the text from the fields to prevent crashes.
-            String email = (caregiverEmail.getText() != null) ? caregiverEmail.getText().toString().trim() : "";
-            String password = (caregiverPassword.getText() != null) ? caregiverPassword.getText().toString().trim() : "";
-
-            // Call your existing login logic.
-            login(email, password, "showCaregiverLoginDialog");
-
-            // Close the dialog after the action is initiated.
             dialog.dismiss();
         });
 
-        // 11. Make the dialog's window transparent (this part was already correct).
+        btnConfirm.setOnClickListener(v -> {
+            String email = (caregiverEmail.getText() != null) ? caregiverEmail.getText().toString().trim() : "";
+            String password = (caregiverPassword.getText() != null) ? caregiverPassword.getText().toString().trim() : "";
+            login(email, password, "showCaregiverLoginDialog");
+            dialog.dismiss();
+        });
+
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
-        // 12. Show the dialog.
         dialog.show();
     }
 }

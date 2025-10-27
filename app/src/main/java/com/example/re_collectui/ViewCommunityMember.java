@@ -177,7 +177,6 @@ public class ViewCommunityMember extends AppCompatActivity {
         details.setText(member.getCommDescription());
         relationship.setText(member.getCommType());
 
-        // --- THIS IS THE CORRECTED CODE ---
         String base64Image = member.getCommImage();
 
         if (base64Image != null && !base64Image.isEmpty()) {

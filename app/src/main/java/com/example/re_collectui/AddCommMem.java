@@ -145,12 +145,9 @@ public class AddCommMem extends AppCompatActivity {
                 params.put("commDescription", description);
                 params.put("commCuteMessage", cuteMessage);
 
-                // --- THIS IS THE FIX ---
-                // If an image was selected, add it to the request.
                 if (userImageBase64 != null && !userImageBase64.isEmpty()) {
                     params.put("commImage", userImageBase64);
                 }
-                // --- END FIX ---
 
                 return params;
             }

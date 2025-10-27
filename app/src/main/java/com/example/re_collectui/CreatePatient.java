@@ -41,7 +41,7 @@ public class CreatePatient extends AppCompatActivity {
     private EditText etFirstName, etLastName, etPassword, etPhone, etEmail, etEmergencyPhone, etDiagnosis;
     private DatePicker dpDob;
     private Button btnSignUp;
-    private FloatingActionButton btnAddPhoto; // Changed from Button
+    private FloatingActionButton btnAddPhoto;
     private ImageButton btnBack;
     private ImageView ivProfileImage;
 
@@ -116,9 +116,7 @@ public class CreatePatient extends AppCompatActivity {
         ivProfileImage = findViewById(R.id.ivProfileImage);
 
         btnSignUp = findViewById(R.id.btnFormSignUp);
-        // --- THIS IS THE FIX ---
-        btnAddPhoto = findViewById(R.id.fabAddPhoto); // Changed from R.id.button2
-        // --- END FIX ---
+        btnAddPhoto = findViewById(R.id.fabAddPhoto);
         btnBack = findViewById(R.id.btnExit);
     }
 

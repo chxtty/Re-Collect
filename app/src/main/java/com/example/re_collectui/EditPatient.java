@@ -99,8 +99,6 @@ public class EditPatient extends AppCompatActivity {
     }
 
     private void populateFields() {
-        // --- THIS IS THE FIX ---
-        // Use the helper method to safely set text fields
         setText(etFirstName, patientToEdit.getFirstName());
         setText(etLastName, patientToEdit.getLastName());
         setText(etPassword, patientToEdit.getPatientPassword());
@@ -109,7 +107,6 @@ public class EditPatient extends AppCompatActivity {
         setText(etEmergencyPhone, patientToEdit.getEmergencyContact());
         setText(etDiagnosis, patientToEdit.getDiagnosis());
 
-        // Safely set the date
         if (patientToEdit.getDoB() != null && !patientToEdit.getDoB().isEmpty()) {
             String[] dobParts = patientToEdit.getDoB().split("-");
             if (dobParts.length == 3) {
@@ -119,12 +116,10 @@ public class EditPatient extends AppCompatActivity {
                     int day = Integer.parseInt(dobParts[2]);
                     dpDob.updateDate(year, month, day);
                 } catch (NumberFormatException e) {
-                    // Date was in a wrong format, do nothing
                 }
             }
         }
 
-        // Safely load the image, catching any errors from bad data
         if (patientToEdit.getImage() != null && !patientToEdit.getImage().isEmpty()) {
             try {
                 byte[] decodedString = Base64.decode(patientToEdit.getImage(), Base64.DEFAULT);
@@ -134,17 +129,13 @@ public class EditPatient extends AppCompatActivity {
                         .error(R.drawable.default_avatar)
                         .into(ivProfileImage);
             } catch (IllegalArgumentException e) {
-                // If decoding fails, load the default avatar
                 ivProfileImage.setImageResource(R.drawable.default_avatar);
             }
         } else {
             ivProfileImage.setImageResource(R.drawable.default_avatar);
         }
-        // --- END FIX ---
     }
 
-    // --- ADD THIS HELPER METHOD ---
-    // Safely sets text on an EditText, preventing crashes from null values.
     private void setText(EditText editText, String text) {
         if (text != null) {
             editText.setText(text);
@@ -166,7 +157,6 @@ public class EditPatient extends AppCompatActivity {
     }
 
     private void saveChanges() {
-        // ... (This method remains unchanged)
         String urlpath= GlobalVars.apiPath;
         String url = urlpath + "edit_patient";
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -177,7 +167,7 @@ public class EditPatient extends AppCompatActivity {
                         JSONObject res = new JSONObject(response);
                         if ("success".equals(res.getString("status"))) {
                             Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK); // Signal to ViewPatient to refresh
+                            setResult(RESULT_OK);
                             finish();
                         } else {
                             Toast.makeText(this, "Error: " + res.getString("message"), Toast.LENGTH_LONG).show();

@@ -74,15 +74,13 @@ public class DashboardPatient extends AppCompatActivity {
         });
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-        patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+        patientID = sharedPref.getInt("patientID", -1);
         careGiverID = sharedPref.getInt("caregiverID", -1);
         String name = sharedPref.getString("name", "");
         toast = new CustomToast(this);
 
         TextView txtWelcome = findViewById(R.id.txtWelcome);
         txtWelcome.setText("Welcome, " + name + " :)");
-
-
 
         btnLogout = findViewById(R.id.btnLogout);
         eventsOption = findViewById(R.id.eventsOption);
@@ -122,17 +120,13 @@ public class DashboardPatient extends AppCompatActivity {
 
         communityOption.setOnClickListener(v -> {
             Intent intent = new Intent(DashboardPatient.this, ViewCommunity.class);
-            // You were missing this line. It adds the patient's ID to the intent
-            // so the next screen knows which community to load.
             intent.putExtra("patientID", patientID);
             startActivity(intent);
         });
 
-        // ADDED: OnClickListener for the caregiver option
         caregiverOption.setOnClickListener(v -> {
             if (careGiverID != -1) {
                 Intent intent = new Intent(DashboardPatient.this, ViewCaregiver.class);
-                // Pass the assigned caregiver's ID to the ViewCaregiver activity
                 intent.putExtra("careGiverID", careGiverID);
                 startActivity(intent);
             } else {
@@ -291,6 +285,5 @@ public class DashboardPatient extends AppCompatActivity {
             toast.GetInfoToast("Image added").show();
         }
     }
-
 
 }

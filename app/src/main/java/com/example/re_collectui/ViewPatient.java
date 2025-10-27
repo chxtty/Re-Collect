@@ -94,18 +94,11 @@ public class ViewPatient extends AppCompatActivity {
         Log.d("VISIBILITY_CHECK", "------------------------------------");
         Log.d("VISIBILITY_CHECK", "Logged-in User's patientID: " + loggedInPatientId);
         Log.d("VISIBILITY_CHECK", "Viewing Profile of patientID: " + patient.getPatientID());
-        // ✅ CORRECTED LOGIC:
-        // We check if the ID of the logged-in user (if they are a patient)
-        // is the same as the ID of the profile being viewed.
         if (loggedInPatientId == patient.getPatientID()) {
-            // This is the patient viewing their own profile.
             Log.d("VISIBILITY_CHECK", "RESULT: IDs match. Hiding community button.");
-            // As per the requirement, hide the community option.
             commOption.setVisibility(View.GONE);
         } else {
-            // This is another user viewing the profile (i.e., the caregiver).
-            // A caregiver's loggedInPatientId is -1, so this condition will always be true for them.
-            Log.d("VISIBILITY_CHECK", "RESULT: IDs DO NOT match. Showing community button.");// Show the community option.
+            Log.d("VISIBILITY_CHECK", "RESULT: IDs DO NOT match. Showing community button.");
             commOption.setVisibility(View.VISIBLE);
             commOption.setOnClickListener(v -> {
                 Intent intent = new Intent(ViewPatient.this, ViewCommunity.class);
@@ -115,7 +108,6 @@ public class ViewPatient extends AppCompatActivity {
         }
     }
 
-    // The rest of your code remains the same.
     private void setupStaticUI() {
         ((TextView) emailTile.findViewById(R.id.tvLabel)).setText("EMAIL:");
         ((TextView) diagnosisTile.findViewById(R.id.tvLabel)).setText("DIAGNOSIS:");
@@ -195,30 +187,23 @@ public class ViewPatient extends AppCompatActivity {
         ((EditText) pillPassword.findViewById(R.id.tvValue)).setText(p.getPatientPassword());
         ((TextView) pillAge.findViewById(R.id.tvValue)).setText(String.valueOf(getAgeFromIso(p.getDoB())));
 
-        // --- THIS IS THE FIX ---
-        // The 'getImage()' method now returns a Base64 string, not a path.
-        String base64Image = p.getImage(); // Changed variable name for clarity
+        String base64Image = p.getImage();
 
         if (base64Image != null && !base64Image.isEmpty()) {
             try {
-                // Decode the Base64 string into a byte array
                 byte[] decodedString = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT);
 
-                // Load the byte array directly with Glide
                 Glide.with(this)
                         .load(decodedString)
                         .placeholder(R.drawable.default_avatar)
                         .error(R.drawable.default_avatar)
                         .into(ivUser);
             } catch (IllegalArgumentException e) {
-                // If the Base64 string is corrupted, show the default avatar
                 ivUser.setImageResource(R.drawable.default_avatar);
             }
         } else {
-            // If there is no image string, show the default avatar
             ivUser.setImageResource(R.drawable.default_avatar);
         }
-        // --- END FIX ---
     }
 
     public static int getAgeFromIso(String dobIso) {

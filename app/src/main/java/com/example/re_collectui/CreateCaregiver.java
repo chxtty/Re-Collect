@@ -58,13 +58,9 @@ public class CreateCaregiver extends AppCompatActivity {
                     if (imageUri != null) {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-
-                            // --- OPTIMIZATION: Resize the bitmap before encoding ---
-                            Bitmap resizedBitmap = getResizedBitmap(bitmap, 1024); // Resize to max 1024x1024
-
-                            ivProfilePicture.setImageBitmap(resizedBitmap); // Display the resized image
-                            encodeImage(resizedBitmap); // Encode the resized bitmap
-
+                            Bitmap resizedBitmap = getResizedBitmap(bitmap, 1024);
+                            ivProfilePicture.setImageBitmap(resizedBitmap);
+                            encodeImage(resizedBitmap);
                             Toast.makeText(this, "Photo selected successfully", Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -91,7 +87,6 @@ public class CreateCaregiver extends AppCompatActivity {
         });
         btnSignUp.setOnClickListener(v -> {
             if (!validate()) return;
-            // ... (rest of the method is unchanged)
             String firstName = etFirstName.getText().toString().trim();
             String lastName = etLastName.getText().toString().trim();
             String password = etPassword.getText().toString();
@@ -124,7 +119,6 @@ public class CreateCaregiver extends AppCompatActivity {
         btnBack = findViewById(R.id.btnExit);
     }
 
-    // --- ADD THIS NEW HELPER METHOD for resizing images ---
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();
@@ -139,7 +133,6 @@ public class CreateCaregiver extends AppCompatActivity {
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
-
 
     private void setupDatePicker() {
         dpDob.setMaxDate(System.currentTimeMillis());
@@ -161,12 +154,11 @@ public class CreateCaregiver extends AppCompatActivity {
 
     private void encodeImage(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream); // 80% quality is a good balance
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         this.userImageBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
-    // ... (Your validate, helper, and createCaregiver methods remain the same)
     private boolean validate() {
         String first = get(etFirstName);
         String last = get(etLastName);
@@ -209,7 +201,6 @@ public class CreateCaregiver extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPref.edit();
                             int careGiverID= Integer.parseInt(res.getString("caregiverID"));
                             editor.putInt("careGiverID", careGiverID);
-                            // Also save other caregiver details you might need immediately
                             editor.putString("caregiverFirstName", firstName);
                             editor.putString("caregiverEmail", email);
                             if(userImage != null) editor.putString("caregiverImage", userImage);
