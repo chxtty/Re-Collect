@@ -60,7 +60,6 @@ public class ViewCommunity extends AppCompatActivity {
     private int careGiverID = -1;
     private static final int IMAGE_REQUEST = 101;
 
-
     // In ViewCommunity.java
 
     @Override
@@ -74,6 +73,10 @@ public class ViewCommunity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        toast = new CustomToast(this);
+
+
 
         fabAddMember = findViewById(R.id.btnAddMember);
         btnRequestComm = findViewById(R.id.btnRequestComm);
@@ -94,9 +97,8 @@ public class ViewCommunity extends AppCompatActivity {
             btnRequestComm.setVisibility(View.VISIBLE);
         }
 
-        patientID = getIntent().getIntExtra("patientID", -1);
-        careGiverID = sharedPref.getInt("careGiverID", -1);
-
+        patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+        careGiverID = sharedPref.getInt("caregiverID", -1);
 
         if (patientID == -1) {
             Toast.makeText(this, "Error: Could not identify the patient's community.", Toast.LENGTH_LONG).show();
@@ -252,6 +254,7 @@ public class ViewCommunity extends AppCompatActivity {
             }
 
             submitCommRequest(patientID, careGiverID, commType, firstName, lastName, desc, cuteMsg, imgBase64);
+            selectedImageUri = null;
             dialog.dismiss();
         });
 
