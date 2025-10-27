@@ -93,10 +93,10 @@ public class DashboardPatient extends AppCompatActivity {
         caregiverOption = findViewById(R.id.CaregiverOption);
 
         btnLogout.setOnClickListener(v ->{
-            Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
             sharedPref.edit().clear().apply();
+            Intent intent = new Intent(DashboardPatient.this, goodbye_splash.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish();
         });
 
         eventsOption.setOnClickListener(v -> {

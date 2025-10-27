@@ -44,10 +44,10 @@ public class DashboardCaregiver extends AppCompatActivity {
         Button btnLogout = findViewById(R.id.btnLogout);
 
         btnLogout.setOnClickListener(v ->{
-            Intent intent = new Intent(DashboardCaregiver.this, LoginActivity.class);
             sharedPref.edit().clear().apply();
+            Intent intent = new Intent(DashboardCaregiver.this, goodbye_splash.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish();
         });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
