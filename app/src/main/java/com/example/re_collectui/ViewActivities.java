@@ -309,6 +309,10 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
         builder.setView(currView);
         AlertDialog dialog = builder.create();
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnSubmit.setOnClickListener(v -> {
