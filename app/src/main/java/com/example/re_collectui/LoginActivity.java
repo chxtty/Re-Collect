@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                                 int caregiverID = user.getInt("careGiverID");
                                 int patientID = user.getInt("patientID");
                                 editor.putInt("patientID", patientID);
-                                editor.putInt("caregiverID",caregiverID);
+                                editor.putInt("carGiverID",caregiverID);
                                 editor.apply();
 
                                 //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
@@ -182,27 +182,40 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showCaregiverLoginDialog() {
-        // 1. Create the builder. No special theme is needed now that your main app theme is correct.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog_Alert);
-        // 2. Inflate your custom layout file.
-        View dialogView = getLayoutInflater().inflate(R.layout.dialogue_caregiver_login, null);
+        // 1. Define the Material Components theme you want to use.
+        int materialDialogTheme = com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog_Alert;
+
+        // 2. Create a ContextThemeWrapper using the Activity context and the Material theme.
+        //    This is the correct, public class to use.
+        android.content.Context themedContext = new android.view.ContextThemeWrapper(this, materialDialogTheme);
+
+        // 3. Get the LayoutInflater from this new THEMED context.
+        LayoutInflater inflater = LayoutInflater.from(themedContext);
+
+        // 4. Inflate the view using the themed inflater. This will fix the crash.
+        View dialogView = inflater.inflate(R.layout.dialogue_caregiver_login, null);
+
+        // 5. Create the builder, passing in the themedContext.
+        AlertDialog.Builder builder = new AlertDialog.Builder(themedContext);
+
+        // 6. Set the (now correctly inflated) view to the builder.
         builder.setView(dialogView);
 
-        // 3. Create the dialog from the builder.
+        // 7. Create the dialog from the builder.
         AlertDialog dialog = builder.create();
 
-        // 4. Find all the views inside your custom layout.
+        // 8. Find all the views inside your custom layout.
         TextInputEditText caregiverEmail = dialogView.findViewById(R.id.caregiverEmail);
         TextInputEditText caregiverPassword = dialogView.findViewById(R.id.caregiverPassword);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
         Button btnConfirm = dialogView.findViewById(R.id.btnConfirm);
 
-        // 5. Set the click listener for the "Cancel" button.
+        // 9. Set the click listener for the "Cancel" button.
         btnCancel.setOnClickListener(v -> {
             dialog.dismiss(); // Just closes the dialog.
         });
 
-        // 6. Set the click listener for the "Confirm" button.
+        // 10. Set the click listener for the "Confirm" button.
         btnConfirm.setOnClickListener(v -> {
             // Safely get the text from the fields to prevent crashes.
             String email = (caregiverEmail.getText() != null) ? caregiverEmail.getText().toString().trim() : "";
@@ -215,12 +228,12 @@ public class LoginActivity extends AppCompatActivity {
             dialog.dismiss();
         });
 
-        // 7. Make the dialog's window transparent to show your custom rounded background.
+        // 11. Make the dialog's window transparent (this part was already correct).
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
-        // 8. Show the dialog.
+        // 12. Show the dialog.
         dialog.show();
     }
 }
