@@ -135,15 +135,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_begin="80dp" /> <ImageView
-                android:id="@+id/iconTitle"
-                android:layout_width="66dp"
-                android:layout_height="66dp"
-                app:layout_constraintBottom_toBottomOf="@+id/edtTitleLabel"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineStart"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/edtTitleLabel"
-                app:srcCompat="@drawable/interview_1_" />
+                    app:layout_constraintGuide_begin="80dp" />
+
+                <ImageView
+                    android:id="@+id/iconTitle"
+                    android:layout_width="66dp"
+                    android:layout_height="66dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/edtTitleLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/guidelineStart"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/edtTitleLabel"
+                    app:srcCompat="@drawable/interview_1_" />
 
                 <EditText
                     android:id="@+id/edtTitleLabel"
