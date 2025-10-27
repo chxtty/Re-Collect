@@ -181,16 +181,6 @@ public class LoginActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // In LoginActivity.java
-
-    // In LoginActivity.java
-
-    // In LoginActivity.java
-
-    // In LoginActivity.java
-
-    // In LoginActivity.java
-
     private void showCaregiverLoginDialog() {
         // 1. Create the builder. No special theme is needed now that your main app theme is correct.
         AlertDialog.Builder builder = new AlertDialog.Builder(this, com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog_Alert);

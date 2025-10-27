@@ -1,5 +1,6 @@
 package com.example.re_collectui;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -16,13 +17,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,7 +58,6 @@ public class ViewCommunity extends AppCompatActivity {
     private ArrayList<Community_Member> memberList = new ArrayList<>();
     private int patientID = -1;
     private int careGiverID = -1;
-
     private static final int IMAGE_REQUEST = 101;
 
 
@@ -174,48 +178,6 @@ public class ViewCommunity extends AppCompatActivity {
         }
     }
 
-    private void submitCommRequest(int patientID, int careGiverID, String commType,
-                                   String firstName, String lastName, String desc, String cuteMsg, String commImageBase64) {
-
-        String url = GlobalVars.apiPath + "create_community_request";
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        StringRequest request = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    try {
-                        JSONObject res = new JSONObject(response);
-                        String status = res.getString("status");
-
-                        if (status.equals("success")) {
-                            toast.GetInfoToast( "Community Member request submitted!");
-                        } else {
-                            // Toast.makeText(this, res.getString("message"), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        //Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                },
-                error -> toast.GetErrorToast("Network error: " + error.getMessage())
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("patientID", String.valueOf(patientID));
-                params.put("careGiverID", String.valueOf(careGiverID));
-                params.put("commType", commType);
-                params.put("commFirstName", firstName);
-                params.put("commLastName", lastName);
-                params.put("commDescription", desc);
-                params.put("commCuteMessage", cuteMsg);
-                params.put("commImage", commImageBase64 != null ? commImageBase64 : "");
-                return params;
-            }
-        };
-        queue.add(request);
-
-    }
-
     public void showRequestDialog(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View currView = getLayoutInflater().inflate(R.layout.request_community_dialog,null);
@@ -232,6 +194,33 @@ public class ViewCommunity extends AppCompatActivity {
         builder.setView(currView);
         AlertDialog dialog = builder.create();
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.type_options)
+        ) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setTextColor(position == 0 ? Color.GRAY : Color.BLACK);
+                return view;
+            }
+        };
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnType.setAdapter(adapter);
+
+        spnType.setSelection(0);
+
         btnImage.setOnClickListener(v ->{
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
@@ -244,20 +233,21 @@ public class ViewCommunity extends AppCompatActivity {
         btnSave.setOnClickListener(v -> {
             String firstName = edtFName.getText().toString().trim();
             String lastName = edtLName.getText().toString().trim();
-            String commType = spnType.getSelectedItem().toString();
+            String commType = spnType.getSelectedItemPosition() == 0 ? "" : spnType.getSelectedItem().toString();
             String desc = edtDesc.getText().toString().trim();
             String cuteMsg = edtCute.getText().toString().trim();
             String imgBase64 = "";
             if (selectedImageUri != null) {
-                imgBase64 = uriToBase64(selectedImageUri);
+                imgBase64 = encodeImageToBase64(selectedImageUri);
             }
 
-            if (commType.equals("Select Type")) {
-                commType = "";
+            if (commType.isEmpty()) {
+                toast.GetErrorToast("Please select a valid type").show();
+                return;
             }
 
             if (firstName.isEmpty()) {
-                toast.GetErrorToast("Please at least fill First Name");
+                toast.GetErrorToast("Please at least fill First Name").show();
                 return;
             }
 
@@ -268,17 +258,67 @@ public class ViewCommunity extends AppCompatActivity {
         dialog.show();
     }
 
-    private String uriToBase64(Uri imageUri) {
+    private void submitCommRequest(int patientID, int careGiverID, String commType,
+                                   String firstName, String lastName, String desc, String cuteMsg, String imgBase64) {
+
+        String url = GlobalVars.apiPath + "create_community_request";
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject res = new JSONObject(response);
+                        String status = res.getString("status");
+
+                        if (status.equals("success")) {
+                            toast.GetInfoToast( "Community Member request submitted!").show();
+                        } else {
+                            toast.GetErrorToast(res.getString("message")).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e("Parsing error", e.getMessage());
+                    }
+                },
+                error -> toast.GetErrorToast("Network error: " + error.getMessage()).show()
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("patientID", String.valueOf(patientID));
+                params.put("careGiverID", String.valueOf(careGiverID));
+                params.put("commType", commType);
+                params.put("commFirstName", firstName);
+                params.put("commLastName", lastName);
+                params.put("commDescription", desc);
+                params.put("commCuteMessage", cuteMsg);
+                params.put("commImage", imgBase64);
+                return params;
+            }
+        };
+        queue.add(request);
+
+    }
+
+    private String encodeImageToBase64(Uri imageUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
             byte[] bytes = new byte[inputStream.available()];
             inputStream.read(bytes);
             inputStream.close();
-            return android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
         } catch (Exception e) {
             e.printStackTrace();
-            //Toast.makeText(this, "Failed to encode image", Toast.LENGTH_SHORT).show();
             return "";
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+            selectedImageUri = data.getData();
+            toast.GetInfoToast("Image added").show();
         }
     }
 
