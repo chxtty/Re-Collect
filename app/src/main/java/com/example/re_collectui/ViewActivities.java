@@ -108,7 +108,7 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
     }
 
     private void fetchFilterableActivityTypes() {
-        String url = "http://100.79.152.109/android/api.php?action=view_activity_types";
+        String url = GlobalVars.apiPath +  "view_activity_types";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -156,7 +156,7 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
     }
     // --- UPDATED: SetUpActivities now populates the master list ---
     private void SetUpActivities() {
-        String url = "http://100.79.152.109/android/api.php?action=view_activity_details_p&patientId=" + patientId;
+        String url = GlobalVars.apiPath + "view_activity_details_p&patientId=" + patientId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -222,7 +222,7 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
     }
 
     private void updateActivityToServer(int detailId, String activityId, String startTime, String endTime, String actDate) {
-        String url = "http://100.79.152.109/android/api.php?action=update_activity"; // Assuming this is your update endpoint
+        String url = GlobalVars.apiPath + "update_activity"; // Assuming this is your update endpoint
 
         Map<String, String> params = new HashMap<>();
         params.put("detailId", String.valueOf(detailId)); // IMPORTANT: Include the ID of the entry to update
@@ -255,7 +255,7 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
     }
 
     private void saveActivityToServer(String activityId, String patientId, String startTime, String endTime, String actDate) {
-        String url = "http://100.79.152.109/android/api.php?action=create_activity";
+        String url = GlobalVars.apiPath + "create_activity";
 
         Map<String, String> params = new HashMap<>();
         params.put("activityId", activityId);
