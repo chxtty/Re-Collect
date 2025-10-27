@@ -259,6 +259,14 @@ public class ActivityDialog extends DialogFragment {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         // Optional: remove default title
         dialog.requestWindowFeature(STYLE_NO_TITLE);
+
+        // --- ADD THIS LINE ---
+        // This makes the window's background transparent, letting your layout's curves show.
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+        // ---------------------
+
         return dialog;
     }
 }
