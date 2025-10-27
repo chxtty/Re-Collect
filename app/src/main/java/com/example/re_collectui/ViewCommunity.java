@@ -71,6 +71,10 @@ public class ViewCommunity extends AppCompatActivity {
             return insets;
         });
 
+        toast = new CustomToast(this);
+
+
+
         fabAddMember = findViewById(R.id.btnAddMember);
         btnRequestComm = findViewById(R.id.btnRequestComm);
 
@@ -85,8 +89,8 @@ public class ViewCommunity extends AppCompatActivity {
             btnRequestComm.setVisibility(View.VISIBLE);
         }
 
-        patientID = getIntent().getIntExtra("patientID", -1);
-        careGiverID = sharedPref.getInt("careGiverID", -1);
+        patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+        careGiverID = sharedPref.getInt("caregiverID", -1);
 
         if (patientID == -1) {
             Toast.makeText(this, "Error: Could not identify the patient's community.", Toast.LENGTH_LONG).show();
@@ -100,8 +104,10 @@ public class ViewCommunity extends AppCompatActivity {
             startActivity(intent);
         });
 
+
         ImageView imgBack = findViewById(R.id.imgBack);
         imgBack.setOnClickListener(e -> onBackPressed());
+
 
         recyclerView = findViewById(R.id.rvCommunity);
 
@@ -233,6 +239,7 @@ public class ViewCommunity extends AppCompatActivity {
             }
 
             submitCommRequest(patientID, careGiverID, commType, firstName, lastName, desc, cuteMsg, imgBase64);
+            selectedImageUri = null;
             dialog.dismiss();
         });
 
@@ -302,4 +309,6 @@ public class ViewCommunity extends AppCompatActivity {
             toast.GetInfoToast("Image added").show();
         }
     }
+
+
 }

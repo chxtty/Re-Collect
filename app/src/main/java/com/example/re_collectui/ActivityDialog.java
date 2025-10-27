@@ -50,7 +50,7 @@ public class ActivityDialog extends DialogFragment {
 
     // Callback interface
     public interface OnActivityDialogListener {
-        void onSave(int detailId, String activityId, String date, String startTime, String endTime); // Pass detailId back
+        void onSave(int detailId, String activityId, String date, String startTime, String endTime);
         void onCancel();
     }
 
@@ -79,7 +79,6 @@ public class ActivityDialog extends DialogFragment {
         btnSave = view.findViewById(R.id.btnSave);
         btnCancel = view.findViewById(R.id.btnCancel);
 
-        // Check for arguments to see if we are in "edit mode"
         if (getArguments() != null) {
             detailIdToUpdate = getArguments().getInt(ARG_DETAIL_ID, -1);
             activityIdToSelect = getArguments().getInt(ARG_ACTIVITY_ID, -1);
@@ -257,15 +256,12 @@ public class ActivityDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        // Optional: remove default title
         dialog.requestWindowFeature(STYLE_NO_TITLE);
 
-        // --- ADD THIS LINE ---
-        // This makes the window's background transparent, letting your layout's curves show.
+
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
-        // ---------------------
 
         return dialog;
     }

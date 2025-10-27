@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                                 int caregiverID = user.getInt("careGiverID");
                                 int patientID = user.getInt("patientID");
                                 editor.putInt("patientID", patientID);
-                                editor.putInt("carGiverID",caregiverID);
+                                editor.putInt("caregiverID",caregiverID);
                                 editor.apply();
 
                                 Intent intent = new Intent(LoginActivity.this, DashboardPatient.class);
