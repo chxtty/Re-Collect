@@ -27,7 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Caregiver Email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="#181414" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -43,7 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Caregiver Password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="#1A1A1A" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
