@@ -63,30 +63,74 @@
             android:paddingEnd="40dp"
             android:paddingBottom="20dp">
 
+            <RelativeLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ivProfileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/default_avatar"
+                    app:civ_border_color="@color/Pastel_gray_green_darker"
+                    app:civ_border_width="2dp" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabAddPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:backgroundTint="@color/dark_gray"
+                    app:fabSize="mini"
+                    app:srcCompat="@android:drawable/ic_menu_camera"
+                    app:tint="@android:color/white" />
+            </RelativeLayout>
+
             <TextView style="@style/FormLabel" android:text="FIRST NAME"/>
-            <EditText android:id="@+id/etFirstName" style="@style/FormField" android:inputType="textPersonName"/>
+            <EditText
+                android:id="@+id/etFirstName"
+                style="@style/FormField"
+                android:padding="12dp"
+                android:inputType="textPersonName"/>
 
             <TextView style="@style/FormLabel" android:layout_marginTop="16dp" android:text="LAST NAME (OPTIONAL)"/>
-            <EditText android:id="@+id/etLastName" style="@style/FormField" android:inputType="textPersonName"/>
+            <EditText
+                android:id="@+id/etLastName"
+                style="@style/FormField"
+                android:padding="12dp"
+                android:inputType="textPersonName"/>
 
             <TextView style="@style/FormLabel" android:layout_marginTop="16dp" android:text="RELATIONSHIP"/>
-            <EditText android:id="@+id/etType" style="@style/FormField" android:inputType="textCapWords"/>
+            <EditText
+                android:id="@+id/etType"
+                style="@style/FormField"
+                android:padding="12dp"
+                android:inputType="textCapWords"/>
 
             <TextView style="@style/FormLabel" android:layout_marginTop="16dp" android:text="DESCRIPTION"/>
-            <EditText android:id="@+id/etDescription" style="@style/FormField" android:inputType="textMultiLine" android:minLines="3" android:gravity="top"/>
+            <EditText
+                android:id="@+id/etDescription"
+                style="@style/FormField"
+                android:padding="12dp"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:gravity="top"/>
 
             <TextView style="@style/FormLabel" android:layout_marginTop="16dp" android:text="SPECIAL MESSAGE"/>
-            <EditText android:id="@+id/etCuteMessage" style="@style/FormField" android:inputType="textMultiLine" android:minLines="3" android:gravity="top"/>
-
-            <TextView style="@style/FormLabel" android:layout_marginTop="16dp" android:text="PROFILE PICTURE"/>
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_add_photo"
-                android:text="Change Photo"
-                android:textColor="@color/creme"
-                android:textSize="20sp" />
+            <EditText
+                android:id="@+id/etCuteMessage"
+                style="@style/FormField"
+                android:padding="12dp"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:gravity="top"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -108,7 +152,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSaveChanges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

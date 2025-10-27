@@ -35,8 +35,7 @@ import java.util.Map;
 
 public class ViewCaregiver extends AppCompatActivity {
 
-    private static final String BASE_URL = "http://100.104.224.68/android/api.php";
-
+    private static final String BASE_URL = GlobalVars.apiPath;
     private TextView tvName;
     private ImageView ivUser;
     private ImageButton exitBtn;
@@ -164,7 +163,7 @@ public class ViewCaregiver extends AppCompatActivity {
 
     // ✅ New method to handle the actual network request
     private void performDeleteRequest(final String actionType, final String newEmail, final String newPassword) {
-        String url = BASE_URL + "?action=delete_caregiver_account";
+        String url = BASE_URL + "delete_caregiver_account";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
@@ -204,7 +203,7 @@ public class ViewCaregiver extends AppCompatActivity {
 
     // ... (fetchCaregiver, updateUI, setupTiles, getAgeFromIso methods remain the same) ...
     private void fetchCaregiver(int careGiverId) {
-        String url = BASE_URL + "?action=view_caregiver&careGiverId=" + careGiverId;
+        String url = BASE_URL + "view_caregiver&careGiverId=" + careGiverId;
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest req = new StringRequest(Request.Method.GET, url, response -> {
             try {
@@ -228,21 +227,40 @@ public class ViewCaregiver extends AppCompatActivity {
         queue.add(req);
     }
 
-    private void updateUI(Care_giver c) { // Assuming Caregiver class
-        tvName.setText(c.getFirstName() + " " + c.getLastName());
-        ((TextView) emailTile.findViewById(R.id.tvValue)).setText(c.getEmail());
-        ((TextView) contactTile.findViewById(R.id.tvValue)).setText(c.getContactNumber());
-        ((TextView) workNumberTile.findViewById(R.id.tvValue)).setText(c.getWorkNumber());
-        ((TextView) employerTypeTile.findViewById(R.id.tvValue)).setText(c.getEmployerType());
-        ((EditText) pillPassword.findViewById(R.id.tvValue)).setText(c.getCaregiverPassword());
-        ((TextView) pillAge.findViewById(R.id.tvValue)).setText(String.valueOf(getAgeFromIso(c.getDoB())));
-        String imagePath = c.getUserImage();
-        if (imagePath != null && !imagePath.isEmpty()) {
-            String fullImageUrl = "http://100.104.224.68/android/" + imagePath;
-            Glide.with(this).load(fullImageUrl).placeholder(R.drawable.default_avatar).error(R.drawable.default_avatar).into(ivUser);
+    // In your ViewCaregiver.java file...
+
+// (Assume other methods like onCreate, bindViews, etc., are present)
+
+    private void updateUI(Care_giver caregiver) {
+        // Update other text views as you normally would...
+        tvName.setText(caregiver.getFirstName() + " " + caregiver.getLastName());
+        ((TextView) emailTile.findViewById(R.id.tvValue)).setText(caregiver.getEmail());
+        // ... and so on for contact number, work number, etc.
+
+        // --- THIS IS THE FIX ---
+        // The 'getUserImage()' method now returns a Base64 string.
+        String base64Image = caregiver.getUserImage();
+
+        if (base64Image != null && !base64Image.isEmpty()) {
+            try {
+                // Decode the Base64 string into a byte array
+                byte[] decodedString = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT);
+
+                // Load the byte array directly with Glide
+                Glide.with(this)
+                        .load(decodedString)
+                        .placeholder(R.drawable.default_avatar) // Default image while loading
+                        .error(R.drawable.default_avatar)       // Default image if loading fails
+                        .into(ivUser); // Your ImageView for the caregiver's profile
+            } catch (IllegalArgumentException e) {
+                // If the Base64 string is corrupted, show the default avatar
+                ivUser.setImageResource(R.drawable.default_avatar);
+            }
         } else {
+            // If there is no image string, show the default avatar
             ivUser.setImageResource(R.drawable.default_avatar);
         }
+        // --- END FIX ---
     }
 
     // setupTiles() and getAgeFromIso() remain the same

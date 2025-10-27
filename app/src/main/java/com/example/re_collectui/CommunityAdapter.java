@@ -2,6 +2,7 @@ package com.example.re_collectui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
         this.memberList = memberList;
         this.memberListFull = new ArrayList<>(memberList);
         this.isCaregiver = isCaregiver; // Set the role for this adapter instance
-        Toast.makeText(context, "2. Adapter Created: Role isCaregiver = " + this.isCaregiver, Toast.LENGTH_SHORT).show();
-    }
+        }
 
     @NonNull
     @Override
@@ -47,12 +47,22 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.MyVi
         holder.tvMemberName.setText(member.getCommFirstName() + " " + member.getCommLastName());
         holder.tvMemberType.setText(member.getCommType());
 
-        String fullImageUrl = "http://100.104.224.68/android/" + member.getCommImage();
-        Glide.with(context)
-                .load(fullImageUrl)
-                .placeholder(R.drawable.default_avatar)
-                .error(R.drawable.default_avatar)
-                .into(holder.ivMemberImage);
+        String base64Image = member.getCommImage();
+
+        if (base64Image != null && !base64Image.isEmpty()) {
+            try {
+                byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+                Glide.with(context)
+                        .load(decodedString)
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .into(holder.ivMemberImage);
+            } catch (IllegalArgumentException e) {
+                holder.ivMemberImage.setImageResource(R.drawable.default_avatar);
+            }
+        } else {
+            holder.ivMemberImage.setImageResource(R.drawable.default_avatar);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             Toast.makeText(context, "3. Adapter Click: Sending isCaregiver = " + this.isCaregiver, Toast.LENGTH_LONG).show();

@@ -1,8 +1,6 @@
 package com.example.re_collectui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +11,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog; // ✅ Import AlertDialog
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -26,12 +24,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap; // ✅ Import for Volley POST params
-import java.util.Map;     // ✅ Import for Volley POST params
+import java.util.HashMap;
+import java.util.Map;
 
 public class ViewCommunityMember extends AppCompatActivity {
 
-    private static final String BASE_URL = "http://100.104.224.68/android/api.php";
+    private static final String BASE_URL = GlobalVars.apiPath;
 
     private TextView quote, details, name, relationship;
     private Button editButton, deleteButton;
@@ -82,7 +80,7 @@ public class ViewCommunityMember extends AppCompatActivity {
     }
 
     private void fetchCommunityMember(int commId) {
-        String url = BASE_URL + "?action=view_community_member&commId=" + commId;
+        String url = BASE_URL + "view_community_member&commId=" + commId;
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest req = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -112,7 +110,6 @@ public class ViewCommunityMember extends AppCompatActivity {
 
     private void setupUserPermissions() {
         boolean isCaregiver = getIntent().getBooleanExtra("isCaregiver", false);
-        Toast.makeText(this, "4. ViewMember Received: Role isCaregiver = " + isCaregiver, Toast.LENGTH_LONG).show();
         if (isCaregiver) {
             editButton.setVisibility(View.VISIBLE);
             deleteButton.setVisibility(View.VISIBLE);
@@ -127,12 +124,7 @@ public class ViewCommunityMember extends AppCompatActivity {
                 }
             });
 
-            // ✅ --- START OF DELETE LOGIC ---
-            // Replace the old Toast with a call to show the confirmation dialog
-            deleteButton.setOnClickListener(v -> {
-                showDeleteConfirmationDialog();
-            });
-            // ✅ --- END OF DELETE LOGIC ---
+            deleteButton.setOnClickListener(v -> showDeleteConfirmationDialog());
 
         } else {
             editButton.setVisibility(View.GONE);
@@ -140,23 +132,18 @@ public class ViewCommunityMember extends AppCompatActivity {
         }
     }
 
-    // ✅ New method to show the confirmation dialog
     private void showDeleteConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Member")
                 .setMessage("Are you sure you want to delete this community member? This action cannot be undone.")
-                .setPositiveButton("Yes, Delete", (dialog, which) -> {
-                    // If the user clicks "Yes", call the method to perform the deletion
-                    deleteCommunityMember();
-                })
-                .setNegativeButton("No", null) // Do nothing if "No" is clicked
+                .setPositiveButton("Yes, Delete", (dialog, which) -> deleteCommunityMember())
+                .setNegativeButton("No", null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
-    // ✅ New method to handle the API call for deletion
     private void deleteCommunityMember() {
-        String url = BASE_URL + "?action=delete_community_member";
+        String url = BASE_URL + "delete_community_member";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest deleteRequest = new StringRequest(Request.Method.POST, url,
@@ -165,7 +152,6 @@ public class ViewCommunityMember extends AppCompatActivity {
                         JSONObject res = new JSONObject(response);
                         if ("success".equals(res.getString("status"))) {
                             Toast.makeText(this, "Member deleted successfully!", Toast.LENGTH_SHORT).show();
-                            // Close this activity and go back to the community list
                             finish();
                         } else {
                             Toast.makeText(this, "Error: " + res.getString("message"), Toast.LENGTH_LONG).show();
@@ -177,13 +163,11 @@ public class ViewCommunityMember extends AppCompatActivity {
                 error -> Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show()) {
             @Override
             protected Map<String, String> getParams() {
-                // Pass the ID of the member to be deleted
                 Map<String, String> params = new HashMap<>();
                 params.put("commID", String.valueOf(memberId));
                 return params;
             }
         };
-
         queue.add(deleteRequest);
     }
 
@@ -193,14 +177,20 @@ public class ViewCommunityMember extends AppCompatActivity {
         details.setText(member.getCommDescription());
         relationship.setText(member.getCommType());
 
-        String imagePath = member.getCommImage();
-        if (imagePath != null && !imagePath.isEmpty()) {
-            String fullImageUrl = "http://100.104.224.68/android/" + imagePath;
-            Glide.with(this)
-                    .load(fullImageUrl)
-                    .placeholder(R.drawable.default_avatar)
-                    .error(R.drawable.default_avatar)
-                    .into(profileImage);
+        // --- THIS IS THE CORRECTED CODE ---
+        String base64Image = member.getCommImage();
+
+        if (base64Image != null && !base64Image.isEmpty()) {
+            try {
+                byte[] decodedString = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT);
+                Glide.with(this)
+                        .load(decodedString)
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .into(profileImage);
+            } catch (IllegalArgumentException e) {
+                profileImage.setImageResource(R.drawable.default_avatar);
+            }
         } else {
             profileImage.setImageResource(R.drawable.default_avatar);
         }

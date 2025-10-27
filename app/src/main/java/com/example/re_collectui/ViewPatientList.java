@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // The class has been renamed to ViewPatientList
-public class ViewPatientList extends AppCompatActivity implements PatientAdapter.OnPatientDeleteListener{
+public class ViewPatientList extends AppCompatActivity implements PatientAdapter.OnPatientDeleteListener,ConfirmDeletePatientDialog.DeletionAuthListener{
 
     // The RecyclerView and Adapter now use the Patient class
     private RecyclerView recyclerView;
@@ -105,7 +105,8 @@ public class ViewPatientList extends AppCompatActivity implements PatientAdapter
     private void fetchPatientList() {
         patientList.clear();
         // **IMPORTANT**: Replace with your actual API endpoint to fetch patients for a specific caregiver.
-        String url = "http://100.104.224.68/android/api.php?action=view_patients_by_caregiver&careGiverId=" + careGiverID;
+        String urlpath= GlobalVars.apiPath;
+        String url = urlpath + "view_patients_by_caregiver&careGiverId=" + careGiverID;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -163,13 +164,21 @@ public class ViewPatientList extends AppCompatActivity implements PatientAdapter
 
     @Override
     public void onDeleteClick(Patient patient, int position) {
-        // Call a method to perform the network request
-        deletePatientOnServer(patient, position);
+        // Show the custom dialog for confirmation and authorization
+        ConfirmDeletePatientDialog dialog = ConfirmDeletePatientDialog.newInstance(
+                patient.getPatientID(),
+                position
+        );
+        dialog.show(getSupportFragmentManager(), "ConfirmDelete");
     }
 
-    private void deletePatientOnServer(final Patient patient, final int position) {
+    // ViewPatientList.java
+
+    // Change method signature
+    private void deletePatientOnServer(final int patientId, final int position) {
         // IMPORTANT: Replace with your server's IP address or domain
-        String url = "http://100.104.224.68/android/api.php?action=delete_patient";
+        String urlpath= GlobalVars.apiPath;
+        String url = urlpath + "delete_patient";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -183,29 +192,90 @@ public class ViewPatientList extends AppCompatActivity implements PatientAdapter
                             adapter.removeItem(position);
                             Toast.makeText(ViewPatientList.this, "Patient deleted", Toast.LENGTH_SHORT).show();
                         } else {
-                            // The server responded with an error (e.g., patient not found)
+                            // The server responded with an error
                             String message = jsonObject.getString("message");
-                            Toast.makeText(ViewPatientList.this, "Error: " + message, Toast.LENGTH_LONG).show();
+                            Toast.makeText(ViewPatientList.this, "Deletion Error: " + message, Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         // This error occurs if the server's response is not valid JSON
-                        Toast.makeText(ViewPatientList.this, "JSON parsing error!", Toast.LENGTH_LONG).show();
+                        Log.e("VolleyError", "Delete JSON Error: " + response, e);
+                        Toast.makeText(ViewPatientList.this, "Deletion failed (server response invalid).", Toast.LENGTH_LONG).show();
                     }
                 },
                 error -> {
-                    // This block is executed if there's a network error (e.g., no connection)
+                    // This block is executed if there's a network error
                     Toast.makeText(ViewPatientList.this, "Volley Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                 }) {
             @Override
             protected Map<String, String> getParams() {
                 // This is where you send the data to the PHP script
                 Map<String, String> params = new HashMap<>();
-                params.put("patientID", String.valueOf(patient.getPatientID()));
+                // Pass the patientID retrieved from the dialog logic
+                params.put("patientID", String.valueOf(patientId));
                 return params;
             }
         };
 
         // Add the request to the queue to be executed
         requestQueue.add(stringRequest);
+    }
+
+    // ViewPatientList.java
+
+    @Override
+    public void onAuthenticationSuccess(int patientId, String email, String password, int position) {
+        // Step 1: Verify the caregiver's credentials
+        verifyCaregiverAndThenDelete(patientId, email, password, position);
+    }
+
+    // ViewPatientList.java
+
+    private void verifyCaregiverAndThenDelete(int patientId, String email, String password, int position) {
+        String urlpath = GlobalVars.apiPath;
+        String verifyUrl = urlpath + "login_caregiver";
+
+        // Store the ID of the logged-in caregiver from the activity's field
+        final int loggedInCareGiverID = this.careGiverID;
+
+        StringRequest verifyRequest = new StringRequest(Request.Method.POST, verifyUrl,
+                verifyResponse -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(verifyResponse);
+                        String status = jsonObject.getString("status");
+
+                        if ("success".equals(status)) {
+                            // **SECURITY CHECK: Retrieve the Caregiver ID from the successful login response**
+                            JSONObject user = jsonObject.getJSONObject("user");
+                            int authenticatedCareGiverID = user.getInt("careGiverID");
+
+                            // **CRITICAL STEP:** Compare the authenticated ID with the logged-in user's ID
+                            if (authenticatedCareGiverID == loggedInCareGiverID) {
+                                // Authentication successful and matches the current user!
+                                deletePatientOnServer(patientId, position);
+                            } else {
+                                // Authentication successful but the credentials belong to a DIFFERENT caregiver.
+                                Toast.makeText(ViewPatientList.this, "Security Alert: Credentials belong to a different user.", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            // Authentication failed (Invalid email or password provided)
+                            Toast.makeText(ViewPatientList.this, "Authentication Failed: Invalid email or password.", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(ViewPatientList.this, "Verification JSON error.", Toast.LENGTH_LONG).show();
+                        Log.e("VolleyError", "Verification JSON Error: " + verifyResponse, e);
+                    }
+                },
+                verifyError -> {
+                    Toast.makeText(ViewPatientList.this, "Verification Network Error: " + verifyError.getMessage(), Toast.LENGTH_LONG).show();
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("email", email);
+                params.put("password", password);
+                return params;
+            }
+        };
+        requestQueue.add(verifyRequest);
     }
 }
