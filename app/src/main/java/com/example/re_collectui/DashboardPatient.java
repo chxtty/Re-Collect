@@ -93,10 +93,10 @@ public class DashboardPatient extends AppCompatActivity {
         caregiverOption = findViewById(R.id.CaregiverOption);
 
         btnLogout.setOnClickListener(v ->{
-            Intent intent = new Intent(DashboardPatient.this, LoginActivity.class);
             sharedPref.edit().clear().apply();
+            Intent intent = new Intent(DashboardPatient.this, goodbye_splash.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish();
         });
 
         eventsOption.setOnClickListener(v -> {
@@ -139,6 +139,13 @@ public class DashboardPatient extends AppCompatActivity {
                 Toast.makeText(this, "No caregiver is assigned to this profile.", Toast.LENGTH_SHORT).show();
             }
         });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                toast.GetInfoToast( "Please log out to exit").show();
+            }
+        });
     }
 
     public void showRequestDialog(View view) {
@@ -156,6 +163,10 @@ public class DashboardPatient extends AppCompatActivity {
 
         builder.setView(currView);
         AlertDialog dialog = builder.create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,

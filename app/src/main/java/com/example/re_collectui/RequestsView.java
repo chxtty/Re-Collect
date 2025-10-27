@@ -247,6 +247,10 @@ public class RequestsView extends AppCompatActivity {
         Button btnCancel = dialogView.findViewById(R.id.btnCancelFilter);
         Button btnSave = dialogView.findViewById(R.id.btnSaveFilter);
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
         if (selectedType == null) rbAll.setChecked(true);
             else if (selectedType == RequestItem.RequestType.ACTIVITY) rgbActivity.setChecked(true);
             else rgbCommunity.setChecked(true);

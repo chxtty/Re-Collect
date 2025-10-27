@@ -41,18 +41,19 @@
 
     <LinearLayout
         android:id="@+id/linearLayout10"
-        android:layout_width="305dp"
-        android:layout_height="67dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout7"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.556"
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
@@ -64,7 +65,7 @@
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
@@ -77,12 +78,13 @@
 
     <LinearLayout
         android:id="@+id/linearLayout8"
-        android:layout_width="295dp"
-        android:layout_height="76dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="96dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -106,10 +108,12 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="390dp"
-        android:layout_height="540dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -122,162 +126,172 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:padding="16dp">
 
-                <LinearLayout
-                    android:id="@+id/linearLayout5"
-                    android:layout_width="265dp"
-                    android:layout_height="669dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@color/creme"
-                    android:elevation="4dp"
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintGuide_begin="80dp" />
 
-                    <EditText
-                        android:id="@+id/editTextText3"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginBottom="12.5dp"
-                        android:layout_weight="12.5"
-                        android:alpha="0.8"
-                        android:background="@drawable/dashboard_icon_caregiver"
-                        android:ems="10"
-                        android:enabled="false"
-                        android:hint="Enter First Name"
-                        android:inputType="text"
-                        android:text="Community Member"
-                        android:textAlignment="center"
-                        android:textColor="@color/creme" />
-
-                    <EditText
-                        android:id="@+id/edtFirstNameCR"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginBottom="12dp"
-                        android:layout_weight="12.5"
-                        android:background="@drawable/activity_dialog_et"
-                        android:ems="10"
-                        android:hint="Enter First Name"
-                        android:inputType="text"
-                        android:paddingStart="5dp" />
-
-                    <EditText
-                        android:id="@+id/edtLastNameCR"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginBottom="12dp"
-                        android:layout_weight="12.5"
-                        android:background="@drawable/activity_dialog_et"
-                        android:ems="10"
-                        android:hint="Enter Last Name"
-                        android:inputType="text"
-                        android:paddingStart="5dp" />
-
-                    <Spinner
-                        android:id="@+id/spnTypeCR"
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_marginBottom="12dp"
-                        android:layout_weight="12.5"
-                        android:background="@drawable/activity_dialog_et"
-                        android:entries="@array/type_options"
-                        android:paddingStart="5dp" />
-
-                    <EditText
-                        android:id="@+id/edtDescCR"
-                        android:layout_width="match_parent"
-                        android:layout_height="86dp"
-                        android:layout_marginBottom="12dp"
-                        android:layout_weight="10"
-                        android:background="@drawable/activity_dialog_et"
-                        android:ems="10"
-                        android:gravity="start|top"
-                        android:hint="Enter Description"
-                        android:inputType="textMultiLine"
-                        android:paddingStart="5dp"
-                        android:paddingTop="5dp" />
-
-                    <EditText
-                        android:id="@+id/edtCuteMsgCR"
-                        android:layout_width="match_parent"
-                        android:layout_height="68dp"
-                        android:layout_marginBottom="12dp"
-                        android:layout_weight="10"
-                        android:background="@drawable/activity_dialog_et"
-                        android:ems="10"
-                        android:gravity="start|top"
-                        android:hint="Enter Cute Message"
-                        android:inputType="textMultiLine"
-                        android:paddingStart="5dp"
-                        android:paddingTop="5dp" />
-
-                    <Button
-                        android:id="@+id/btnImageCR"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_weight="12.5"
-                        android:background="@drawable/activity_dialog_done_bg"
-                        android:text="Add Image" />
-
-                    <ImageView
-                        android:id="@+id/imgPreview"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_gravity="center_horizontal"
-                        android:scaleType="fitCenter"
-                        android:adjustViewBounds="false"
-                        android:cropToPadding="false"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="77dp"
-                    android:layout_height="632dp"
-                    android:layout_marginEnd="4dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/linearLayout5"
+                <ImageView
+                    android:id="@+id/iconTitle"
+                    android:layout_width="66dp"
+                    android:layout_height="66dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/edtTitleLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/guidelineStart"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="@+id/edtTitleLabel"
+                    app:srcCompat="@drawable/interview_1_" />
 
-                    <ImageView
-                        android:id="@+id/imageView21"
-                        android:layout_width="match_parent"
-                        android:layout_height="66dp"
-                        android:layout_marginBottom="10dp"
-                        app:srcCompat="@drawable/interview_1_" />
+                <EditText
+                    android:id="@+id/edtTitleLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:alpha="0.8"
+                    android:background="@drawable/dashboard_icon_caregiver"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:hint="Enter First Name"
+                    android:inputType="text"
+                    android:text="Community Member"
+                    android:textAlignment="center"
+                    android:textColor="@color/creme"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/imageView15"
-                        android:layout_width="58dp"
-                        android:layout_height="62dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="275dp"
-                        app:srcCompat="@drawable/add_group" />
+                <EditText
+                    android:id="@+id/edtFirstNameCR"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/activity_dialog_et"
+                    android:ems="10"
+                    android:hint="Enter First Name"
+                    android:inputType="text"
+                    android:paddingStart="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@+id/edtTitleLabel" />
 
-                    <ImageView
-                        android:id="@+id/imageView16"
-                        android:layout_width="67dp"
-                        android:layout_height="77dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="22dp"
-                        app:srcCompat="@drawable/chat" />
+                <EditText
+                    android:id="@+id/edtLastNameCR"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/activity_dialog_et"
+                    android:ems="10"
+                    android:hint="Enter Last Name"
+                    android:inputType="text"
+                    android:paddingStart="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@+id/edtFirstNameCR" />
 
-                    <ImageView
-                        android:id="@+id/imageView17"
-                        android:layout_width="61dp"
-                        android:layout_height="68dp"
-                        android:layout_gravity="center"
-                        app:srcCompat="@drawable/photo_camera" />
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/iconType"
+                    android:layout_width="58dp"
+                    android:layout_height="62dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/spnTypeCR"
+                    app:layout_constraintEnd_toStartOf="@+id/guidelineStart"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/spnTypeCR"
+                    app:srcCompat="@drawable/add_group" />
+
+                <Spinner
+                    android:id="@+id/spnTypeCR"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/activity_dialog_et"
+                    android:entries="@array/type_options"
+                    android:paddingStart="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@+id/edtLastNameCR" />
+
+                <EditText
+                    android:id="@+id/edtDescCR"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="86dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/activity_dialog_et"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:hint="Enter Description"
+                    android:inputType="textMultiLine"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@+id/spnTypeCR" />
+
+                <ImageView
+                    android:id="@+id/iconMessage"
+                    android:layout_width="67dp"
+                    android:layout_height="77dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/edtCuteMsgCR"
+                    app:layout_constraintEnd_toStartOf="@+id/guidelineStart"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/edtCuteMsgCR"
+                    app:srcCompat="@drawable/chat" />
+
+                <EditText
+                    android:id="@+id/edtCuteMsgCR"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="68dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/activity_dialog_et"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:hint="Enter Cute Message"
+                    android:inputType="textMultiLine"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@+id/edtDescCR" />
+
+                <ImageView
+                    android:id="@+id/iconImage"
+                    android:layout_width="61dp"
+                    android:layout_height="68dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnImageCR"
+                    app:layout_constraintEnd_toStartOf="@+id/guidelineStart"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/btnImageCR"
+                    app:srcCompat="@drawable/photo_camera" />
+
+                <Button
+                    android:id="@+id/btnImageCR"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/activity_dialog_done_bg"
+                    android:text="Add Image"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@+id/edtCuteMsgCR" />
+
+                <ImageView
+                    android:id="@+id/imgPreview"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                    app:layout_constraintTop_toBottomOf="@+id/btnImageCR"
+                    tools:visibility="visible" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>
@@ -286,6 +300,7 @@
         android:id="@+id/imgBackAR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_btn" />
