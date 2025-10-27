@@ -52,12 +52,13 @@
 
     <LinearLayout
         android:layout_width="414dp"
-        android:layout_height="658dp"
+        android:layout_height="0dp"
         android:layout_marginStart="72dp"
-        android:layout_marginTop="40dp"
-        android:background="#18000000"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/menu_background_shape_event"
         android:orientation="vertical"
         android:padding="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.986"
         app:layout_constraintStart_toStartOf="parent"

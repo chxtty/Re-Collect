@@ -124,6 +124,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         dialog.setContentView(R.layout.event_create_dialog);
         CustomToast toast1 = new CustomToast(context);
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         EditText title = dialog.findViewById(R.id.editTitle);
         EditText startDate = dialog.findViewById(R.id.editStartDate);

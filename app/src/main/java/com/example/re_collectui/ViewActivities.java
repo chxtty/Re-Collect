@@ -309,6 +309,10 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
         builder.setView(currView);
         AlertDialog dialog = builder.create();
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnSubmit.setOnClickListener(v -> {
@@ -345,7 +349,7 @@ public class ViewActivities extends AppCompatActivity implements ActivityDialog.
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        //Toast.makeText(this, "Parsing error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e("JSON", "Invalid response from server");
                     }
                 },
                 error -> toast.GetErrorToast("Network error: " + error.getMessage()).show()

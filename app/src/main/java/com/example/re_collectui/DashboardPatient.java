@@ -157,6 +157,10 @@ public class DashboardPatient extends AppCompatActivity {
         builder.setView(currView);
         AlertDialog dialog = builder.create();
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,

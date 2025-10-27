@@ -199,6 +199,10 @@ public class EventsView extends AppCompatActivity {
                 .setCancelable(false)
                 .create();
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
 
         btnCancel.setOnClickListener(v ->
                 {   edtTitle.setText("");
@@ -345,6 +349,9 @@ public class EventsView extends AppCompatActivity {
         View view1 = getLayoutInflater().inflate(R.layout.event_filter_dialog,null);
         builder.setView(view1);
         AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         RadioButton rgbTitle = view1.findViewById(R.id.rgbTitle);
         RadioButton rgbLocation = view1.findViewById(R.id.rgbLocation);
