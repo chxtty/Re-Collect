@@ -115,12 +115,13 @@ public class LoginActivity extends AppCompatActivity {
                             } else if(role.equals("admin")){
                                 toast.GetGreatingToast("Welcome " + name).show();
                                 int adminID = user.getInt("careGiverID");
-                                editor.putInt("caregiverID", adminID);
+                                editor.putInt("careGiverID", adminID);
                                 editor.apply();
                                 Intent intent;
                                 //Toast.makeText(this, "Welcome, " + name, Toast.LENGTH_LONG).show();
                                 if(MethodCall.equals("showCaregiverLoginDialog")){
                                     intent = new Intent(LoginActivity.this, CreatePatient.class);
+                                    intent.putExtra("NAVIGATE_TO_DASHBOARD", true);
                                 } else{
                                     intent = new Intent(LoginActivity.this, DashboardCaregiver.class);}
                                 startActivity(intent);
@@ -192,8 +193,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showCaregiverLoginDialog() {
         // 1. Create the builder. No special theme is needed now that your main app theme is correct.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog_Alert);
         // 2. Inflate your custom layout file.
         View dialogView = getLayoutInflater().inflate(R.layout.dialogue_caregiver_login, null);
         builder.setView(dialogView);

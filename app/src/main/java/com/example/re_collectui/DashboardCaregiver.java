@@ -11,12 +11,18 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class DashboardCaregiver extends AppCompatActivity {
 
+    Button btnLogout;
+    ConstraintLayout caregiver_profile;
+    ConstraintLayout caregiver_patients;
+    ConstraintLayout caregiver_requests;
+    TextView txtWelcome;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +42,15 @@ public class DashboardCaregiver extends AppCompatActivity {
         });
 
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
+        int patientID = sharedPref.getInt("patientID", -1); // for patientID for session
+        int careGiverID = sharedPref.getInt("careGiverID", -1);
         String caregiverName = sharedPref.getString("name", "");
-        TextView caregiverNameTextView = findViewById(R.id.txtWelcome);
-        caregiverNameTextView.setText("Welcome, " + caregiverName + " :)");
+        caregiver_profile = findViewById(R.id.caregiver_profile);
+        caregiver_patients = findViewById(R.id.caregiver_patients);
+        caregiver_requests = findViewById(R.id.caregiver_requests);
+
+        txtWelcome = findViewById(R.id.txtWelcome); // ## ADD THIS ##
+        txtWelcome.setText("Hi,\n" + caregiverName+":)");
 
         Button btnLogout = findViewById(R.id.btnLogout);
 
@@ -47,6 +59,19 @@ public class DashboardCaregiver extends AppCompatActivity {
             sharedPref.edit().clear().apply();
             startActivity(intent);
             finish();
+        });
+
+        caregiver_profile.setOnClickListener(v -> {
+            if (careGiverID != -1) {
+                Intent intent = new Intent(DashboardCaregiver.this, ViewCaregiver.class);
+                intent.putExtra("careGiverID", careGiverID);
+                startActivity(intent);
+            }
+        });
+
+        caregiver_patients.setOnClickListener(v -> {
+            Intent intent = new Intent(DashboardCaregiver.this, ViewPatientList.class);
+            startActivity(intent);
         });
 
     }
@@ -61,6 +86,19 @@ public class DashboardCaregiver extends AppCompatActivity {
     public void on_Caregiver_requests_Click(View view) {
         Intent intent = new Intent(DashboardCaregiver.this, RequestsView.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // This method is called every time the user returns to this screen.
+        updateWelcomeMessage();
+    }
+
+    private void updateWelcomeMessage() {
+        SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
+        String caregiverFirstName = sharedPref.getString("caregiverFirstName", "Caregiver");
+        txtWelcome.setText("Welcome back,\n" + caregiverFirstName);
     }
 
 
