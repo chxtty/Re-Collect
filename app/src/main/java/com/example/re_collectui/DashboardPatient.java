@@ -243,7 +243,7 @@ public class DashboardPatient extends AppCompatActivity {
                         if (status.equals("success")) {
                             toast.GetInfoToast( "Community Member request submitted!").show();
                         } else {
-                           toast.GetErrorToast(res.getString("message")).show();
+                            toast.GetErrorToast(res.getString("message")).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -254,16 +254,16 @@ public class DashboardPatient extends AppCompatActivity {
         ) {
             @Override
             protected Map<String, String> getParams() {
-            Map<String, String> params = new HashMap<>();
-            params.put("patientID", String.valueOf(patientID));
-            params.put("careGiverID", String.valueOf(careGiverID));
-            params.put("commType", commType);
-            params.put("commFirstName", firstName);
-            params.put("commLastName", lastName);
-            params.put("commDescription", desc);
-            params.put("commCuteMessage", cuteMsg);
-            params.put("commImage", imgBase64);
-            return params;
+                Map<String, String> params = new HashMap<>();
+                params.put("patientID", String.valueOf(patientID));
+                params.put("careGiverID", String.valueOf(careGiverID));
+                params.put("commType", commType);
+                params.put("commFirstName", firstName);
+                params.put("commLastName", lastName);
+                params.put("commDescription", desc);
+                params.put("commCuteMessage", cuteMsg);
+                params.put("commImage", imgBase64);
+                return params;
             }
         };
         queue.add(request);
@@ -291,5 +291,6 @@ public class DashboardPatient extends AppCompatActivity {
             toast.GetInfoToast("Image added").show();
         }
     }
+
 
 }

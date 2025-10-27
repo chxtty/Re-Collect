@@ -102,7 +102,7 @@ public class RequestsView extends AppCompatActivity {
 
     private void fetchRequests() {
         SharedPreferences sharedPref = getSharedPreferences("userSession", MODE_PRIVATE);
-        int caregiverID = sharedPref.getInt("caregiverID", -1);
+        int caregiverID = sharedPref.getInt("careGiverID", -1);
 
         String url = GlobalVars.apiPath + "get_requests&careGiverID=" + caregiverID;
 

@@ -158,6 +158,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             if (b){
                 endDate.setEnabled(false);
                 endDate.setAlpha(0.5f);
+                if (!startDate.getText().toString().isEmpty())
+                {
+                    endDate.setText(startDate.getText().toString());
+                }
             } else {
                 endDate.setEnabled(true);
                 endDate.setAlpha(1.0f);

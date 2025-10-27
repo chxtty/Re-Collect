@@ -181,16 +181,6 @@ public class LoginActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // In LoginActivity.java
-
-    // In LoginActivity.java
-
-    // In LoginActivity.java
-
-    // In LoginActivity.java
-
-    // In LoginActivity.java
-
     private void showCaregiverLoginDialog() {
         // 1. Define the Material Components theme you want to use.
         int materialDialogTheme = com.google.android.material.R.style.Theme_MaterialComponents_DayNight_Dialog_Alert;
